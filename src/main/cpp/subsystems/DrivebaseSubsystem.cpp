@@ -1,11 +1,7 @@
 #include "subsystems/DrivebaseSubsystem.h"
 #include "str/Field.h"
-#include <frc/trajectory/TrajectoryConfig.h>
-#include <frc/trajectory/TrajectoryGenerator.h>
-#include <frc2/command/InstantCommand.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
-#include <frc2/command/SwerveControllerCommand.h>
 #include <units/length.h>
 #include <cmath>
 #include <iostream>
@@ -104,58 +100,12 @@ frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
     .ToPtr();
 }
 
-bool DrivebaseSubsystem::CompareTranslations(const frc::Translation2d& trans1, const frc::Translation2d& trans2) {
-  return units::math::abs(trans1.X() - trans2.X()) <= 12_in && units::math::abs(trans1.Y() - trans2.Y()) <= 12_in;
-}
-
 frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
   std::string pathName,
   units::meters_per_second_t maxSpeed,
-  units::meters_per_second_squared_t maxAccel,
-  bool flipPath180
+  units::meters_per_second_squared_t maxAccel
 ) {
   pathplanner::PathPlannerTrajectory autoPath = pathplanner::PathPlanner::loadPath(pathName, pathplanner::PathConstraints(maxSpeed, maxAccel));
-  frc::Trajectory trajectory = autoPath.asWPILibTrajectory();
-
-  if(flipPath180) {
-    trajectory = trajectory.RelativeTo(frc::Pose2d(frc::Translation2d(54_ft, 27_ft), frc::Rotation2d(180_deg)));
-  }
-
-  frc2::SwerveControllerCommand<4> controllerCmd(
-    trajectory,
-    [this]() {
-      return swerveDrivebase.GetRobotPose();
-    },
-    swerveDrivebase.GetKinematics(),
-    frc::PIDController{str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, 0},
-    frc::PIDController{str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, 0},
-    frc::ProfiledPIDController<units::radians>{
-      str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP,
-      0,
-      0,
-      str::swerve_drive_consts::GLOBAL_THETA_CONTROLLER_CONSTRAINTS},
-    [this]() {
-      return frc::Rotation2d{0_deg};
-    },
-    [this](auto states) {
-      swerveDrivebase.DirectSetModuleStates(states[0], states[1], states[2], states[3]);
-    },
-    {this}
-  );
-  return frc2::SequentialCommandGroup(
-    frc2::InstantCommand(
-      [this, trajectory, pathName]() {
-        str::Field::GetInstance().DrawTraj(pathName, trajectory);
-        swerveDrivebase.ResetPose(trajectory.InitialPose());
-      },
-      {this}
-    ),
-    std::move(controllerCmd),
-    frc2::InstantCommand(
-      [this]() {
-        swerveDrivebase.Drive(0_mps, 0_mps, 0_rad_per_s, false, false, true);
-      },
-      {this}
-    )
-  ).ToPtr();
+  std::cout << "totalTime: " << autoPath.getTotalTime().value() << "\n";
+  return builder.fullAuto(autoPath);
 }

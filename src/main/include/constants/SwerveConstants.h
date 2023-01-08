@@ -48,8 +48,10 @@ namespace str {
     static constexpr auto DRIVE_KV = 5 * 1_V / 1_mps;
     static constexpr auto DRIVE_KA = 0.12445 * 1_V / 1_mps_sq;
 
-    static constexpr auto GLOBAL_POSE_TRANS_KP = 10.0;
-    static constexpr auto GLOBAL_POSE_ROT_KP = 5.0;
+    static constexpr auto GLOBAL_POSE_TRANS_KP = 4;
+    static constexpr auto GLOBAL_POSE_TRANS_KD = 0;
+    static constexpr auto GLOBAL_POSE_ROT_KP = 10.0;
+    static constexpr auto GLOBAL_POSE_ROT_KD = 0.2;
 
     static constexpr units::volt_t MAX_DRIVE_VOLTAGE = 10_V;
 
@@ -66,7 +68,7 @@ namespace str {
     static constexpr units::meter_t WHEELBASE_LENGTH = 27_in;
     static constexpr units::meter_t DRIVE_WHEEL_DIAMETER = 3_in;
     static constexpr units::scalar_t STEER_GEARBOX_RATIO = (84 / 29) * (76 / 21) * (64 / 14);
-    static constexpr units::scalar_t DRIVE_GEARBOX_RATIO = 4.71;
+    static constexpr units::scalar_t DRIVE_GEARBOX_RATIO = (22 / 14) * (45 / 15);
     static constexpr units::scalar_t STEER_ENCODER_RATIO = 1.0;
     static constexpr units::scalar_t TREAD_STATIC_COEF_FRIC = 1;
     static constexpr units::scalar_t TREAD_KINETIC_COEF_FRIC = 1;
