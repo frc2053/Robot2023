@@ -5,13 +5,14 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
-#include <str/BetterSwerveControllerCommand.h>
+#include <frc2/command/SwerveControllerCommand.h>
 #include <units/length.h>
 #include <cmath>
 #include <iostream>
 #include <frc/Filesystem.h>
 #include "Constants.h"
 #include "frc/ComputerVisionUtil.h"
+#include <pathplanner/lib/PathPlanner.h>
 
 DrivebaseSubsystem::DrivebaseSubsystem() : tagLayout{frc::filesystem::GetDeployDirectory()  + "\\" + std::string{str::vision::TAG_LAYOUT_FILENAME}}{
   std::vector<double> allAprilTagDataForNt{};
@@ -111,27 +112,16 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
   std::string pathName,
   units::meters_per_second_t maxSpeed,
   units::meters_per_second_squared_t maxAccel,
-  frc::Pose2d startPose,
-  std::vector<frc::Pose2d> middlePoints,
-  frc::Pose2d endPose,
   bool flipPath180
 ) {
-  frc::TrajectoryConfig config(maxSpeed, maxAccel);
-  config.SetKinematics(swerveDrivebase.GetKinematics());
-  std::vector<frc::Translation2d> middlePointTranslations{middlePoints.size()};
-  std::transform(middlePoints.begin(), middlePoints.end(), middlePointTranslations.begin(), [](frc::Pose2d point){ return point.Translation(); });
-  auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(startPose, middlePointTranslations, endPose, config);
+  pathplanner::PathPlannerTrajectory autoPath = pathplanner::PathPlanner::loadPath(pathName, pathplanner::PathConstraints(maxSpeed, maxAccel));
+  frc::Trajectory trajectory = autoPath.asWPILibTrajectory();
+
   if(flipPath180) {
     trajectory = trajectory.RelativeTo(frc::Pose2d(frc::Translation2d(54_ft, 27_ft), frc::Rotation2d(180_deg)));
   }
 
-  posesToPassThrough.push_back(startPose);
-  for(const auto& middle : middlePoints) {
-    posesToPassThrough.push_back(middle);
-  }
-  posesToPassThrough.push_back(endPose);
-
-  frc2::BetterSwerveControllerCommand<4> controllerCmd(
+  frc2::SwerveControllerCommand<4> controllerCmd(
     trajectory,
     [this]() {
       return swerveDrivebase.GetRobotPose();
@@ -145,13 +135,7 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
       0,
       str::swerve_drive_consts::GLOBAL_THETA_CONTROLLER_CONSTRAINTS},
     [this]() {
-      if(CompareTranslations(swerveDrivebase.GetRobotPose().Translation(), posesToPassThrough[index].Translation())) {
-        if(index + 1 < posesToPassThrough.size()) {
-          index++;
-        }
-      }
-      std::cout << "posesToPassThrough[index].Rotation(): " << posesToPassThrough[index].Rotation().Degrees().to<double>() << "\n";
-      return posesToPassThrough[index].Rotation();
+      return frc::Rotation2d{0_deg};
     },
     [this](auto states) {
       swerveDrivebase.DirectSetModuleStates(states[0], states[1], states[2], states[3]);
@@ -164,16 +148,14 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
         str::Field::GetInstance().DrawTraj(pathName, trajectory);
         swerveDrivebase.ResetPose(trajectory.InitialPose());
       },
-      {}
+      {this}
     ),
     std::move(controllerCmd),
     frc2::InstantCommand(
       [this]() {
-        posesToPassThrough.clear();
-        index = 0;
         swerveDrivebase.Drive(0_mps, 0_mps, 0_rad_per_s, false, false, true);
       },
-      {}
+      {this}
     )
   ).ToPtr();
 }

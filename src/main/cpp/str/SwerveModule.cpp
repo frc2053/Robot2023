@@ -42,8 +42,8 @@ void str::SwerveModule::SetSimState(
   units::ampere_t driveCurrent,
   units::ampere_t steerCurrent
 ) {
-  driveMotorSim.SetSupplyCurrent(driveCurrent.to<double>());
-  steerMotor.SetSimCurrent(steerCurrent.to<double>());
+  //driveMotorSim.SetSupplyCurrent(driveCurrent.to<double>());
+  //steerMotor.SetSimCurrent(steerCurrent.to<double>());
   driveMotorSim.SetIntegratedSensorRawPosition(str::Units::ConvertDistanceToEncoderTicks(
     drivePos,
     str::encoder_cprs::FALCON_CPR,

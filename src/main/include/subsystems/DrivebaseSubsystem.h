@@ -18,9 +18,6 @@ public:
     std::string pathName,
     units::meters_per_second_t maxSpeed,
     units::meters_per_second_squared_t maxAccel,
-    frc::Pose2d startPose,
-    std::vector<frc::Pose2d> middlePoints,
-    frc::Pose2d endPose,
     bool flipPath180
   );
   frc2::CommandPtr ResetOdomFactory(
@@ -32,9 +29,6 @@ public:
   void ProcessVisionData();
 private:
   str::SwerveDrivebase swerveDrivebase{};
-
-  std::vector<frc::Pose2d> posesToPassThrough{};
-  size_t index{0};
 
   frc::AprilTagFieldLayout tagLayout;
   photonlib::PhotonCamera camera{"photonvision"};
