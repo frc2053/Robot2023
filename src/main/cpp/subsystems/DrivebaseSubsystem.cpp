@@ -31,7 +31,6 @@ DrivebaseSubsystem::DrivebaseSubsystem() : tagLayout{frc::filesystem::GetDeployD
 }
 
 void DrivebaseSubsystem::Periodic() {
-  // diffDrivebase.Periodic();
   swerveDrivebase.Periodic();
   ProcessVisionData();
 }
@@ -64,17 +63,7 @@ void DrivebaseSubsystem::ProcessVisionData() {
 }
 
 void DrivebaseSubsystem::SimulationPeriodic() {
-  // diffDrivebase.SimulationPeriodic();
   swerveDrivebase.SimulationPeriodic();
-}
-
-frc2::CommandPtr DrivebaseSubsystem::ArcadeDriveFactory(std::function<double()> fow, std::function<double()> rot) {
-  return frc2::RunCommand(
-    [this, fow, rot]() {
-      // diffDrivebase.ArcadeDrive(fow(), rot());
-    },
-    {this}
-  ).ToPtr();
 }
 
 frc2::CommandPtr DrivebaseSubsystem::DriveFactory(
@@ -105,9 +94,6 @@ frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
 ) {
   return frc2::InstantCommand(
     [this, x_ft, y_ft, rot_deg]() {
-      //  diffDrivebase.ResetPose(
-      //    frc::Pose2d(units::foot_t(x_ft()), units::foot_t(y_ft()), units::degree_t(rot_deg()))
-      //  );
       swerveDrivebase.ResetPose(
         frc::Pose2d(units::foot_t(x_ft()), units::foot_t(y_ft()), units::degree_t(rot_deg()))
       );

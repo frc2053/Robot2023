@@ -18,6 +18,6 @@ namespace str {
 
   namespace vision {
     static frc::Transform3d CAMERA_TO_ROBOT{frc::Translation3d{0_in, 0_in, 0_in}, frc::Rotation3d{}};
-    static constexpr std::string_view TAG_LAYOUT_FILENAME{"2022-rapidreact.json"};
+    static constexpr std::string_view TAG_LAYOUT_FILENAME{"2023-chargedup.json"};
   }
 }

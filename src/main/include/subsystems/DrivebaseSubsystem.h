@@ -1,6 +1,5 @@
 #pragma once
 
-#include "str/DiffDrivebase.h"
 #include "str/SwerveDrivebase.h"
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
@@ -14,7 +13,6 @@ public:
   void Periodic() override;
   void SimulationPeriodic() override;
 
-  frc2::CommandPtr ArcadeDriveFactory(std::function<double()> fow, std::function<double()> rot);
   frc2::CommandPtr DriveFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> rot);
   frc2::CommandPtr FollowPathFactory(
     units::meters_per_second_t maxSpeed,
@@ -32,7 +30,6 @@ public:
   bool CompareTranslations(const frc::Translation2d& trans1, const frc::Translation2d& trans2);
   void ProcessVisionData();
 private:
-  // str::DiffDrivebase diffDrivebase{};
   str::SwerveDrivebase swerveDrivebase{};
 
   std::vector<frc::Pose2d> posesToPassThrough{};
@@ -41,5 +38,5 @@ private:
   frc::AprilTagFieldLayout tagLayout;
   photonlib::PhotonCamera camera{"photonvision"};
   photonlib::SimVisionSystem system{"photonvision", 100_deg, frc::Transform3d{}, 9999_m, 1280, 720, 20};
-  std::vector<int> tagIdList = {0, 1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 40, 41, 42, 43, 50, 51, 52, 53};
+  std::vector<int> tagIdList = {1, 2, 3, 4, 5, 6, 7, 8};
 };

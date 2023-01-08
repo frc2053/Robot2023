@@ -85,70 +85,7 @@
           ]
         },
         "bottom": 900,
-        "found-tag-0": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
         "found-tag-1": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-10": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-11": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-12": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-13": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-14": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-15": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-16": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-17": {
           "arrowSize": 11,
           "image": "images\\tag_img_found.png",
           "length": 0.20000000298023224,
@@ -176,63 +113,7 @@
           "style": "Box/Image",
           "width": 0.20000000298023224
         },
-        "found-tag-40": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-41": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-42": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-43": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
         "found-tag-5": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-50": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-51": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-52": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-53": {
           "arrowSize": 11,
           "image": "images\\tag_img_found.png",
           "length": 0.20000000298023224,
@@ -253,74 +134,17 @@
           "style": "Box/Image",
           "width": 0.20000000298023224
         },
+        "found-tag-8": {
+          "arrowSize": 11,
+          "image": "images\\tag_img_found.png",
+          "length": 0.20000000298023224,
+          "style": "Box/Image",
+          "width": 0.20000000298023224
+        },
         "height": 8.229599952697754,
-        "image": "images\\2022-field.png",
         "left": 74,
         "right": 1774,
-        "tag-0": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
         "tag-1": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-10": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-11": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-12": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-13": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-14": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-15": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-16": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-17": {
           "arrowSize": 11,
           "image": "images\\tag_img.png",
           "length": 0.20000000298023224,
@@ -348,63 +172,7 @@
           "style": "Box/Image",
           "width": 0.20000000298023224
         },
-        "tag-40": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-41": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-42": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-43": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
         "tag-5": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-50": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-51": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-52": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-53": {
           "arrowSize": 11,
           "image": "images\\tag_img.png",
           "length": 0.20000000298023224,
@@ -419,6 +187,13 @@
           "width": 0.20000000298023224
         },
         "tag-7": {
+          "arrowSize": 11,
+          "image": "images\\tag_img.png",
+          "length": 0.20000000298023224,
+          "style": "Box/Image",
+          "width": 0.20000000298023224
+        },
+        "tag-8": {
           "arrowSize": 11,
           "image": "images\\tag_img.png",
           "length": 0.20000000298023224,
