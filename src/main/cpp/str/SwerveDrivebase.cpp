@@ -106,7 +106,7 @@ void str::SwerveDrivebase::SimulationPeriodic() {
   blModule.SimulationPeriodic();
   brModule.SimulationPeriodic();
 
-  std::array<frc::SwerveModuleSim, 4>& simModules = swerveSim.GetModules();
+  std::array<frc_addons::SwerveModuleSim, 4>& simModules = swerveSim.GetModules();
 
   simModules[0].SetInputVoltages(flModule.GetRotationAppliedVoltage(), flModule.GetDriveAppliedVoltage());
   simModules[1].SetInputVoltages(frModule.GetRotationAppliedVoltage(), frModule.GetDriveAppliedVoltage());

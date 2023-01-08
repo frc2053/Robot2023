@@ -8,10 +8,10 @@
 
 using frictionCoefUnit = units::compound_unit<units::newton_meter, units::inverse<units::radians_per_second>>;
 
-namespace frc {
+namespace frc_addons {
   class MotorGearboxWheelSim {
   public:
-    DCMotor motor;
+    frc::DCMotor motor;
     units::scalar_t gearRatio;
     units::meter_t wheelRadius;
     units::newton_t groundForce;
@@ -22,7 +22,7 @@ namespace frc {
     units::revolutions_per_minute_t motorSpeed;
     units::ampere_t motorCurrent;
     MotorGearboxWheelSim(
-      DCMotor motorIn,
+      frc::DCMotor motorIn,
       units::scalar_t gearRatioIn,
       units::meter_t wheelRadiusIn,
       units::unit_t<frictionCoefUnit> gearBoxFrictionIn

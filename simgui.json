@@ -84,7 +84,7 @@
             255.0
           ]
         },
-        "bottom": 900,
+        "bottom": 544,
         "found-tag-1": {
           "arrowSize": 11,
           "image": "images\\tag_img_found.png",
@@ -141,9 +141,10 @@
           "style": "Box/Image",
           "width": 0.20000000298023224
         },
-        "height": 8.229599952697754,
-        "left": 74,
-        "right": 1774,
+        "height": 8.013679504394531,
+        "image": "C:\\Users\\willi\\dev\\Robot2023\\images\\2023-field.png",
+        "left": 46,
+        "right": 1088,
         "tag-1": {
           "arrowSize": 11,
           "image": "images\\tag_img.png",
@@ -200,9 +201,9 @@
           "style": "Box/Image",
           "width": 0.20000000298023224
         },
-        "top": 50,
+        "top": 36,
         "units": "meters",
-        "width": 16.459199905395508,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }

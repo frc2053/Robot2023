@@ -2,8 +2,8 @@
 
 #include "constants/SwerveConstants.h"
 #include <array>
-#include <frc/SwerveModuleSim.h>
-#include <frc/Vector2d.h>
+#include <frc_addons/SwerveModuleSim.h>
+#include <frc_addons/Vector2d.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Transform2d.h>
 #include <frc/geometry/Translation2d.h>
@@ -11,11 +11,11 @@
 #include <units/angular_acceleration.h>
 #include <units/velocity.h>
 
-namespace frc {
+namespace frc_addons {
   class QuadSwerveSim {
   public:
     QuadSwerveSim(
-      std::array<Translation2d, 4> modulePos,
+      std::array<frc::Translation2d, 4> modulePos,
       frc::DCMotor steerGearbox,
       units::scalar_t steerGearboxRatio,
       units::scalar_t steeringEncoderRatio,
@@ -33,10 +33,10 @@ namespace frc {
       robotMomentOfInertia{robotMOI},
       modulePositions{modulePos},
       moduleTransforms{
-        Transform2d{modulePositions[0], Rotation2d{0_deg}},
-        Transform2d{modulePositions[1], Rotation2d{0_deg}},
-        Transform2d{modulePositions[2], Rotation2d{0_deg}},
-        Transform2d{modulePositions[3], Rotation2d{0_deg}}
+        frc::Transform2d{modulePositions[0], frc::Rotation2d{0_deg}},
+        frc::Transform2d{modulePositions[1], frc::Rotation2d{0_deg}},
+        frc::Transform2d{modulePositions[2], frc::Rotation2d{0_deg}},
+        frc::Transform2d{modulePositions[3], frc::Rotation2d{0_deg}}
       },
       simModules{
         SwerveModuleSim{
@@ -95,7 +95,7 @@ namespace frc {
       
     };
 
-    void ModelReset(Pose2d pose) {
+    void ModelReset(frc::Pose2d pose) {
       prevAccel = Vector2d<units::meters_per_second_squared>();
       prevVel = Vector2d<units::meters_per_second>();
       prevRotAccel = units::radians_per_second_squared_t{0};
@@ -106,7 +106,7 @@ namespace frc {
       currentPose = pose;
     }
 
-    Pose2d GetCurrentPose() {
+    frc::Pose2d GetCurrentPose() {
       return currentPose;
     }
 
@@ -115,11 +115,11 @@ namespace frc {
     }
 
     void Update(units::second_t dt) {
-      Pose2d fieldReferenceFrame{};
-      Transform2d fieldToRobotTrans{fieldReferenceFrame, currentPose};
+      frc::Pose2d fieldReferenceFrame{};
+      frc::Transform2d fieldToRobotTrans{fieldReferenceFrame, currentPose};
 
       for(int i = 0; i < 4; i++) {
-        Pose2d modPose = fieldReferenceFrame.TransformBy(fieldToRobotTrans).TransformBy(moduleTransforms[i]);
+        frc::Pose2d modPose = fieldReferenceFrame.TransformBy(fieldToRobotTrans).TransformBy(moduleTransforms[i]);
         simModules[i].SetModulePose(modPose);
         simModules[i].Update(dt);
       }
@@ -175,7 +175,7 @@ namespace frc {
         prevVel.y + (accel.y + prevAccel.y) / 2 * dt
       };
 
-      Translation2d posChange{(velocity.x + prevVel.x) / 2 * dt, (velocity.y + prevVel.y) / 2 * dt};
+      frc::Translation2d posChange{(velocity.x + prevVel.x) / 2 * dt, (velocity.y + prevVel.y) / 2 * dt};
 
       prevVel = velocity;
       prevAccel = accel;
@@ -188,20 +188,20 @@ namespace frc {
       prevRotAccel = rotAccel;
 
       posChange = posChange.RotateBy(-currentPose.Rotation());
-      Twist2d motionThisLoop{posChange.X(), posChange.Y(), rotPosChange};
+      frc::Twist2d motionThisLoop{posChange.X(), posChange.Y(), rotPosChange};
       currentPose = currentPose.Exp(motionThisLoop);
     }
 
   private:
     units::kilogram_t robotMass;
     units::kilogram_square_meter_t robotMomentOfInertia;
-    std::array<Translation2d, 4> modulePositions;
-    std::array<Transform2d, 4> moduleTransforms;
+    std::array<frc::Translation2d, 4> modulePositions;
+    std::array<frc::Transform2d, 4> moduleTransforms;
     std::array<SwerveModuleSim, 4> simModules;
     Vector2d<units::meters_per_second_squared> prevAccel{};
     Vector2d<units::meters_per_second> prevVel{};
     units::radians_per_second_squared_t prevRotAccel{};
     units::radians_per_second_t prevRotVel{};
-    Pose2d currentPose{};
+    frc::Pose2d currentPose{};
   };
 };   

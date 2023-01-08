@@ -2,8 +2,9 @@
 
 #include <type_traits>
 #include <units/dimensionless.h>
+#include <units/angle.h>
 
-namespace frc {
+namespace frc_addons {
   template<typename T>
   struct Vector2d {
     static_assert(units::traits::is_unit<T>::value, "T must be a unit!");

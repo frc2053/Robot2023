@@ -1,14 +1,14 @@
 #pragma once
 
 #include <frc/EigenCore.h>
-#include <frc/Vector2d.h>
+#include <frc_addons/Vector2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
 #include <units/dimensionless.h>
 #include <units/force.h>
 #include <units/math.h>
 
-namespace frc {
+namespace frc_addons {
   class Force2d {
   public:
     Force2d() = default;

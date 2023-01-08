@@ -6,12 +6,12 @@
 #include <units/time.h>
 #include <units/voltage.h>
 
-namespace frc {
+namespace frc_addons {
   class SimpleMotorWithMassModel {
   public:
-    sim::FlywheelSim fwSim;
+    frc::sim::FlywheelSim fwSim;
     units::radian_t displacement{};
-    SimpleMotorWithMassModel(DCMotor motor, double gearing, units::moment_of_inertia::kilogram_square_meter_t moi) :
+    SimpleMotorWithMassModel(frc::DCMotor motor, double gearing, units::moment_of_inertia::kilogram_square_meter_t moi) :
       fwSim(motor, gearing, moi)
     {
   

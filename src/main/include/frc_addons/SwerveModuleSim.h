@@ -4,11 +4,11 @@
 #include "SimpleMotorWithMassModel.h"
 #include "Vector2d.h"
 #include "str/Units.h"
-#include <frc/ForceAtPose2d.h>
+#include <frc_addons/ForceAtPose2d.h>
 #include <units/dimensionless.h>
 #include <units/math.h>
 
-namespace frc {
+namespace frc_addons {
   class SwerveModuleSim {
   public:
     SwerveModuleSim(
@@ -72,7 +72,7 @@ namespace frc {
       units::meters_per_second_t velocityAlongSteer = GetModuleRelativeTranslationVelocity(dt).Dot(steerUnitVec);
       driveMotor.Update(velocityAlongSteer, currentDriveVoltage, dt);
       steerMotor.Update(currentSteerVoltage, dt);
-      currentSteerAngle = Rotation2d(steerMotor.GetPosition());
+      currentSteerAngle = frc::Rotation2d(steerMotor.GetPosition());
     };
 
     Vector2d<units::meters_per_second> GetModuleRelativeTranslationVelocity(units::second_t dt) {
@@ -106,7 +106,7 @@ namespace frc {
       return ForceAtPose2d(Force2d(driveMotor.GetGroundForce(), currentSteerAngle), currentModulePose);
     }
 
-    void SetModulePose(Pose2d curPose) {
+    void SetModulePose(frc::Pose2d curPose) {
       if(first) {
         prevModulePose = curPose;
         first = false;
@@ -118,7 +118,7 @@ namespace frc {
       currentModulePose = curPose;
     }
 
-    Pose2d GetModulePose() {
+    frc::Pose2d GetModulePose() {
       return currentModulePose;
     }
 
@@ -126,17 +126,17 @@ namespace frc {
     units::scalar_t encoderToSteerRatio;
     units::scalar_t driveMotorToOutputGearboxRatio;
 
-    SimpleMotorWithMassModel steerMotor;
-    MotorGearboxWheelSim driveMotor;
+    frc_addons::SimpleMotorWithMassModel steerMotor;
+    frc_addons::MotorGearboxWheelSim driveMotor;
 
     units::volt_t currentSteerVoltage{};
     units::volt_t currentDriveVoltage{};
 
     units::meters_per_second_t currentLinearSpeed{};
-    Rotation2d currentSteerAngle{};
+    frc::Rotation2d currentSteerAngle{};
 
-    Pose2d prevModulePose{};
-    Pose2d currentModulePose{};
+    frc::Pose2d prevModulePose{};
+    frc::Pose2d currentModulePose{};
 
     units::newton_t crossTreadFricForceMag{};
     units::meters_per_second_t crossTreadVelMag{};
