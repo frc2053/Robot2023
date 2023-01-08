@@ -19,7 +19,7 @@ private:
   frc::SendableChooser<frc2::Command *> autoChooser;
   frc2::CommandPtr autoOne{
       driveSubsystem
-          .FollowPathFactory(15_fps, 200_mps_sq,
+          .FollowPathFactory("Auto Path One", 15_fps, 200_mps_sq,
                              frc::Pose2d(25_ft, 6_ft, 90_deg),
                              {
                                  frc::Pose2d(25_ft, 0.75_ft, 90_deg),
@@ -30,7 +30,7 @@ private:
           .WithTimeout(16_s)};
   frc2::CommandPtr autoTwo{
       driveSubsystem
-          .FollowPathFactory(15_fps, 200_mps_sq,
+          .FollowPathFactory("Auto Path Two", 15_fps, 200_mps_sq,
                              frc::Pose2d(10_ft, 6_ft, 90_deg),
                              {
                                  frc::Pose2d(15_ft, 6_ft, 90_deg),

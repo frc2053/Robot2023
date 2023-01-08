@@ -15,6 +15,7 @@ public:
 
   frc2::CommandPtr DriveFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> rot);
   frc2::CommandPtr FollowPathFactory(
+    std::string pathName,
     units::meters_per_second_t maxSpeed,
     units::meters_per_second_squared_t maxAccel,
     frc::Pose2d startPose,

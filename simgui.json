@@ -1,18 +1,4 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "SPARK MAX [3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[2]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -21,6 +7,11 @@
       "/SmartDashboard/photonvision Sim Field": "Field2d"
     },
     "windows": {
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "Auto Path": {
           "arrowSize": 100,
@@ -29,6 +20,20 @@
             0.6813725233078003,
             0.7188581228256226,
             1.0,
+            255.0
+          ],
+          "style": "Line"
+        },
+        "Auto Path One": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "Auto Path Two": {
+          "arrows": false,
+          "color": [
+            0.0,
+            97.50003051757813,
+            255.0,
             255.0
           ],
           "style": "Line"

@@ -108,6 +108,7 @@ bool DrivebaseSubsystem::CompareTranslations(const frc::Translation2d& trans1, c
 }
 
 frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
+  std::string pathName,
   units::meters_per_second_t maxSpeed,
   units::meters_per_second_squared_t maxAccel,
   frc::Pose2d startPose,
@@ -130,7 +131,6 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
   }
   posesToPassThrough.push_back(endPose);
 
-  str::Field::GetInstance().DrawTraj("Auto Path", trajectory);
   frc2::BetterSwerveControllerCommand<4> controllerCmd(
     trajectory,
     [this]() {
@@ -160,7 +160,8 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
   );
   return frc2::SequentialCommandGroup(
     frc2::InstantCommand(
-      [this, trajectory]() {
+      [this, trajectory, pathName]() {
+        str::Field::GetInstance().DrawTraj(pathName, trajectory);
         swerveDrivebase.ResetPose(trajectory.InitialPose());
       },
       {}

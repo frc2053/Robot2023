@@ -5,18 +5,7 @@
 #include <frc2/command/InstantCommand.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
-  // Initialize all of your commands and subsystems here
-  // driveSubsystem.SetDefaultCommand(driveSubsystem.ArcadeDriveFactory(
-  //   [this] {
-  //     return driverController.GetLeftY();
-  //   },
-  //   [this] {
-  //     return driverController.GetRightX();
-  //   }
-  // ));
-
   autoChooser.SetDefaultOption("Test Path One", autoOne.get());
-
   autoChooser.AddOption("Test Path Two", autoTwo.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
