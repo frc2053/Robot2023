@@ -234,6 +234,9 @@
         "AdvantageScope": {
           "open": true
         },
+        "ResetPose": {
+          "open": true
+        },
         "open": true
       },
       "photonvision": {

@@ -7,6 +7,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandPtr.h>
 #include <str/PDP.h>
+#include <autos/Autos.h>
 
 class SwerveCommandRobot {
 public:
@@ -16,13 +17,9 @@ public:
 private:
   frc::XboxController driverController{str::oi::DRIVER_CONTROLLER};
   DrivebaseSubsystem driveSubsystem;
+
+  frc2::CommandPtr twoConeAuto = autos::TwoConeAuto(&driveSubsystem);
+  frc2::CommandPtr testPathTwo = autos::TestPathTwo(&driveSubsystem);
+
   frc::SendableChooser<frc2::Command *> autoChooser;
-  frc2::CommandPtr autoOne{
-      driveSubsystem
-          .FollowPathFactory("Auto Path One", 15_fps, 4.267_mps_sq)
-          .WithTimeout(16_s)};
-  frc2::CommandPtr autoTwo{
-      driveSubsystem
-          .FollowPathFactory("Auto Path Two", 15_fps, 4.267_mps_sq)
-          .WithTimeout(16_s)};
 };

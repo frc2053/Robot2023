@@ -5,8 +5,8 @@
 #include <frc2/command/InstantCommand.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
-  autoChooser.SetDefaultOption("Test Path One", autoOne.get());
-  autoChooser.AddOption("Test Path Two", autoTwo.get());
+  autoChooser.SetDefaultOption("Two Cone Auto", twoConeAuto.get());
+  autoChooser.AddOption("Test Path Two", testPathTwo.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 
@@ -43,6 +43,6 @@ void SwerveCommandRobot::ConfigureBindings() {
           .get());
 }
 
-frc2::Command *SwerveCommandRobot::GetAutonomousCommand() {
+frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {
   return autoChooser.GetSelected();
 }
