@@ -10,10 +10,13 @@
 #include "frc/ComputerVisionUtil.h"
 #include <pathplanner/lib/PathPlanner.h>
 
-DrivebaseSubsystem::DrivebaseSubsystem() : tagLayout{frc::filesystem::GetDeployDirectory()  + "\\" + std::string{str::vision::TAG_LAYOUT_FILENAME}}{
+DrivebaseSubsystem::DrivebaseSubsystem() : 
+  tagLayout(std::make_unique<frc::AprilTagFieldLayout>(frc::filesystem::GetDeployDirectory()  + "\\" + std::string(str::vision::TAG_LAYOUT_FILENAME))),
+  camera(std::make_unique<photonlib::PhotonCamera>("photonvision")),
+  visionEstimator(tagLayout, photonlib::PoseStrategy::AVERAGE_BEST_TARGETS, {{camera, str::vision::CAMERA_TO_ROBOT}}) {
   std::vector<double> allAprilTagDataForNt{};
   for(const int& tagId : tagIdList) {
-    frc::Pose3d tagPose = tagLayout.GetTagPose(tagId).value();
+    frc::Pose3d tagPose = tagLayout->GetTagPose(tagId).value();
     str::Field::GetInstance().SetObjectPosition("tag-" + std::to_string(tagId), tagPose.ToPose2d());
     system.AddSimVisionTarget(photonlib::SimVisionTarget{tagPose, 6_in, 6_in, tagId});
     allAprilTagDataForNt.push_back(tagPose.X().to<double>());
@@ -34,19 +37,18 @@ void DrivebaseSubsystem::Periodic() {
 
 void DrivebaseSubsystem::ProcessVisionData() {
   system.ProcessFrame(swerveDrivebase.GetRobotPose());
-  photonlib::PhotonPipelineResult result = camera.GetLatestResult();
+  auto estimatedRobotPose = visionEstimator.Update();
+  photonlib::PhotonPipelineResult result = camera->GetLatestResult();
   bool hasTargets = result.HasTargets();
   std::vector<double> detectedVisionDataForNt{};
   if(hasTargets) {
     auto targets = result.GetTargets();
     for(const auto& target : targets) {
-      frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
       int aprilTagId = target.GetFiducialId();
-      frc::Pose3d tagPose = tagLayout.GetTagPose(aprilTagId).value();
-      frc::Pose3d estimatedRobotPose = frc::ObjectToRobotPose(tagPose, bestCameraToTarget, str::vision::CAMERA_TO_ROBOT);
+      frc::Pose3d tagPose = tagLayout->GetTagPose(aprilTagId).value();
       str::Field::GetInstance().SetObjectPosition("found-tag-" + std::to_string(aprilTagId), tagPose.ToPose2d());
-      str::Field::GetInstance().SetObjectPosition("Robot Vision Pose Estimate", estimatedRobotPose.ToPose2d());
-      swerveDrivebase.AddVisionMeasurementToPoseEstimator(estimatedRobotPose.ToPose2d(), result.GetTimestamp());
+      str::Field::GetInstance().SetObjectPosition("Robot Vision Pose Estimate", estimatedRobotPose.first.ToPose2d());
+      swerveDrivebase.AddVisionMeasurementToPoseEstimator(estimatedRobotPose.first.ToPose2d(), frc::Timer::GetFPGATimestamp() - estimatedRobotPose.second);
       detectedVisionDataForNt.push_back(tagPose.X().to<double>());
       detectedVisionDataForNt.push_back(tagPose.Y().to<double>()); 
       detectedVisionDataForNt.push_back(tagPose.Z().to<double>()); 

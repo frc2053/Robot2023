@@ -7,7 +7,7 @@
 #include <photonlib/SimVisionSystem.h>
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <frc2/command/InstantCommand.h>
-
+#include <photonlib/RobotPoseEstimator.h>
 
 class DrivebaseSubsystem : public frc2::SubsystemBase {
 public:
@@ -31,9 +31,10 @@ public:
 private:
   str::SwerveDrivebase swerveDrivebase{};
 
-  frc::AprilTagFieldLayout tagLayout;
-  photonlib::PhotonCamera camera{"photonvision"};
+  std::shared_ptr<frc::AprilTagFieldLayout> tagLayout;
+  std::shared_ptr<photonlib::PhotonCamera> camera;
   photonlib::SimVisionSystem system{"photonvision", 100_deg, frc::Transform3d{}, 9999_m, 1280, 720, 20};
+  photonlib::RobotPoseEstimator visionEstimator;
   std::vector<int> tagIdList = {1, 2, 3, 4, 5, 6, 7, 8};
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{};
