@@ -11,9 +11,9 @@
 #include <pathplanner/lib/PathPlanner.h>
 
 DrivebaseSubsystem::DrivebaseSubsystem() : 
-  tagLayout(std::make_unique<frc::AprilTagFieldLayout>(frc::filesystem::GetDeployDirectory()  + "\\" + std::string(str::vision::TAG_LAYOUT_FILENAME))),
+  tagLayout(std::make_unique<frc::AprilTagFieldLayout>(frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp))),
   camera(std::make_unique<photonlib::PhotonCamera>("photonvision")),
-  visionEstimator(tagLayout, photonlib::PoseStrategy::AVERAGE_BEST_TARGETS, {{camera, str::vision::CAMERA_TO_ROBOT}}) {
+  visionEstimator(tagLayout, photonlib::PoseStrategy::CLOSEST_TO_LAST_POSE, {{camera, str::vision::CAMERA_TO_ROBOT}}) {
   std::vector<double> allAprilTagDataForNt{};
   for(const int& tagId : tagIdList) {
     frc::Pose3d tagPose = tagLayout->GetTagPose(tagId).value();
@@ -100,6 +100,16 @@ frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
     {this}
   )
     .ToPtr();
+}
+
+void DrivebaseSubsystem::ResetOdom(
+  std::function<double()> x_ft,
+  std::function<double()> y_ft,
+  std::function<double()> rot_deg
+) {
+  swerveDrivebase.ResetPose(
+    frc::Pose2d(units::foot_t(x_ft()), units::foot_t(y_ft()), units::degree_t(rot_deg()))
+  );
 }
 
 frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(

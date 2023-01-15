@@ -8,6 +8,7 @@
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <frc2/command/InstantCommand.h>
 #include <photonlib/RobotPoseEstimator.h>
+#include <frc/apriltag/AprilTagFields.h>
 
 class DrivebaseSubsystem : public frc2::SubsystemBase {
 public:
@@ -28,6 +29,11 @@ public:
     std::function<double()> rot_deg
   );
   void ProcessVisionData();
+  void ResetOdom(
+    std::function<double()> x_ft,
+    std::function<double()> y_ft,
+    std::function<double()> rot_deg
+  );
 private:
   str::SwerveDrivebase swerveDrivebase{};
 

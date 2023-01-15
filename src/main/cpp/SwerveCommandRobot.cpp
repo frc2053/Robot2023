@@ -28,19 +28,24 @@ void SwerveCommandRobot::ConfigureBindings() {
   frc::SmartDashboard::PutNumber("ResetPose/rot_deg", 0);
 
   frc::SmartDashboard::PutData(
-      "Reset Drivetrain Pose",
-      driveSubsystem
-          .ResetOdomFactory(
-              [this] {
-                return frc::SmartDashboard::GetNumber("ResetPose/x_ft", 0);
-              },
-              [this] {
-                return frc::SmartDashboard::GetNumber("ResetPose/y_ft", 0);
-              },
-              [this] {
-                return frc::SmartDashboard::GetNumber("ResetPose/rot_deg", 0);
-              })
-          .get());
+    "Reset Drivetrain Pose",
+    new frc2::InstantCommand(
+      [this]() {
+          driveSubsystem.ResetOdom(
+          [this] {
+            return frc::SmartDashboard::GetNumber("ResetPose/x_ft", 0);
+          },
+          [this] {
+            return frc::SmartDashboard::GetNumber("ResetPose/y_ft", 0);
+          },
+          [this] {
+            return frc::SmartDashboard::GetNumber("ResetPose/rot_deg", 0);
+          }
+        );
+      },
+      {&driveSubsystem}
+    )
+  );
 }
 
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {

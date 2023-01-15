@@ -184,10 +184,10 @@ void str::SwerveDrivebase::ResetPose(const frc::Pose2d& newPose) {
   estimator.ResetPosition(
     yawToResetTo,
     {
-      frc::SwerveModulePosition{0_m, flModule.GetState().angle},
-      frc::SwerveModulePosition{0_m, frModule.GetState().angle},
-      frc::SwerveModulePosition{0_m, blModule.GetState().angle},
-      frc::SwerveModulePosition{0_m, brModule.GetState().angle}
+      frc::SwerveModulePosition{0_m, 0_deg},
+      frc::SwerveModulePosition{0_m, 0_deg},
+      frc::SwerveModulePosition{0_m, 0_deg},
+      frc::SwerveModulePosition{0_m, 0_deg}
     },
     newPose
   );
