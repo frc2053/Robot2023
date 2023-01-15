@@ -107,9 +107,9 @@ void DrivebaseSubsystem::ResetOdom(
   std::function<double()> y_ft,
   std::function<double()> rot_deg
 ) {
-  swerveDrivebase.ResetPose(
-    frc::Pose2d(units::foot_t(x_ft()), units::foot_t(y_ft()), units::degree_t(rot_deg()))
-  );
+  auto refPose = frc::Pose2d(units::foot_t(x_ft()), units::foot_t(y_ft()), units::degree_t(rot_deg()));
+  swerveDrivebase.ResetPose(refPose);
+  visionEstimator.SetReferencePose(frc::Pose3d(refPose));
 }
 
 frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(

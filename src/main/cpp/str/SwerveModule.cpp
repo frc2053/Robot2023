@@ -6,6 +6,8 @@
 #include <frc/RobotBase.h>
 #include <frc/RobotController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/DataLogManager.h>
+
 
 str::SwerveModule::SwerveModule(int driveCanId, int rotationCanId) :
   driveMotorController(driveCanId), driveMotorSim(driveMotorController), steerMotor(rotationCanId) {
@@ -189,6 +191,7 @@ void str::SwerveModule::ConfigureSteeringMotor() {
   );
 
   steerMotor.BurnFlash();
+  frc::DataLogManager::Log("Configuring Steering Motor Options!");
 }
 
 void str::SwerveModule::ResetEncoders() {
@@ -196,6 +199,7 @@ void str::SwerveModule::ResetEncoders() {
   driveMotorController.SetSelectedSensorPosition(0);
   driveMotorSim.SetIntegratedSensorVelocity(0);
   driveMotorSim.SetIntegratedSensorRawPosition(0);
+  frc::DataLogManager::Log("Reset Swerve Encoders!");
 }
 
 units::meter_t str::SwerveModule::ConvertDriveEncoderTicksToDistance(int ticks) {

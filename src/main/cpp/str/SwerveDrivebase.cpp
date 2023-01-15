@@ -5,6 +5,8 @@
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <str/PDP.h>
+#include <frc/DataLogManager.h>
+
 
 str::SwerveDrivebase::SwerveDrivebase() {
   ResetPose();
@@ -25,7 +27,8 @@ frc::SwerveDriveKinematics<4>& str::SwerveDrivebase::GetKinematics() {
 }
 
 void str::SwerveDrivebase::AddVisionMeasurementToPoseEstimator(frc::Pose2d visionMeasuredRobotPose, units::second_t timeStampWhenPicWasTaken) {
-  estimator.AddVisionMeasurement(visionMeasuredRobotPose, timeStampWhenPicWasTaken);
+  //estimator.AddVisionMeasurement(visionMeasuredRobotPose, timeStampWhenPicWasTaken);
+  frc::DataLogManager::Log("Added vision measurement pose to global estimator!");
 }
 
 void str::SwerveDrivebase::Drive(
@@ -191,6 +194,8 @@ void str::SwerveDrivebase::ResetPose(const frc::Pose2d& newPose) {
     },
     newPose
   );
+
+  frc::DataLogManager::Log("Reset Drivebase pose!");
 }
 
 void str::SwerveDrivebase::LogCurrentModuleInfo(std::array<frc::SwerveModuleState, 4> moduleStates) {
