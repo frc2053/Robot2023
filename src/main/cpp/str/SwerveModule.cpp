@@ -146,6 +146,7 @@ void str::SwerveModule::ConfigureSteeringMotor() {
   steerMotorController.EnableVoltageCompensation(12);
   steerMotorController.SetSmartCurrentLimit(20);
 
+  steerEncoder.SetInverted(true);
   steerEncoder.SetPositionConversionFactor(2 * std::numbers::pi);
   steerEncoder.SetVelocityConversionFactor((2 * std::numbers::pi) / 60.0);
 
