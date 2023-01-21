@@ -12,14 +12,14 @@
 namespace str {
 
   namespace swerve_pdp_ports {
-    static constexpr int FRONT_LEFT_DRIVE_TALON_ID = 0;
-    static constexpr int FRONT_LEFT_STEER_TALON_ID = 1;
-    static constexpr int FRONT_RIGHT_DRIVE_TALON_ID = 8;
-    static constexpr int FRONT_RIGHT_STEER_TALON_ID = 9;
-    static constexpr int REAR_LEFT_DRIVE_TALON_ID = 2;
-    static constexpr int REAR_LEFT_STEER_TALON_ID = 3;
-    static constexpr int REAR_RIGHT_DRIVE_TALON_ID = 10;
-    static constexpr int REAR_RIGHT_STEER_TALON_ID = 11;
+    static constexpr int FRONT_LEFT_DRIVE_TALON_ID = 2;
+    static constexpr int FRONT_LEFT_STEER_TALON_ID = 3;
+    static constexpr int FRONT_RIGHT_DRIVE_TALON_ID = 4;
+    static constexpr int FRONT_RIGHT_STEER_TALON_ID = 5;
+    static constexpr int REAR_LEFT_DRIVE_TALON_ID = 6;
+    static constexpr int REAR_LEFT_STEER_TALON_ID = 7;
+    static constexpr int REAR_RIGHT_DRIVE_TALON_ID = 8;
+    static constexpr int REAR_RIGHT_STEER_TALON_ID = 9;
   }
 
   namespace swerve_can_ids {
