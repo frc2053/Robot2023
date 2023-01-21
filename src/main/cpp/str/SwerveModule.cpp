@@ -10,7 +10,7 @@
 
 
 str::SwerveModule::SwerveModule(int driveCanId, int rotationCanId) :
-  driveMotorController(driveCanId), driveMotorSim(driveMotorController), steerMotor(rotationCanId) {
+  driveMotorController(driveCanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless), steerMotor(rotationCanId) {
   ConfigureSteeringMotor();
   ConfigureDriveMotor();
   ffTimer.Reset();
@@ -18,7 +18,7 @@ str::SwerveModule::SwerveModule(int driveCanId, int rotationCanId) :
 }
 
 units::volt_t str::SwerveModule::GetDriveAppliedVoltage() {
-  return units::volt_t{driveMotorController.GetMotorOutputVoltage()};
+  return units::volt_t{driveMotorController.GetAppliedOutput() * driveMotorController.GetBusVoltage()};
 }
 
 units::volt_t str::SwerveModule::GetRotationAppliedVoltage() {
@@ -26,7 +26,7 @@ units::volt_t str::SwerveModule::GetRotationAppliedVoltage() {
 }
 
 units::ampere_t str::SwerveModule::GetDriveMotorCurrent() {
-  return units::ampere_t{driveMotorController.GetSupplyCurrent()};
+  return units::ampere_t{driveMotorController.GetOutputCurrent()};
 }
 
 units::ampere_t str::SwerveModule::GetSteerMotorCurrent() {
@@ -44,7 +44,7 @@ void str::SwerveModule::SetSimState(
   units::ampere_t driveCurrent,
   units::ampere_t steerCurrent
 ) {
-  //driveMotorSim.SetSupplyCurrent(driveCurrent.to<double>());
+  /*//driveMotorSim.SetSupplyCurrent(driveCurrent.to<double>());
   //steerMotor.SetSimCurrent(steerCurrent.to<double>());
   driveMotorSim.SetIntegratedSensorRawPosition(str::Units::ConvertDistanceToEncoderTicks(
     drivePos,
@@ -68,7 +68,7 @@ frc::SwerveModuleState str::SwerveModule::GetState() {
   state.speed = ConvertDriveEncoderSpeedToVelocity(driveMotorController.GetSelectedSensorVelocity());
   state.angle = frc::Rotation2d(units::radian_t(steerMotor.GetPosition()));
 
-  return state;
+  return state;*/
 }
 
 frc::SwerveModulePosition str::SwerveModule::GetPosition() {
@@ -98,7 +98,7 @@ void str::SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceS
   }
 
   if(openLoop) {
-    driveMotorController.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, state.speed / maxSpeed);
+    driveMotorController.Set(state.speed / maxSpeed);
   } else {
     driveFFResult = driveFF.Calculate(state.speed, (state.speed - prevModuleSpeed) / dt);
     int falconSetpoint = str::Units::ConvertAngularVelocityToTicksPer100Ms(
@@ -123,56 +123,43 @@ void str::SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceS
   prevTime = timeElapsed;
 }
 
-ctre::phoenix::motorcontrol::can::TalonFXConfiguration str::SwerveModule::ConfigureBaseMotorControllerSettings() {
-  ctre::phoenix::motorcontrol::can::TalonFXConfiguration config;
-
-  // Disable limit switch inputs as we are using these to drive and we've had
-  // issues where the limit switch pin gets enabled with a small piece of metal
-  // inside the falcon port
-  config.primaryPID.selectedFeedbackSensor = ctre::phoenix::motorcontrol::FeedbackDevice::IntegratedSensor;
-  config.forwardLimitSwitchSource = ctre::phoenix::motorcontrol::LimitSwitchSource::LimitSwitchSource_Deactivated;
-  config.reverseLimitSwitchSource = ctre::phoenix::motorcontrol::LimitSwitchSource::LimitSwitchSource_Deactivated;
-  config.forwardLimitSwitchNormal = ctre::phoenix::motorcontrol::LimitSwitchNormal::LimitSwitchNormal_Disabled;
-  config.reverseLimitSwitchNormal = ctre::phoenix::motorcontrol::LimitSwitchNormal::LimitSwitchNormal_Disabled;
-
-  // PIDs for velocity control
-  config.slot0.kF = str::swerve_drive_consts::DRIVE_KF;
-  config.slot0.kP = str::swerve_drive_consts::DRIVE_KP;
-  config.slot0.kI = str::swerve_drive_consts::DRIVE_KI;
-  config.slot0.kD = str::swerve_drive_consts::DRIVE_KD;
-
-  // sets how often the falcon calculates the velocity. We want this as fast as
-  // possible to minimize sensor delay
-  config.velocityMeasurementPeriod = ctre::phoenix::sensors::SensorVelocityMeasPeriod::Period_1Ms;
-  config.velocityMeasurementWindow = 1;
-
+void str::SwerveModule::ConfigureBaseMotorControllerSettings() {
   // sets the maximum voltage of the drive motors to 10 volts to make the robot
   // more consistant during auto this is because the batter will sag below 12
   // volts under load.
-  config.voltageCompSaturation = str::swerve_drive_consts::MAX_DRIVE_VOLTAGE.to<double>();
+  driveMotorController.SetVoltage(str::swerve_drive_consts::MAX_DRIVE_VOLTAGE);
 
-  return config;
+  // PIDs for velocity control
+  //not sure if this will work due to returning a copy
+  rev::SparkMaxPIDController controller = driveMotorController.GetPIDController();
+
+  controller.SetFF(str::swerve_drive_consts::DRIVE_KF);
+  controller.SetP(str::swerve_drive_consts::DRIVE_KP);
+  controller.SetI(str::swerve_drive_consts::DRIVE_KI);
+  controller.SetD(str::swerve_drive_consts::DRIVE_KD);
+
+  // sets how often the falcon calculates the velocity. We want this as fast as
+  // possible to minimize sensor delay
+  //TODO: Not sure how to translate these
+  /*
+  config.velocityMeasurementPeriod = ctre::phoenix::sensors::SensorVelocityMeasPeriod::Period_1Ms;
+  config.velocityMeasurementWindow = 1;
+  */
 }
 
 void str::SwerveModule::ConfigureDriveMotor() {
-  ctre::phoenix::motorcontrol::can::TalonFXConfiguration baseConfig = ConfigureBaseMotorControllerSettings();
+  ConfigureBaseMotorControllerSettings();
 
   //add current limiting for drive
-  baseConfig.supplyCurrLimit.enable = true;
-  baseConfig.supplyCurrLimit.currentLimit = 40;
-  baseConfig.supplyCurrLimit.triggerThresholdCurrent = 0;
-  baseConfig.supplyCurrLimit.triggerThresholdTime = 0;
-
-  // Configure base settings
-  driveMotorController.ConfigAllSettings(baseConfig);
+  driveMotorController.SetSmartCurrentLimit(40);
 
   // Enable voltage compensation to combat consistency from battery sag
   driveMotorController.EnableVoltageCompensation(true);
 
-  driveMotorController.SetInverted(ctre::phoenix::motorcontrol::InvertType::None);
+  driveMotorController.SetInverted(false);
 
   // Set Neutral Mode to brake so we dont coast to a stop
-  driveMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  driveMotorController.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 }
 
 void str::SwerveModule::ConfigureSteeringMotor() {
@@ -197,8 +184,8 @@ void str::SwerveModule::ConfigureSteeringMotor() {
 void str::SwerveModule::ResetEncoders() {
   steerMotor.SetSimSensorPosition(0);
   driveMotorController.SetSelectedSensorPosition(0);
-  driveMotorSim.SetIntegratedSensorVelocity(0);
-  driveMotorSim.SetIntegratedSensorRawPosition(0);
+  /*driveMotorSim.SetIntegratedSensorVelocity(0);
+  driveMotorSim.SetIntegratedSensorRawPosition(0);*/
   frc::DataLogManager::Log("Reset Swerve Encoders!");
 }
 
