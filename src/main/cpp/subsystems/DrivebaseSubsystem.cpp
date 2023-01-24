@@ -36,7 +36,6 @@ void DrivebaseSubsystem::Periodic() {
 }
 
 void DrivebaseSubsystem::ProcessVisionData() {
-  system.ProcessFrame(swerveDrivebase.GetRobotPose());
   auto estimatedRobotPose = visionEstimator.Update();
   photonlib::PhotonPipelineResult result = camera->GetLatestResult();
   bool hasTargets = result.HasTargets();
@@ -63,6 +62,7 @@ void DrivebaseSubsystem::ProcessVisionData() {
 
 void DrivebaseSubsystem::SimulationPeriodic() {
   swerveDrivebase.SimulationPeriodic();
+  system.ProcessFrame(swerveDrivebase.GetRobotPose());
 }
 
 frc2::CommandPtr DrivebaseSubsystem::DriveFactory(

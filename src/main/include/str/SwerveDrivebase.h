@@ -63,19 +63,23 @@ namespace str {
 
     str::SwerveModule flModule{
       str::swerve_can_ids::FRONT_LEFT_DRIVE_TALON_ID,
-      str::swerve_can_ids::FRONT_LEFT_STEER_TALON_ID
+      str::swerve_can_ids::FRONT_LEFT_STEER_TALON_ID,
+      str::swerve_physical_dims::FL_ANGLE_OFFSET
     };
     str::SwerveModule frModule{
       str::swerve_can_ids::FRONT_RIGHT_DRIVE_TALON_ID,
-      str::swerve_can_ids::FRONT_RIGHT_STEER_TALON_ID
+      str::swerve_can_ids::FRONT_RIGHT_STEER_TALON_ID,
+      str::swerve_physical_dims::FR_ANGLE_OFFSET
     };
     str::SwerveModule blModule{
       str::swerve_can_ids::REAR_LEFT_DRIVE_TALON_ID,
-      str::swerve_can_ids::REAR_LEFT_STEER_TALON_ID
+      str::swerve_can_ids::REAR_LEFT_STEER_TALON_ID,
+      str::swerve_physical_dims::BL_ANGLE_OFFSET
     };
     str::SwerveModule brModule{
       str::swerve_can_ids::REAR_RIGHT_DRIVE_TALON_ID,
-      str::swerve_can_ids::REAR_RIGHT_STEER_TALON_ID
+      str::swerve_can_ids::REAR_RIGHT_STEER_TALON_ID,
+      str::swerve_physical_dims::BR_ANGLE_OFFSET
     };
 
     frc::SwerveDriveKinematics<4> kinematics{flLocation, frLocation, blLocation, brLocation};
