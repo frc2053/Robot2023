@@ -57,10 +57,14 @@ str::SparkMaxSwerveWrapper::SparkMaxSwerveWrapper(int canId, bool isTurnMotor) :
     fakePid.SetPID(str::swerve_drive_consts::STEER_KP, str::swerve_drive_consts::STEER_KI, str::swerve_drive_consts::STEER_KD);
   }
   else {
+    this->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 10);
+
     this->SetSmartCurrentLimit(str::swerve_drive_consts::CURRENT_LIMIT_DRIVE_MOTOR.value());
     driveEncoder = std::make_unique<rev::SparkMaxRelativeEncoder>(this->GetEncoder());
     driveEncoder->SetPositionConversionFactor((str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER.value() * std::numbers::pi) / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO);
     driveEncoder->SetVelocityConversionFactor((str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER.value() * std::numbers::pi) / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO / 60.0);
+    driveEncoder->SetMeasurementPeriod(8);
+    driveEncoder->SetAverageDepth(1);
 
     pidController->SetFeedbackDevice(*driveEncoder.get());
     pidController->SetOutputRange(-1, 1);
