@@ -20,7 +20,7 @@ units::volt_t str::SwerveModule::GetDriveAppliedVoltage() {
 }
 
 units::volt_t str::SwerveModule::GetRotationAppliedVoltage() {
-  return units::volt_t{steerMotorController.GetAppliedOutput() * steerMotorController.GetBusVoltage()};
+  return units::volt_t{steerMotor.GetAppliedOutput() * steerMotor.GetBusVoltage()};
 }
 
 units::ampere_t str::SwerveModule::GetDriveMotorCurrent() {
@@ -28,7 +28,7 @@ units::ampere_t str::SwerveModule::GetDriveMotorCurrent() {
 }
 
 units::ampere_t str::SwerveModule::GetSteerMotorCurrent() {
-  return units::ampere_t{steerMotorController.GetOutputCurrent()};
+  return units::ampere_t{steerMotor.GetOutputCurrent()};
 }
 
 void str::SwerveModule::SimulationPeriodic() {

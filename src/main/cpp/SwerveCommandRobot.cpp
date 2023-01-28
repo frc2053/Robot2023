@@ -14,13 +14,16 @@ void SwerveCommandRobot::ConfigureBindings() {
 
   driveSubsystem.SetDefaultCommand(driveSubsystem.DriveFactory(
       [this] {
-        return frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
       },
       [this] {
-        return frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
       },
       [this] {
-        return frc::ApplyDeadband<double>(-driverController.GetRightX(), 0.2);
+        double rotCmd = frc::ApplyDeadband<double>(-driverController.GetRightX(), 0.2);
+        return std::abs(rotCmd) * rotCmd;
       }));
 
   frc::SmartDashboard::PutNumber("ResetPose/x_ft", 0);
