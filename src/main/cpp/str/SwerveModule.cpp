@@ -9,20 +9,14 @@
 #include <frc/DataLogManager.h>
 
 
-str::SwerveModule::SwerveModule(int driveCanId, int rotationCanId) :
-  driveMotorController(driveCanId, rev::CANSparkMax::MotorType::kBrushless),
-  driveEncoder(driveMotorController.GetEncoder()),
-  steerMotorController(rotationCanId, rev::CANSparkMax::MotorType::kBrushless),
-  steerEncoder(steerMotorController.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
-  steerPIDController(steerMotorController.GetPIDController()) {
-  ConfigureSteeringMotor();
-  ConfigureDriveMotor();
+str::SwerveModule::SwerveModule(int driveCanId, int rotationCanId, units::radian_t moduleAngle) :
+  steerMotor(rotationCanId, true), driveMotor(driveCanId, false), moduleAngleOffset(moduleAngle) {
   ffTimer.Reset();
   ffTimer.Start();
 }
 
 units::volt_t str::SwerveModule::GetDriveAppliedVoltage() {
-  return units::volt_t{driveMotorController.GetAppliedOutput() * driveMotorController.GetBusVoltage()};
+  return units::volt_t{driveMotor.GetAppliedOutput() * driveMotor.GetBusVoltage()};
 }
 
 units::volt_t str::SwerveModule::GetRotationAppliedVoltage() {
@@ -30,7 +24,7 @@ units::volt_t str::SwerveModule::GetRotationAppliedVoltage() {
 }
 
 units::ampere_t str::SwerveModule::GetDriveMotorCurrent() {
-  return units::ampere_t{driveMotorController.GetOutputCurrent()};
+  return units::ampere_t{driveMotor.GetOutputCurrent()};
 }
 
 units::ampere_t str::SwerveModule::GetSteerMotorCurrent() {
@@ -38,39 +32,30 @@ units::ampere_t str::SwerveModule::GetSteerMotorCurrent() {
 }
 
 void str::SwerveModule::SimulationPeriodic() {
-  //steerMotorController.Update();
+  steerMotor.Update();
+  driveMotor.Update();
 }
 
 void str::SwerveModule::SetSimState(
   units::radian_t steerPos,
   units::meter_t drivePos,
-  units::radians_per_second_t driveVel,
+  units::meters_per_second_t driveVel,
   units::ampere_t driveCurrent,
   units::ampere_t steerCurrent
 ) {
-  //driveMotorSim.SetSupplyCurrent(driveCurrent.to<double>());
-  //steerMotor.SetSimCurrent(steerCurrent.to<double>());
-  // driveMotorSim.SetIntegratedSensorRawPosition(str::Units::ConvertDistanceToEncoderTicks(
-  //   drivePos,
-  //   str::encoder_cprs::FALCON_CPR,
-  //   str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
-  //   str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2
-  // ));
-  // driveMotorSim.SetIntegratedSensorVelocity(str::Units::ConvertAngularVelocityToTicksPer100Ms(
-  //   driveVel,
-  //   str::encoder_cprs::FALCON_CPR,
-  //   str::swerve_physical_dims::DRIVE_GEARBOX_RATIO
-  // ));
-  // driveMotorSim.SetBusVoltage(frc::RobotController::GetBatteryVoltage().to<double>());
-  //steerMotorController.SetSimBusVoltage(frc::RobotController::GetBatteryVoltage().to<double>());
-  //steerMotorController.SetSimSensorPosition(steerPos.to<double>());
+  driveMotor.SetSimSensorPosition(drivePos.value());
+  driveMotor.SetSimSensorVelocity(driveVel.value());
+  driveMotor.SetSimBusVoltage(frc::RobotController::GetBatteryVoltage().to<double>());
+  
+  steerMotor.SetSimBusVoltage(frc::RobotController::GetBatteryVoltage().to<double>());
+  steerMotor.SetSimSensorPosition(steerPos.to<double>());
 }
 
 frc::SwerveModuleState str::SwerveModule::GetState() {
   frc::SwerveModuleState state;
 
-  state.speed = units::meters_per_second_t{driveEncoder.GetVelocity()};
-  state.angle = frc::Rotation2d(units::radian_t(steerEncoder.GetPosition()));
+  state.speed = units::meters_per_second_t{driveMotor.GetVelocity()};
+  state.angle = frc::Rotation2d(units::radian_t(steerMotor.GetPosition()) - moduleAngleOffset);
 
   return state;
 }
@@ -78,14 +63,16 @@ frc::SwerveModuleState str::SwerveModule::GetState() {
 frc::SwerveModulePosition str::SwerveModule::GetPosition() {
   frc::SwerveModulePosition position;
 
-  position.distance = units::meter_t{driveEncoder.GetPosition()};
-  position.angle = frc::Rotation2d(units::radian_t(steerEncoder.GetPosition()));
+  position.distance = units::meter_t{driveMotor.GetPosition()};
+  position.angle = frc::Rotation2d(units::radian_t(steerMotor.GetPosition()) - moduleAngleOffset);
 
   return position;
 }
 
 void str::SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceState, bool openLoop, bool voltageComp) {
-  const frc::SwerveModuleState state = frc::SwerveModuleState::Optimize(referenceState, units::radian_t(steerEncoder.GetPosition()));
+  frc::SwerveModuleState correctedState = referenceState;
+  correctedState.angle = referenceState.angle + frc::Rotation2d(moduleAngleOffset);
+  const frc::SwerveModuleState state = frc::SwerveModuleState::Optimize(correctedState, units::radian_t(steerMotor.GetPosition()));
 
   units::volt_t driveFFResult = 0_V;
   units::second_t timeElapsed = ffTimer.Get();
@@ -93,100 +80,38 @@ void str::SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceS
 
   units::meters_per_second_t maxSpeed{};
 
-  if(voltageComp) {
-    driveMotorController.EnableVoltageCompensation(true);
+  if(isVoltageCompensating != voltageComp) {
+    if(voltageComp) {
+      driveMotor.EnableVoltageCompensation(10);
+    }
+    else {
+      driveMotor.EnableVoltageCompensation(12);
+    }
+    isVoltageCompensating = voltageComp;
+  }
+
+  if(isVoltageCompensating) {
     maxSpeed = str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V;
-  } else {
-    driveMotorController.EnableVoltageCompensation(false);
+  }
+  else {
     maxSpeed = str::swerve_drive_consts::MAX_CHASSIS_SPEED;
   }
 
   if(openLoop) {
-    driveMotorController.Set(state.speed / maxSpeed);
+    driveMotor.Set(state.speed / maxSpeed);
   } else {
     driveFFResult = driveFF.Calculate(state.speed, (state.speed - prevModuleSpeed) / dt);
-    int falconSetpoint = str::Units::ConvertAngularVelocityToTicksPer100Ms(
-      str::Units::ConvertLinearVelocityToAngularVelocity(
-        state.speed,
-        str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2
-      ),
-      str::encoder_cprs::FALCON_CPR,
-      str::swerve_physical_dims::DRIVE_GEARBOX_RATIO
-    );
-    // driveMotorController.Set(
-    //   ctre::phoenix::motorcontrol::ControlMode::Velocity,
-    //   falconSetpoint,
-    //   ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward,
-    //   (driveFFResult / driveMotorController.GetBusVoltage()).to<double>()
-    // );
+    driveMotor.SetReference(state.speed.value(), driveFFResult.value());
   }
 
-  steerPIDController.SetReference(state.angle.Radians().to<double>(), rev::CANSparkMax::ControlType::kPosition);
+  steerMotor.SetReference(state.angle.Radians().to<double>(), 0);
 
   prevModuleSpeed = state.speed;
   prevTime = timeElapsed;
 }
 
-void str::SwerveModule::ConfigureDriveMotor() {
-
-  driveMotorController.RestoreFactoryDefaults();
-  driveMotorController.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-  driveMotorController.EnableVoltageCompensation(12);
-  driveMotorController.SetSmartCurrentLimit(40);
-
-  driveEncoder.SetPositionConversionFactor((str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER.value() * std::numbers::pi) / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO);
-  driveEncoder.SetVelocityConversionFactor(((str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER.value() * std::numbers::pi) / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO) / 60);
-
-  driveMotorController.BurnFlash();
-}
-
-void str::SwerveModule::ConfigureSteeringMotor() {
-  steerMotorController.RestoreFactoryDefaults();
-  steerMotorController.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-  steerMotorController.EnableVoltageCompensation(12);
-  steerMotorController.SetSmartCurrentLimit(20);
-
-  steerEncoder.SetInverted(true);
-  steerEncoder.SetPositionConversionFactor(2 * std::numbers::pi);
-  steerEncoder.SetVelocityConversionFactor((2 * std::numbers::pi) / 60.0);
-
-  steerPIDController.SetPositionPIDWrappingEnabled(true);
-  steerPIDController.SetPositionPIDWrappingMinInput(0);
-  steerPIDController.SetPositionPIDWrappingMaxInput((2 * std::numbers::pi));
-
-  steerPIDController.SetP(str::swerve_drive_consts::STEER_KP);
-  steerPIDController.SetI(str::swerve_drive_consts::STEER_KI);
-  steerPIDController.SetD(str::swerve_drive_consts::STEER_KD);
-
-  steerPIDController.SetOutputRange(-1, 1);
-
-  steerMotorController.BurnFlash();
-  frc::DataLogManager::Log("Configuring Steering Motor Options!");
-}
-
 void str::SwerveModule::ResetEncoders() {
-  driveEncoder.SetPosition(0);
-  //driveMotorSim.SetIntegratedSensorVelocity(0);
-  //driveMotorSim.SetIntegratedSensorRawPosition(0);
+  steerMotor.SetSimSensorPosition(0);
+  driveMotor.SetSimSensorPosition(0);
   frc::DataLogManager::Log("Reset Swerve Encoders!");
-}
-
-units::meter_t str::SwerveModule::ConvertDriveEncoderTicksToDistance(int ticks) {
-  return str::Units::ConvertEncoderTicksToDistance(
-    ticks,
-    str::encoder_cprs::FALCON_CPR,
-    str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
-    str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2
-  );
-}
-
-units::meters_per_second_t str::SwerveModule::ConvertDriveEncoderSpeedToVelocity(int ticksPer100Ms) {
-  return str::Units::ConvertAngularVelocityToLinearVelocity(
-    str::Units::ConvertTicksPer100MsToAngularVelocity(
-      ticksPer100Ms,
-      str::encoder_cprs::FALCON_CPR,
-      str::swerve_physical_dims::DRIVE_GEARBOX_RATIO
-    ),
-    str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2
-  );
 }

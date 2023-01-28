@@ -126,7 +126,7 @@ void str::SwerveDrivebase::SimulationPeriodic() {
       simModules[0].GetDriveEncoderPosition() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
       str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2
     ),
-    simModules[0].GetDriveEncoderVelocity() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
+    str::Units::ConvertAngularVelocityToLinearVelocity(simModules[0].GetDriveEncoderVelocity() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO, str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER/2),
     simModules[0].GetDriveCurrent(),
     simModules[0].GetSteerCurrent()
   );
@@ -137,7 +137,7 @@ void str::SwerveDrivebase::SimulationPeriodic() {
       simModules[1].GetDriveEncoderPosition() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
       str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2
     ),
-    simModules[1].GetDriveEncoderVelocity() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
+    str::Units::ConvertAngularVelocityToLinearVelocity(simModules[1].GetDriveEncoderVelocity() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO, str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER/2),
     simModules[1].GetDriveCurrent(),
     simModules[1].GetSteerCurrent()
   );
@@ -148,7 +148,7 @@ void str::SwerveDrivebase::SimulationPeriodic() {
       simModules[2].GetDriveEncoderPosition() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
       str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2
     ),
-    simModules[2].GetDriveEncoderVelocity() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
+    str::Units::ConvertAngularVelocityToLinearVelocity(simModules[2].GetDriveEncoderVelocity() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO, str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER/2),
     simModules[2].GetDriveCurrent(),
     simModules[2].GetSteerCurrent()
   );
@@ -159,7 +159,7 @@ void str::SwerveDrivebase::SimulationPeriodic() {
       simModules[3].GetDriveEncoderPosition() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
       str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2
     ),
-    simModules[3].GetDriveEncoderVelocity() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
+    str::Units::ConvertAngularVelocityToLinearVelocity(simModules[3].GetDriveEncoderVelocity() / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO, str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER/2),
     simModules[3].GetDriveCurrent(),
     simModules[3].GetSteerCurrent()
   );

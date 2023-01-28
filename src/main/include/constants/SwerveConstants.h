@@ -8,6 +8,7 @@
 #include <units/length.h>
 #include <units/moment_of_inertia.h>
 #include <units/velocity.h>
+#include <numbers>
 
 namespace str {
 
@@ -55,6 +56,9 @@ namespace str {
 
     static constexpr units::volt_t MAX_DRIVE_VOLTAGE = 10_V;
 
+    static constexpr units::ampere_t CURRENT_LIMIT_STEER_MOTOR = 20_A;
+    static constexpr units::ampere_t CURRENT_LIMIT_DRIVE_MOTOR = 40_A;
+
     static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED = 17.5853_fps;
     static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED_10_V = 14.78_fps;
     static constexpr units::radians_per_second_t MAX_CHASSIS_ROT_SPEED = 1080_deg_per_s;
@@ -77,5 +81,9 @@ namespace str {
     static constexpr units::kilogram_square_meter_t MODULE_MOI = 0.01_kg_sq_m;
     static constexpr auto DRIVE_GEARBOX = frc::DCMotor::Falcon500(1);
     static constexpr auto STEER_GEARBOX = frc::DCMotor::NEO550(1);
+    static constexpr units::radian_t FL_ANGLE_OFFSET{-std::numbers::pi / 2};
+    static constexpr units::radian_t FR_ANGLE_OFFSET{0};
+    static constexpr units::radian_t BL_ANGLE_OFFSET{std::numbers::pi};
+    static constexpr units::radian_t BR_ANGLE_OFFSET{std::numbers::pi / 2};
   }   
 }   
