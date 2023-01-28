@@ -12,6 +12,7 @@
 class SwerveCommandRobot {
 public:
   void ConfigureBindings();
+  void SetDriveAsDefault();
   frc2::Command *GetAutonomousCommand();
 
 private:

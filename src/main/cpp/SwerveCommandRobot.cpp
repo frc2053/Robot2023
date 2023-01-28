@@ -12,21 +12,6 @@ void SwerveCommandRobot::ConfigureBindings() {
 
   frc::SmartDashboard::PutData("PDP", str::PDP::GetInstance().GetPDP());
 
-  // driveSubsystem.SetDefaultCommand(driveSubsystem.DriveFactory(
-  //     [this] {
-  //       double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
-  //       return std::abs(fwdCmd) * fwdCmd;
-  //     },
-  //     [this] {
-  //       double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
-  //       return std::abs(sideCmd) * sideCmd;
-  //     },
-  //     [this] {
-  //       double rotCmd = frc::ApplyDeadband<double>(-driverController.GetRightX(), 0.2);
-  //       return std::abs(rotCmd) * rotCmd;
-  //     }    
-  // ));
-
   frc::SmartDashboard::PutNumber("ResetPose/x_ft", 0);
   frc::SmartDashboard::PutNumber("ResetPose/y_ft", 0);
   frc::SmartDashboard::PutNumber("ResetPose/rot_deg", 0);
@@ -51,6 +36,23 @@ void SwerveCommandRobot::ConfigureBindings() {
       {&driveSubsystem}
     )
   );
+}
+
+void SwerveCommandRobot::SetDriveAsDefault() {
+    driveSubsystem.SetDefaultCommand(driveSubsystem.DriveFactory(
+      [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+      },
+      [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+      },
+      [this] {
+        double rotCmd = frc::ApplyDeadband<double>(-driverController.GetRightX(), 0.2);
+        return std::abs(rotCmd) * rotCmd;
+      }    
+  ));
 }
 
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {

@@ -41,7 +41,7 @@ namespace str {
     static constexpr double STEER_KD = 0;
 
     static constexpr double DRIVE_KF = 2.4681;
-    static constexpr double DRIVE_KP = 0;//0.00059876;
+    static constexpr double DRIVE_KP = 0.00059876;
     static constexpr double DRIVE_KI = 0;
     static constexpr double DRIVE_KD = 0;
 
@@ -49,10 +49,10 @@ namespace str {
     static constexpr auto DRIVE_KV = 2.4681 * 1_V / 1_mps;
     static constexpr auto DRIVE_KA = 0.32479 * 1_V / 1_mps_sq;
 
-    static constexpr auto GLOBAL_POSE_TRANS_KP = 1;
-    static constexpr auto GLOBAL_POSE_TRANS_KD = 0;
-    static constexpr auto GLOBAL_POSE_ROT_KP = 0;
-    static constexpr auto GLOBAL_POSE_ROT_KD = 0;
+    static constexpr auto GLOBAL_POSE_TRANS_KP = .85;
+    static constexpr auto GLOBAL_POSE_TRANS_KD = 0.2;
+    static constexpr auto GLOBAL_POSE_ROT_KP = 0.001;
+    static constexpr auto GLOBAL_POSE_ROT_KD = 10;
 
     static constexpr units::volt_t MAX_DRIVE_VOLTAGE = 10_V;
 

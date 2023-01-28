@@ -44,6 +44,7 @@ void Robot::TeleopInit() {
   if(autonomousCommand) {
     autonomousCommand->Cancel();
   }
+  robot.SetDriveAsDefault();
 }
 
 void Robot::TeleopPeriodic() {
