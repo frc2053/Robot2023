@@ -101,7 +101,7 @@ void str::SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceS
     driveMotor.Set(state.speed / maxSpeed);
   } else {
     driveFFResult = driveFF.Calculate(state.speed, (state.speed - prevModuleSpeed) / dt);
-    driveMotor.SetReference(state.speed.value(), driveFFResult.value());
+    driveMotor.SetReference(state.speed.value(), 0);
   }
 
   steerMotor.SetReference(state.angle.Radians().to<double>(), 0);

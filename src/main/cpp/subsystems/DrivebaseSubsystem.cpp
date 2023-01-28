@@ -119,5 +119,13 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
 ) {
   pathplanner::PathPlannerTrajectory autoPath = pathplanner::PathPlanner::loadPath(pathName, pathplanner::PathConstraints(maxSpeed, maxAccel));
   std::cout << "totalTime: " << autoPath.getTotalTime().value() << "\n";
-  return builder.fullAuto(autoPath);
+  return builder.followPath(autoPath);
+}
+
+void DrivebaseSubsystem::WheelVelocity(units::meters_per_second_t velocity) {
+  std::cout << "Setting module velocity to: " << velocity.value() << "\n";
+  frc::SwerveModuleState state;
+  state.speed = velocity;
+  state.angle = frc::Rotation2d(0_deg);
+  swerveDrivebase.DirectSetModuleStates(state, state, state, state);
 }

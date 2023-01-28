@@ -63,8 +63,7 @@ str::SparkMaxSwerveWrapper::SparkMaxSwerveWrapper(int canId, bool isTurnMotor) :
     driveEncoder = std::make_unique<rev::SparkMaxRelativeEncoder>(this->GetEncoder());
     driveEncoder->SetPositionConversionFactor((str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER.value() * std::numbers::pi) / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO);
     driveEncoder->SetVelocityConversionFactor((str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER.value() * std::numbers::pi) / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO / 60.0);
-    driveEncoder->SetMeasurementPeriod(8);
-    driveEncoder->SetAverageDepth(1);
+    driveEncoder->SetPosition(0);
 
     pidController->SetFeedbackDevice(*driveEncoder.get());
     pidController->SetOutputRange(-1, 1);

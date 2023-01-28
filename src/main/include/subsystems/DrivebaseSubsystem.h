@@ -23,6 +23,9 @@ public:
     units::meters_per_second_t maxSpeed,
     units::meters_per_second_squared_t maxAccel
   );
+  void WheelVelocity(
+    units::meters_per_second_t velocity
+  );
   frc2::CommandPtr ResetOdomFactory(
     std::function<double()> x_ft,
     std::function<double()> y_ft,

@@ -9,7 +9,7 @@
 
 
 str::SwerveDrivebase::SwerveDrivebase() {
-  ResetPose();
+  ResetPose(frc::Pose2d{0_m,0_m,frc::Rotation2d{0_deg}});
   frc::SmartDashboard::PutData("IMU", &imu);
   frc::SmartDashboard::PutData("Field", str::Field::GetInstance().GetField());
 }
@@ -75,10 +75,10 @@ void str::SwerveDrivebase::DirectSetModuleStates(
   frc::SwerveModuleState br
 ) {
   LogDesiredModuleInfo(fl, fr, bl, br);
-  flModule.SetDesiredState(fl, false, true);
-  frModule.SetDesiredState(fr, false, true);
-  blModule.SetDesiredState(bl, false, true);
-  brModule.SetDesiredState(br, false, true);
+  flModule.SetDesiredState(fl, false, false);
+  frModule.SetDesiredState(fr, false, false);
+  blModule.SetDesiredState(bl, false, false);
+  brModule.SetDesiredState(br, false, false);
 }
 
 void str::SwerveDrivebase::Periodic() {

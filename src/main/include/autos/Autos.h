@@ -6,4 +6,5 @@
 namespace autos {
     frc2::CommandPtr TestPathTwo(DrivebaseSubsystem* drivebase);
     frc2::CommandPtr TwoConeAuto(DrivebaseSubsystem* drivebase);
+    frc2::CommandPtr OneMForward(DrivebaseSubsystem* drivebase);
 }

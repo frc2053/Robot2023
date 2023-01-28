@@ -14,3 +14,9 @@ return frc2::cmd::Sequence(
     drivebase->FollowPathFactory("DriveToScoreFromCenter", 15_fps, 4.267_mps_sq)
 );
 }
+
+frc2::CommandPtr autos::OneMForward(DrivebaseSubsystem* drivebase) {
+return frc2::cmd::Sequence(
+    drivebase->FollowPathFactory("1MForward", 15_fps, 4.267_mps_sq)
+);
+}
