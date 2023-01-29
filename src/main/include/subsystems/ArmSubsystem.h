@@ -33,6 +33,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
   int ConvertElbowAngleToTicks(units::radian_t angle);
   int GetElbowVelocityToTicks(units::radians_per_second_t vel);
 
+  void LogStateToAdvantageScope();
+
   ctre::phoenix::motorcontrol::can::WPI_TalonFX shoulderMotorLeft{str::arm_can_ids::LEFT_SHOULDER_ID};
   ctre::phoenix::motorcontrol::can::WPI_TalonFX shoulderMotorRight{str::arm_can_ids::RIGHT_SHOULDER_ID};
   ctre::phoenix::motorcontrol::can::WPI_TalonFX elbowMotor{str::arm_can_ids::ELBOW_ID};

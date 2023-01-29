@@ -65,9 +65,9 @@ void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
 }
 
 void TwoJointArmDynamics::RecreateModels() {
-  std::cout << "Relinearizing\n";
+  //std::cout << "Relinearizing\n";
   Relinearize(currentState, CalculateFeedForward(currentState));
-  std::cout << "Designing LQR\n";
+  //std::cout << "Designing LQR\n";
   frc::Matrixd<2, 4> kMatrix = DesignLQR({lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   ff = CalculateFeedForward(desiredState) + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
@@ -183,7 +183,7 @@ frc::Vectord<2> TwoJointArmDynamics::CalculateFeedForward(frc::Vectord<6> state,
 }
 
 //GOOD
-std::tuple<frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics::CalculateForwardKinematics(frc::Vectord<6> state) const {
+std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics::CalculateForwardKinematics(frc::Vectord<6> state) const {
   frc::Vectord<2> thetas = state({0,1});
 
   frc::Vectord<2> elbowJointPosition;
@@ -197,7 +197,7 @@ std::tuple<frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics::CalculateForwar
   frc::Vectord<2> endEffector;
   endEffector << elbowJointPosition + endPosition;
 
-  return std::make_tuple(elbowJointPosition, endEffector);
+  return std::make_tuple(elbowJointPosition, endPosition, endEffector);
 }
 
 //GOOD

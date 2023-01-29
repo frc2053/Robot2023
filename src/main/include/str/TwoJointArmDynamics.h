@@ -51,7 +51,7 @@ public:
   frc::Vectord<2> CalculateFeedForward(frc::Vectord<6> state, frc::Vectord<2> accels = frc::Vectord<2>{0,0}) const;
 
   //HELPERS
-  std::tuple<frc::Vectord<2>,frc::Vectord<2>> CalculateForwardKinematics(frc::Vectord<6> state) const;
+  std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> CalculateForwardKinematics(frc::Vectord<6> state) const;
   frc::Vectord<2> CalculateInverseKinematics(frc::Vectord<2> position, bool invert = false) const;
 
   frc::Matrixd<2,2> CalculateInertiaMatrix(frc::Vectord<2> angleVec) const;

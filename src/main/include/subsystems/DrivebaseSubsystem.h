@@ -42,7 +42,7 @@ private:
 
   std::shared_ptr<frc::AprilTagFieldLayout> tagLayout;
   std::shared_ptr<photonlib::PhotonCamera> camera;
-  photonlib::SimVisionSystem system{"photonvision", 100_deg, frc::Transform3d{}, 9999_m, 1280, 720, 20};
+  photonlib::SimVisionSystem system;
   photonlib::RobotPoseEstimator visionEstimator;
   std::vector<int> tagIdList = {1, 2, 3, 4, 5, 6, 7, 8};
 

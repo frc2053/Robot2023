@@ -32,6 +32,8 @@ void ArmSubsystem::Periodic() {
 
   tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150);
 
+  LogStateToAdvantageScope();
+
   frc::Vectord<2> feedForwards = armSystem.GetVoltagesToApply();
 
   frc::SmartDashboard::PutNumber("Feed Forward Shoulder", feedForwards(0));
@@ -89,9 +91,9 @@ void ArmSubsystem::ConfigureMotors() {
   shoulderMotorRight.ConfigVoltageCompSaturation(str::arm_motor_config::VOLTAGE_COMP_VOLTAGE.value());
   elbowMotor.ConfigVoltageCompSaturation(str::arm_motor_config::VOLTAGE_COMP_VOLTAGE.value());
 
-  shoulderMotorLeft.EnableVoltageCompensation(true);
-  shoulderMotorRight.EnableVoltageCompensation(true);
-  elbowMotor.EnableVoltageCompensation(true);
+  shoulderMotorLeft.EnableVoltageCompensation(false);
+  shoulderMotorRight.EnableVoltageCompensation(false);
+  elbowMotor.EnableVoltageCompensation(false);
 
   shoulderMotorRight.Follow(shoulderMotorLeft);
   shoulderMotorRight.SetInverted(ctre::phoenix::motorcontrol::InvertType::OpposeMaster);
@@ -141,4 +143,39 @@ int ArmSubsystem::ConvertElbowAngleToTicks(units::radian_t angle) {
 
 int ArmSubsystem::GetElbowVelocityToTicks(units::radians_per_second_t vel) {
   return str::Units::ConvertAngularVelocityToTicksPer100Ms(vel, str::encoder_cprs::FALCON_CPR, str::arm_constants::elbowGearing);
+}
+
+void ArmSubsystem::LogStateToAdvantageScope() {
+  std::array<double, 7> shoulderState;
+  std::array<double, 7> elbowState;
+
+  frc::Vectord<6> state = armSystem.GetCurrentState();
+  std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> jointPositions = armSystem.CalculateForwardKinematics(state);
+
+  const frc::Vectord<2> endOfShoulder = std::get<1>(jointPositions);
+
+  frc::Rotation3d shoulderAngle(-90_deg, 0_deg, units::radian_t{state(0)} + 30_deg);
+  frc::Quaternion shoulderQuaternion = shoulderAngle.GetQuaternion();
+
+  frc::Rotation3d elbowAngle(-90_deg, 0_rad, -units::radian_t{state(1)});
+  frc::Quaternion elbowQuaternion = elbowAngle.GetQuaternion();
+
+  shoulderState[0] = -0.03125;
+  shoulderState[1] = 0;
+  shoulderState[2] = 0.0625;
+  shoulderState[3] = shoulderQuaternion.X();
+  shoulderState[4] = shoulderQuaternion.Y();
+  shoulderState[5] = shoulderQuaternion.Z();
+  shoulderState[6] = shoulderQuaternion.W();
+
+  elbowState[0] = endOfShoulder(0);
+  elbowState[1] = 0;
+  elbowState[2] = endOfShoulder(1);
+  elbowState[3] = elbowQuaternion.X();
+  elbowState[4] = elbowQuaternion.Y();
+  elbowState[5] = elbowQuaternion.Z();
+  elbowState[6] = elbowQuaternion.W();
+
+  frc::SmartDashboard::PutNumberArray("AdvantageScope/ShoulderState", shoulderState);
+  frc::SmartDashboard::PutNumberArray("AdvantageScope/ElbowState", elbowState);
 }
