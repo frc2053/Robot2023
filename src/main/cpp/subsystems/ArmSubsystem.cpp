@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
+#include <iostream>
 
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
@@ -152,17 +153,17 @@ void ArmSubsystem::LogStateToAdvantageScope() {
   frc::Vectord<6> state = armSystem.GetCurrentState();
   std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> jointPositions = armSystem.CalculateForwardKinematics(state);
 
-  const frc::Vectord<2> endOfShoulder = std::get<1>(jointPositions);
+  const frc::Vectord<2> endOfShoulder = std::get<0>(jointPositions);
 
-  frc::Rotation3d shoulderAngle(-90_deg, 0_deg, units::radian_t{state(0)} + 30_deg);
+  frc::Rotation3d shoulderAngle(-90_deg, 0_deg, units::radian_t{state(0)} + 90_deg);
   frc::Quaternion shoulderQuaternion = shoulderAngle.GetQuaternion();
 
-  frc::Rotation3d elbowAngle(-90_deg, 0_rad, -units::radian_t{state(1)});
+  frc::Rotation3d elbowAngle(90_deg, 180_deg, units::radian_t{state(1)} + 180_deg);
   frc::Quaternion elbowQuaternion = elbowAngle.GetQuaternion();
 
-  shoulderState[0] = -0.03125;
+  shoulderState[0] = 0;
   shoulderState[1] = 0;
-  shoulderState[2] = 0.0625;
+  shoulderState[2] = 0.095;
   shoulderState[3] = shoulderQuaternion.X();
   shoulderState[4] = shoulderQuaternion.Y();
   shoulderState[5] = shoulderQuaternion.Z();
@@ -170,7 +171,7 @@ void ArmSubsystem::LogStateToAdvantageScope() {
 
   elbowState[0] = endOfShoulder(0);
   elbowState[1] = 0;
-  elbowState[2] = endOfShoulder(1);
+  elbowState[2] = endOfShoulder(1) + 0.0475;
   elbowState[3] = elbowQuaternion.X();
   elbowState[4] = elbowQuaternion.Y();
   elbowState[5] = elbowQuaternion.Z();
