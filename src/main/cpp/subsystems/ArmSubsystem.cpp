@@ -4,6 +4,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 #include <iostream>
+#include <frc/RobotState.h>
 
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
@@ -12,7 +13,9 @@ ArmSubsystem::ArmSubsystem() {
 }
 
 void ArmSubsystem::SimulationPeriodic() {
-  armSystem.Update(frc::Vectord<2>{shoulderMotorLeft.GetMotorOutputVoltage(), elbowMotor.GetMotorOutputVoltage()});
+  if(frc::RobotState::IsEnabled()) {
+    armSystem.Update(frc::Vectord<2>{shoulderMotorLeft.GetMotorOutputVoltage(), elbowMotor.GetMotorOutputVoltage()});
+  }
   frc::Vectord<6> actualCurrentState = armSystem.GetCurrentState();
 
   shoulderSimCollection.SetIntegratedSensorRawPosition(ConvertShoulderAngleToTicks(units::radian_t{actualCurrentState(0)}));
