@@ -37,25 +37,25 @@ void SwerveCommandRobot::ConfigureBindings() {
     )
   );
 
-  driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
-  ));
+  // driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+  // ));
 
-  driverController.B().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + .25_ft; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
-  ));
+  // driverController.B().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointX() + .25_ft; },
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+  // ));
 
-  driverController.A().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - .25_ft; }
-  ));
+  // driverController.A().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointY() - .25_ft; }
+  // ));
 
-  driverController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + .25_ft;}
-  ));
+  // driverController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointY() + .25_ft;}
+  // ));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
