@@ -1,9 +1,11 @@
+#include <eigen_fix.h>
 #include "str/TwoJointArmDynamics.h"
 #include <Eigen/LU>
 #include <frc/system/NumericalJacobian.h>
 #include <iostream>
 #include <frc/system/Discretization.h>
 #include <frc/StateSpaceUtil.h>
+#include <chrono>
 
 //GOOD
 //Can't figure out how to make NumericalJacobian take ptr to member func
@@ -34,6 +36,7 @@ TwoJointArmDynamics::TwoJointArmDynamics(
     dSystem(frc::LinearSystem<6,2,2>{frc::Matrixd<6,6>::Zero(), frc::Matrixd<6,2>::Zero(), frc::Matrixd<2,6>::Zero(), frc::Matrixd<2,2>::Zero()})
 {
   currentState = initialState;
+  CreateLQRLookupTable();
   RecreateModels();
 
   ekf = std::make_unique<frc::ExtendedKalmanFilter<6,2,2>>(
@@ -65,10 +68,10 @@ void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
 }
 
 void TwoJointArmDynamics::RecreateModels() {
-  //std::cout << "Relinearizing\n";
   Relinearize(currentState, CalculateFeedForward(currentState));
-  //std::cout << "Designing LQR\n";
-  frc::Matrixd<2, 4> kMatrix = DesignLQR({lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
+  frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2));
+  frc::Translation2d idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
+  frc::Matrixd<2, 4> kMatrix = kGainLookupTable[idk]; //DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   ff = CalculateFeedForward(desiredState) + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
 }
@@ -114,13 +117,40 @@ frc::LinearSystem<6, 2, 2> TwoJointArmDynamics::CreateModel(frc::Vectord<6> stat
 }
 
 //GOOD
-frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(std::array<double, 4> qElems, std::array<double, 2> rElems) const {
-  frc::Matrixd<4, 4> Ar = cSystem.A().block<4, 4>(0,0);
-  frc::Matrixd<4, 2> Br = cSystem.B().block<4, 2>(0,0);
-  frc::Matrixd<2, 4> Cr = cSystem.C().block<2, 4>(0,0);
-  frc::LinearSystem<4, 2, 2> reducedSystem{Ar, Br, Cr, dSystem.D()};
+frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(frc::LinearSystem<6,2,2> system, std::array<double, 4> qElems, std::array<double, 2> rElems) const {
+  using std::chrono::high_resolution_clock;
+  using std::chrono::duration;
+  frc::Matrixd<4, 4> Ar = system.A().block<4, 4>(0,0);
+  frc::Matrixd<4, 2> Br = system.B().block<4, 2>(0,0);
+  frc::Matrixd<2, 4> Cr = system.C().block<2, 4>(0,0);
+  frc::LinearSystem<4, 2, 2> reducedSystem{Ar, Br, Cr, system.D()};
+  auto t1 = high_resolution_clock::now();
   frc::LinearQuadraticRegulator<4, 2> lqr = frc::LinearQuadraticRegulator<4, 2>(reducedSystem, qElems, rElems, dt);
+  auto t2 = high_resolution_clock::now();
+  duration<double, std::milli> ms_double = t2 - t1;
+  std::cout << ms_double.count() << "ms\n";
   return lqr;
+}
+
+void TwoJointArmDynamics::CreateLQRLookupTable() {
+  //iterate through each xy position in 5cm increments
+  //to create lookup table for LQR gains
+  for(units::inch_t r = 70_in; r <= 0_in; r = r - 1_in) {
+    for(units::degree_t theta = 0_deg; theta <= 180_deg; theta = theta + 1_deg) {
+      units::meter_t x = r * units::math::sin(theta);
+      units::meter_t y = r * units::math::cos(theta);
+      frc::Vectord<2> angles = CalculateInverseKinematics(frc::Vectord<2>{x.value(),y.value()});
+      std::cout << "Designing LQR for state (" << x.value() << "," << y.value() << ")\n";
+      frc::Vectord<6> state{angles(0), angles(1), 0, 0, 0, 0};
+      frc::Vectord<2> control = CalculateFeedForward(state);
+      std::cout << "State: " << state << "\n";
+      std::cout << "----\n";
+      std::cout << "Control: " << control << "\n";
+      frc::LinearSystem<6, 2, 2> system = CreateModel(state, control);
+      frc::Matrixd<2, 4> resultKMatrix = DesignLQR(system, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
+      kGainLookupTable.insert(frc::Translation2d{x,y}, resultKMatrix);
+    }
+  }
 }
 
 //GOOD

@@ -1,3 +1,4 @@
+#include <eigen_fix.h>
 #include "str/SwerveDrivebase.h"
 #include "Constants.h"
 #include "str/Field.h"

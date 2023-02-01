@@ -1,5 +1,6 @@
 #pragma once
 
+#include <eigen_fix.h>
 #include <units/angular_velocity.h>
 #include <frc/geometry/Transform3d.h>
 

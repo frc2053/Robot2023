@@ -11,6 +11,7 @@
 #include <frc/controller/LinearQuadraticRegulator.h>
 #include <random>
 #include <memory>
+#include "str/interpolating_map_xy.h"
 
 class TwoJointArmDynamics {
 public:
@@ -42,7 +43,8 @@ public:
   //RELINEARIZATION
   void Relinearize(frc::Vectord<6> state, frc::Vectord<2> input);
   frc::LinearSystem<6, 2, 2> CreateModel(frc::Vectord<6> state, frc::Vectord<2> input);
-  frc::LinearQuadraticRegulator<4,2> DesignLQR(std::array<double, 4> qElems, std::array<double, 2> rElems) const;
+  frc::LinearQuadraticRegulator<4,2> DesignLQR(frc::LinearSystem<6,2,2> system, std::array<double, 4> qElems, std::array<double, 2> rElems) const;
+  void CreateLQRLookupTable();
 
   //DYNAMICS
   std::tuple<frc::Matrixd<2,2>,frc::Matrixd<2,2>,frc::Vectord<2>> GetDynamicsMatrices(frc::Vectord<6> state) const;
@@ -92,4 +94,5 @@ private:
   std::random_device rd{};
   std::mt19937 gen{rd()};
   std::normal_distribution<> randNorm{0, 0.01};
+  str::interpolating_map_xy<frc::Matrixd<2, 4>> kGainLookupTable;
 };

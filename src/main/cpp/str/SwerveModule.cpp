@@ -1,3 +1,4 @@
+#include <eigen_fix.h>
 #include "str/SwerveModule.h"
 #include "Constants.h"
 #include "constants/SwerveConstants.h"
