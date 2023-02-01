@@ -164,7 +164,6 @@
           "width": 0.20000000298023224
         },
         "height": 8.013679504394531,
-        "image": "C:\\Users\\willi\\dev\\Robot2023\\images\\2023-field.png",
         "left": 46,
         "right": 1088,
         "tag-1": {
@@ -247,6 +246,9 @@
     },
     "transitory": {
       "SmartDashboard": {
+        "Field": {
+          "open": true
+        },
         "ResetPose": {
           "open": true
         },

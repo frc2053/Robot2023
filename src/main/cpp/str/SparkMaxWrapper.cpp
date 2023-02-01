@@ -3,15 +3,17 @@
 #include <frc/RobotBase.h>
 #include <frc/simulation/RoboRioSim.h>
 #include <numbers>
+#include <iostream>
 
 str::SparkMaxWrapper::SparkMaxWrapper(int canId, str::MotorSimType motorType, bool isTurningMotor) : 
   rev::CANSparkMax(canId, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
   m_motorType(motorType), m_isTurningMotor(isTurningMotor),
-  m_relEncoder(std::make_unique<rev::SparkMaxRelativeEncoder>(rev::CANSparkMax::GetEncoder())),
-  m_absEncoder(std::make_unique<rev::SparkMaxAbsoluteEncoder>(rev::CANSparkMax::GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle))),
   m_pidController(std::make_unique<rev::SparkMaxPIDController>(rev::CANSparkMax::GetPIDController())),
   m_fakePID(std::make_unique<frc::PIDController>(0,0,0)),
   m_fakeFF(std::make_unique<frc::SimpleMotorFeedforward<units::meters>>()) {
+
+    this->RestoreFactoryDefaults();
+
     if(m_motorType == MotorSimType::Neo) {
       m_motor = std::make_unique<frc::DCMotor>(frc::DCMotor::NEO(1));
     }
@@ -23,6 +25,8 @@ str::SparkMaxWrapper::SparkMaxWrapper(int canId, str::MotorSimType motorType, bo
     }
 
     if(isTurningMotor) {
+      m_absEncoder = std::make_unique<rev::SparkMaxAbsoluteEncoder>(rev::CANSparkMax::GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle));
+
       m_absEncoder->SetInverted(true);
 
       m_pidController->SetFeedbackDevice(*m_absEncoder.get());
@@ -34,6 +38,7 @@ str::SparkMaxWrapper::SparkMaxWrapper(int canId, str::MotorSimType motorType, bo
       m_fakePID->EnableContinuousInput(0, std::numbers::pi);
     }
     else {
+      m_relEncoder = std::make_unique<rev::SparkMaxRelativeEncoder>(rev::CANSparkMax::GetEncoder());
       m_pidController->SetFeedbackDevice(*m_relEncoder.get());
     }
 
@@ -64,13 +69,21 @@ void str::SparkMaxWrapper::SetVoltage(units::volt_t voltage) {
 }
 
 void str::SparkMaxWrapper::SetPositionConversionFactor(double factor) {
-  m_relEncoder->SetPositionConversionFactor(factor);
-  m_absEncoder->SetPositionConversionFactor(factor);
+  if(m_isTurningMotor) {
+    m_absEncoder->SetPositionConversionFactor(factor);
+  }
+  else {
+    m_relEncoder->SetPositionConversionFactor(factor);
+  }
 }
 
 void str::SparkMaxWrapper::SetVelocityConversionFactor(double factor) {
-  m_relEncoder->SetVelocityConversionFactor(factor);
-  m_absEncoder->SetPositionConversionFactor(factor);
+  if(m_isTurningMotor) {
+    m_absEncoder->SetVelocityConversionFactor(factor);
+  }
+  else {
+    m_relEncoder->SetVelocityConversionFactor(factor);
+  }
 }
 
 void str::SparkMaxWrapper::SetSimEncoderPosition(double newEncoderPosition) {

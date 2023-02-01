@@ -113,9 +113,10 @@ void str::SwerveModule::ResetEncoders() {
 }
 
 void str::SwerveModule::ConfigureRotationMotor() {
-  steerMotor.RestoreFactoryDefaults();
   steerMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   steerMotor.SetSmartCurrentLimit(str::swerve_drive_consts::CURRENT_LIMIT_STEER_MOTOR.value());
+  steerMotor.SetPositionConversionFactor(2 * std::numbers::pi);
+  steerMotor.SetVelocityConversionFactor((2 * std::numbers::pi) / 60);
   steerMotor.SetP(str::swerve_drive_consts::STEER_KP);
   steerMotor.SetI(str::swerve_drive_consts::STEER_KI);
   steerMotor.SetD(str::swerve_drive_consts::STEER_KD);
@@ -123,7 +124,6 @@ void str::SwerveModule::ConfigureRotationMotor() {
   steerMotor.BurnFlash();
 }
 void str::SwerveModule::ConfigureDriveMotor() {
-  driveMotor.RestoreFactoryDefaults();
   driveMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   driveMotor.SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 10);
   driveMotor.SetPositionConversionFactor((str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER.value() * std::numbers::pi) / str::swerve_physical_dims::DRIVE_GEARBOX_RATIO);
