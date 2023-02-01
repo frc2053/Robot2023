@@ -5,10 +5,11 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <photonlib/SimVisionSystem.h>
-#include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <frc2/command/InstantCommand.h>
 #include <photonlib/RobotPoseEstimator.h>
 #include <frc/apriltag/AprilTagFields.h>
+#include <frc/trajectory/TrajectoryConfig.h>
+#include <frc/controller/ProfiledPIDController.h>
 
 class DrivebaseSubsystem : public frc2::SubsystemBase {
 public:
@@ -19,12 +20,7 @@ public:
 
   frc2::CommandPtr DriveFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> rot);
   frc2::CommandPtr FollowPathFactory(
-    std::string pathName,
-    units::meters_per_second_t maxSpeed,
-    units::meters_per_second_squared_t maxAccel
-  );
-  void WheelVelocity(
-    units::meters_per_second_t velocity
+    frc::Trajectory traj
   );
   frc2::CommandPtr ResetOdomFactory(
     std::function<double()> x_ft,
@@ -37,6 +33,10 @@ public:
     std::function<double()> y_ft,
     std::function<double()> rot_deg
   );
+
+  //frc::TrajectoryConfig autoTrajectoryConfig{str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V, str::swerve_drive_consts::MAX_CHASSIS_ACCEL};
+  frc::TrajectoryConfig autoTrajectoryConfig{2_fps, 10_mps_sq};
+
 private:
   str::SwerveDrivebase swerveDrivebase{};
 
@@ -48,20 +48,10 @@ private:
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{};
 
-  pathplanner::SwerveAutoBuilder builder{
-    [this]() {
-      return swerveDrivebase.GetRobotPose(); 
-    },
-    [this](frc::Pose2d resetToHere) {
-      swerveDrivebase.ResetPose(resetToHere);
-    },
-    swerveDrivebase.GetKinematics(),
-    pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
-    pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_ROT_KD),
-    [this](std::array<frc::SwerveModuleState, 4> states) {
-      swerveDrivebase.DirectSetModuleStates(states[0], states[1], states[2], states[3]);
-    },
-    eventMap,
-    {this}
+  frc::ProfiledPIDController<units::radians> thetaController{
+    str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 
+    0, 
+    str::swerve_drive_consts::GLOBAL_POSE_ROT_KD, 
+    str::swerve_drive_consts::GLOBAL_THETA_CONTROLLER_CONSTRAINTS
   };
 };

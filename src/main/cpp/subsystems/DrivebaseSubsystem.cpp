@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include "frc/ComputerVisionUtil.h"
 #include <pathplanner/lib/PathPlanner.h>
+#include <frc2/command/SwerveControllerCommand.h>
 
 DrivebaseSubsystem::DrivebaseSubsystem() : 
   tagLayout(std::make_unique<frc::AprilTagFieldLayout>(frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp))),
@@ -29,6 +30,8 @@ DrivebaseSubsystem::DrivebaseSubsystem() :
     allAprilTagDataForNt.push_back(tagPose.Rotation().GetQuaternion().Z());
   }
   frc::SmartDashboard::PutNumberArray("AdvantageScope/All Vision Targets", allAprilTagDataForNt);
+
+  autoTrajectoryConfig.SetKinematics(swerveDrivebase.GetKinematics());
 }
 
 void DrivebaseSubsystem::Periodic() {
@@ -113,20 +116,29 @@ void DrivebaseSubsystem::ResetOdom(
   visionEstimator.SetReferencePose(frc::Pose3d(refPose));
 }
 
-frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(
-  std::string pathName,
-  units::meters_per_second_t maxSpeed,
-  units::meters_per_second_squared_t maxAccel
-) {
-  pathplanner::PathPlannerTrajectory autoPath = pathplanner::PathPlanner::loadPath(pathName, pathplanner::PathConstraints(maxSpeed, maxAccel));
-  std::cout << "totalTime: " << autoPath.getTotalTime().value() << "\n";
-  return builder.followPath(autoPath);
-}
+frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(frc::Trajectory traj) {
+  frc2::SwerveControllerCommand<4> swerveControllerCommands{
+    traj,
+    [this] { return swerveDrivebase.GetRobotPose(); },
+    swerveDrivebase.GetKinematics(),
+    frc::PIDController(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
+    frc::PIDController(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
+    thetaController,
+    [this](auto moduleStates) { return swerveDrivebase.DirectSetModuleStates(moduleStates); },
+    {this}
+  };
 
-void DrivebaseSubsystem::WheelVelocity(units::meters_per_second_t velocity) {
-  std::cout << "Setting module velocity to: " << velocity.value() << "\n";
-  frc::SwerveModuleState state;
-  state.speed = velocity;
-  state.angle = frc::Rotation2d(0_deg);
-  swerveDrivebase.DirectSetModuleStates(state, state, state, state);
+  return frc2::SequentialCommandGroup{
+    frc2::InstantCommand{
+      [this, traj]() {
+        swerveDrivebase.ResetPose(traj.InitialPose());
+      }
+    },
+    std::move(swerveControllerCommands),
+    frc2::InstantCommand{
+      [this]() {
+        swerveDrivebase.Drive(0_mps, 0_mps, 0_rad_per_s, false, false, false);
+      }
+    }
+  }.ToPtr();
 }

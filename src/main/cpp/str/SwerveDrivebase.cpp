@@ -68,12 +68,8 @@ void str::SwerveDrivebase::Drive(
   brModule.SetDesiredState(br, openLoopDrive, voltageComp);
 }
 
-void str::SwerveDrivebase::DirectSetModuleStates(
-  frc::SwerveModuleState fl,
-  frc::SwerveModuleState fr,
-  frc::SwerveModuleState bl,
-  frc::SwerveModuleState br
-) {
+void str::SwerveDrivebase::DirectSetModuleStates(std::array<frc::SwerveModuleState, 4> states) {
+  const auto [fl,fr,bl,br] = states;
   LogDesiredModuleInfo(fl, fr, bl, br);
   flModule.SetDesiredState(fl, false, false);
   frModule.SetDesiredState(fr, false, false);

@@ -61,6 +61,7 @@ namespace str {
 
     static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED = 17.5853_fps;
     static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED_10_V = 14.78_fps;
+    static constexpr units::meters_per_second_squared_t MAX_CHASSIS_ACCEL = 10_mps_sq;
     static constexpr units::radians_per_second_t MAX_CHASSIS_ROT_SPEED = 1080_deg_per_s;
     static constexpr units::radians_per_second_squared_t MAX_CHASSIS_ROT_ACCEL = 10000_deg_per_s_sq;
 

@@ -29,12 +29,7 @@ namespace str {
       bool openLoopDrive,
       bool voltageComp
     );
-    void DirectSetModuleStates(
-      frc::SwerveModuleState fl,
-      frc::SwerveModuleState fr,
-      frc::SwerveModuleState bl,
-      frc::SwerveModuleState br
-    );
+    void DirectSetModuleStates(std::array<frc::SwerveModuleState, 4> states);
     frc::SwerveDriveKinematics<4>& GetKinematics();
     void AddVisionMeasurementToPoseEstimator(frc::Pose2d visionMeasuredRobotPose, units::second_t timeStampWhenPicWasTaken);
 
