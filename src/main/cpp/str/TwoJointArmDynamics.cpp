@@ -71,7 +71,7 @@ void TwoJointArmDynamics::RecreateModels() {
   Relinearize(currentState, CalculateFeedForward(currentState));
   frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2));
   frc::Translation2d idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
-  frc::Matrixd<2, 4> kMatrix = kGainLookupTable[idk]; //DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
+  frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();//kGainLookupTable[idk]; 
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   ff = CalculateFeedForward(desiredState) + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
 }
@@ -148,7 +148,7 @@ void TwoJointArmDynamics::CreateLQRLookupTable() {
       std::cout << "Control: " << control << "\n";
       frc::LinearSystem<6, 2, 2> system = CreateModel(state, control);
       frc::Matrixd<2, 4> resultKMatrix = DesignLQR(system, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
-      kGainLookupTable.insert(frc::Translation2d{x,y}, resultKMatrix);
+      //kGainLookupTable.insert(frc::Translation2d{x,y}, resultKMatrix);
     }
   }
 }

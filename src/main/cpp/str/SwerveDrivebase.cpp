@@ -162,8 +162,6 @@ void str::SwerveDrivebase::SimulationPeriodic() {
   );
 
   imu.SetYaw(swerveSim.GetCurrentPose().Rotation().Radians());
-
-
 }
 
 void str::SwerveDrivebase::ResetPose(const frc::Pose2d& newPose) {

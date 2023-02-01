@@ -59,9 +59,9 @@ namespace str {
     static constexpr units::ampere_t CURRENT_LIMIT_STEER_MOTOR = 20_A;
     static constexpr units::ampere_t CURRENT_LIMIT_DRIVE_MOTOR = 40_A;
 
-    static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED = 17.5853_fps;
-    static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED_10_V = 14.78_fps;
-    static constexpr units::meters_per_second_squared_t MAX_CHASSIS_ACCEL = 10_mps_sq;
+    static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED = 15.76_fps;
+    static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED_10_V = 13.133_fps;
+    static constexpr units::meters_per_second_squared_t MAX_CHASSIS_ACCEL = 9_mps_sq;
     static constexpr units::radians_per_second_t MAX_CHASSIS_ROT_SPEED = 1080_deg_per_s;
     static constexpr units::radians_per_second_squared_t MAX_CHASSIS_ROT_ACCEL = 10000_deg_per_s_sq;
 
@@ -69,8 +69,8 @@ namespace str {
   }   
 
   namespace swerve_physical_dims {
-    static constexpr units::meter_t WHEELBASE_WIDTH = 27_in;
-    static constexpr units::meter_t WHEELBASE_LENGTH = 27_in;
+    static constexpr units::meter_t WHEELBASE_WIDTH = 25.5_in;
+    static constexpr units::meter_t WHEELBASE_LENGTH = 25.5_in;
     static constexpr units::meter_t DRIVE_WHEEL_DIAMETER = 3_in;
     static constexpr units::scalar_t STEER_GEARBOX_RATIO = (84 / 29) * (76 / 21) * (64 / 14);
     static constexpr units::scalar_t DRIVE_GEARBOX_RATIO = (22 / 14) * (45 / 15);
@@ -80,7 +80,7 @@ namespace str {
     static constexpr units::kilogram_t ROBOT_MASS = 61.235_kg;
     static constexpr units::kilogram_square_meter_t ROBOT_MOI = 5.808029_kg_sq_m;
     static constexpr units::kilogram_square_meter_t MODULE_MOI = 0.01_kg_sq_m;
-    static constexpr auto DRIVE_GEARBOX = frc::DCMotor::Falcon500(1);
+    static constexpr auto DRIVE_GEARBOX = frc::DCMotor::NEO(1);
     static constexpr auto STEER_GEARBOX = frc::DCMotor::NEO550(1);
     static constexpr units::radian_t FL_ANGLE_OFFSET{-std::numbers::pi / 2};
     static constexpr units::radian_t FR_ANGLE_OFFSET{0};

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <eigen_fix.h>
 #include "constants/SwerveConstants.h"
 #include "str/IMU.h"
 #include "str/SwerveModule.h"

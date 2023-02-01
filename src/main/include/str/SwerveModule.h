@@ -1,7 +1,7 @@
 #pragma once
 
 #include "constants/SwerveConstants.h"
-#include "str/SparkMaxSwerveWrapper.h"
+#include "str/SparkMaxWrapper.h"
 #include <rev/CANSparkMax.h>
 #include <rev/SparkMaxAbsoluteEncoder.h>
 #include <rev/SparkMaxRelativeEncoder.h>
@@ -26,18 +26,17 @@ namespace str {
     units::ampere_t GetSteerMotorCurrent();
 
   private:
+    void ConfigureRotationMotor();
+    void ConfigureDriveMotor();
+
     frc::SimpleMotorFeedforward<units::meters> driveFF{
       str::swerve_drive_consts::DRIVE_KS,
       str::swerve_drive_consts::DRIVE_KV,
       str::swerve_drive_consts::DRIVE_KA
     };
 
-    str::SparkMaxSwerveWrapper steerMotor;
-    str::SparkMaxSwerveWrapper driveMotor;
-
-    units::meters_per_second_t prevModuleSpeed{0};
-    units::second_t prevTime{0};
-    frc::Timer ffTimer;
+    str::SparkMaxWrapper steerMotor;
+    str::SparkMaxWrapper driveMotor;
 
     bool isVoltageCompensating{false};
     units::radian_t moduleAngleOffset;

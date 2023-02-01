@@ -34,9 +34,7 @@ public:
     std::function<double()> rot_deg
   );
 
-  //frc::TrajectoryConfig autoTrajectoryConfig{str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V, str::swerve_drive_consts::MAX_CHASSIS_ACCEL};
-  frc::TrajectoryConfig autoTrajectoryConfig{2_fps, 10_mps_sq};
-
+  frc::TrajectoryConfig autoTrajectoryConfig{str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V, str::swerve_drive_consts::MAX_CHASSIS_ACCEL};
 private:
   str::SwerveDrivebase swerveDrivebase{};
 
