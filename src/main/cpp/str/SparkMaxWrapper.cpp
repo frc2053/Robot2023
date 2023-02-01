@@ -82,7 +82,7 @@ void str::SparkMaxWrapper::SetSimEncoderVelocity(double newEncoderVelocity) {
 }
 
 void str::SparkMaxWrapper::SimUpdate() {
-  if(simControlMode.Get() == static_cast<int>(rev::ControlType::kPosition)) {
+  if(simControlMode.Get() == static_cast<int>(rev::CANSparkMax::ControlType::kPosition)) {
     if(m_isTurningMotor) {
       Set(m_fakePID->Calculate(m_absEncoder->GetPosition()));
     }
@@ -90,7 +90,7 @@ void str::SparkMaxWrapper::SimUpdate() {
       Set(m_fakePID->Calculate(m_relEncoder->GetPosition()));
     }
   }
-  if(simControlMode.Get() == static_cast<int>(rev::ControlType::kVelocity)) {
+  if(simControlMode.Get() == static_cast<int>(rev::CANSparkMax::ControlType::kVelocity)) {
     units::meters_per_second_t setpoint{m_fakePID->GetSetpoint()};
     units::volt_t arbFF = m_fakeFF->Calculate(setpoint);
     if(m_isTurningMotor) {
