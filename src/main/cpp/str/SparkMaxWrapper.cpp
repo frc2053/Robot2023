@@ -117,7 +117,7 @@ void str::SparkMaxWrapper::SimUpdate() {
   if(m_isTurningMotor) {
     simMotorCurrent.Set(
       m_motor->Current(
-        units::revolutions_per_minute_t{m_relEncoder->GetVelocity() / m_relEncoder->GetVelocityConversionFactor()},
+        units::revolutions_per_minute_t{m_absEncoder->GetVelocity() / m_absEncoder->GetVelocityConversionFactor()},
         units::volt_t{rev::CANSparkMax::GetBusVoltage() * rev::CANSparkMax::GetAppliedOutput()}
       ).value()
     );
@@ -125,7 +125,7 @@ void str::SparkMaxWrapper::SimUpdate() {
   else {
     simMotorCurrent.Set(
       m_motor->Current(
-        units::revolutions_per_minute_t{m_absEncoder->GetVelocity() / m_absEncoder->GetVelocityConversionFactor()},
+        units::revolutions_per_minute_t{m_relEncoder->GetVelocity() / m_relEncoder->GetVelocityConversionFactor()},
         units::volt_t{rev::CANSparkMax::GetBusVoltage() * rev::CANSparkMax::GetAppliedOutput()}
       ).value()
     );
