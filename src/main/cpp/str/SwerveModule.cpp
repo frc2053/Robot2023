@@ -33,21 +33,35 @@ units::ampere_t str::SwerveModule::GetSteerMotorCurrent() {
 }
 
 void str::SwerveModule::SimulationPeriodic() {
+  driveMotorSim.SetInputVoltage(GetDriveAppliedVoltage());
+  steerMotorSim.SetInputVoltage(GetRotationAppliedVoltage());
+
+  driveMotorSim.Update(20_ms);
+  steerMotorSim.Update(20_ms);
+
+  units::radian_t angleDiff = steerMotorSim.GetAngularVelocity() * 20_ms;
+  turnRelativePositionSim += angleDiff;
+  turnAbsolutePositionSim += angleDiff;
+  while(turnAbsolutePositionSim < 0_rad) {
+    turnAbsolutePositionSim += units::radian_t{2 * std::numbers::pi};
+  }
+  while(turnAbsolutePositionSim > units::radian_t{2 * std::numbers::pi}) {
+    turnAbsolutePositionSim -= units::radian_t{2 * std::numbers::pi};
+  }
+
+  fmt::print("Angle Diff: {}, TurnRel: {}, TurnAbs: {}\n", angleDiff, turnRelativePositionSim, turnAbsolutePositionSim);
+
+  units::meters_per_second_t linVel = str::Units::ConvertAngularVelocityToLinearVelocity(driveMotorSim.GetAngularVelocity(), str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2);
+  driveDist += (linVel * 20_ms);
+
+  driveMotor.SetSimEncoderPosition(driveDist.value());
+  driveMotor.SetSimEncoderVelocity(linVel.value());
+
+  steerMotor.SetSimEncoderPosition((turnRelativePositionSim - moduleAngleOffset).value());  
+  steerMotor.SetSimEncoderVelocity(steerMotorSim.GetAngularVelocity().value());
+
   steerMotor.SimUpdate();
   driveMotor.SimUpdate();
-}
-
-void str::SwerveModule::SetSimState(
-  units::radian_t steerPos,
-  units::meter_t drivePos,
-  units::meters_per_second_t driveVel,
-  units::ampere_t driveCurrent,
-  units::ampere_t steerCurrent
-) {
-  driveMotor.SetSimEncoderPosition(drivePos.value());
-  driveMotor.SetSimEncoderVelocity(driveVel.value());
-  
-  steerMotor.SetSimEncoderPosition(steerPos.to<double>());
 }
 
 frc::SwerveModuleState str::SwerveModule::GetState() {

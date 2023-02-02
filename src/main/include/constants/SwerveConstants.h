@@ -78,8 +78,8 @@ namespace str {
     static constexpr units::scalar_t TREAD_STATIC_COEF_FRIC = 1;
     static constexpr units::scalar_t TREAD_KINETIC_COEF_FRIC = 1;
     static constexpr units::kilogram_t ROBOT_MASS = 61.235_kg;
-    static constexpr units::kilogram_square_meter_t ROBOT_MOI = 5.808029_kg_sq_m;
-    static constexpr units::kilogram_square_meter_t MODULE_MOI = 0.01_kg_sq_m;
+    static constexpr units::kilogram_square_meter_t DRIVE_MOI = 0.025_kg_sq_m;
+    static constexpr units::kilogram_square_meter_t STEER_MOI = 0.004_kg_sq_m;
     static constexpr auto DRIVE_GEARBOX = frc::DCMotor::NEO(1);
     static constexpr auto STEER_GEARBOX = frc::DCMotor::NEO550(1);
     static constexpr units::radian_t FL_ANGLE_OFFSET{-std::numbers::pi / 2};

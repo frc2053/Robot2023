@@ -103,33 +103,33 @@ void str::SparkMaxWrapper::SimUpdate() {
       Set(m_fakePID->Calculate(m_relEncoder->GetPosition()));
     }
   }
-  if(simControlMode.Get() == static_cast<int>(rev::CANSparkMax::ControlType::kVelocity)) {
-    units::meters_per_second_t setpoint{m_fakePID->GetSetpoint()};
-    units::volt_t arbFF = m_fakeFF->Calculate(setpoint);
-    if(m_isTurningMotor) {
-      SetVoltage(units::volt_t{m_fakePID->Calculate(m_absEncoder->GetVelocity())} + arbFF);
-    }
-    else {
-      SetVoltage(units::volt_t{m_fakePID->Calculate(m_relEncoder->GetVelocity())} + arbFF);
-    }
-  }
-  simBusVoltage.Set(frc::sim::RoboRioSim::GetVInVoltage().value());
-  if(m_isTurningMotor) {
-    simMotorCurrent.Set(
-      m_motor->Current(
-        units::revolutions_per_minute_t{m_absEncoder->GetVelocity() / m_absEncoder->GetVelocityConversionFactor()},
-        units::volt_t{rev::CANSparkMax::GetBusVoltage() * rev::CANSparkMax::GetAppliedOutput()}
-      ).value()
-    );
-  }
-  else {
-    simMotorCurrent.Set(
-      m_motor->Current(
-        units::revolutions_per_minute_t{m_relEncoder->GetVelocity() / m_relEncoder->GetVelocityConversionFactor()},
-        units::volt_t{rev::CANSparkMax::GetBusVoltage() * rev::CANSparkMax::GetAppliedOutput()}
-      ).value()
-    );
-  }
+  // if(simControlMode.Get() == static_cast<int>(rev::CANSparkMax::ControlType::kVelocity)) {
+  //   units::meters_per_second_t setpoint{m_fakePID->GetSetpoint()};
+  //   units::volt_t arbFF = m_fakeFF->Calculate(setpoint);
+  //   if(m_isTurningMotor) {
+  //     SetVoltage(units::volt_t{m_fakePID->Calculate(m_absEncoder->GetVelocity())} + arbFF);
+  //   }
+  //   else {
+  //     SetVoltage(units::volt_t{m_fakePID->Calculate(m_relEncoder->GetVelocity())} + arbFF);
+  //   }
+  // }
+  // simBusVoltage.Set(frc::sim::RoboRioSim::GetVInVoltage().value());
+  // if(m_isTurningMotor) {
+  //   simMotorCurrent.Set(
+  //     m_motor->Current(
+  //       units::revolutions_per_minute_t{m_absEncoder->GetVelocity() / m_absEncoder->GetVelocityConversionFactor()},
+  //       units::volt_t{rev::CANSparkMax::GetBusVoltage() * rev::CANSparkMax::GetAppliedOutput()}
+  //     ).value()
+  //   );
+  // }
+  // else {
+  //   simMotorCurrent.Set(
+  //     m_motor->Current(
+  //       units::revolutions_per_minute_t{m_relEncoder->GetVelocity() / m_relEncoder->GetVelocityConversionFactor()},
+  //       units::volt_t{rev::CANSparkMax::GetBusVoltage() * rev::CANSparkMax::GetAppliedOutput()}
+  //     ).value()
+  //   );
+  // }
 }
 
 void str::SparkMaxWrapper::SetP(double p) {

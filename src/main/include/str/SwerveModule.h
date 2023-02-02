@@ -9,6 +9,7 @@
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc/simulation/FlywheelSim.h>
 
 namespace str {
   class SwerveModule {
@@ -20,7 +21,6 @@ namespace str {
     void ResetEncoders();
     units::volt_t GetDriveAppliedVoltage();
     units::volt_t GetRotationAppliedVoltage();
-    void SetSimState(units::radian_t steerPos, units::meter_t drivePos, units::meters_per_second_t driveVel, units::ampere_t driveCurrent, units::ampere_t steerCurrent);
     void SimulationPeriodic();
     units::ampere_t GetDriveMotorCurrent();
     units::ampere_t GetSteerMotorCurrent();
@@ -37,6 +37,22 @@ namespace str {
 
     str::SparkMaxWrapper steerMotor;
     str::SparkMaxWrapper driveMotor;
+
+    frc::sim::FlywheelSim steerMotorSim{
+      str::swerve_physical_dims::STEER_GEARBOX, 
+      str::swerve_physical_dims::STEER_GEARBOX_RATIO,
+      str::swerve_physical_dims::STEER_MOI
+    };
+
+    frc::sim::FlywheelSim driveMotorSim{
+      str::swerve_physical_dims::DRIVE_GEARBOX, 
+      str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
+      str::swerve_physical_dims::DRIVE_MOI
+    };
+
+    units::radian_t turnRelativePositionSim{0_rad};
+    units::radian_t turnAbsolutePositionSim{0_rad};
+    units::meter_t driveDist{0_m};
 
     bool isVoltageCompensating{false};
     units::radian_t moduleAngleOffset;

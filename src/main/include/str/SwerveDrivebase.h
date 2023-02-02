@@ -5,7 +5,6 @@
 #include "str/IMU.h"
 #include "str/SwerveModule.h"
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
-#include <frc_addons/QuadSwerveSim.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
@@ -92,22 +91,6 @@ namespace str {
     frc::SwerveModulePosition prevfrPos{};
     frc::SwerveModulePosition prevblPos{};
     frc::SwerveModulePosition prevbrPos{};
-
-    frc_addons::QuadSwerveSim swerveSim{
-      {flLocation, frLocation, blLocation, brLocation},
-      str::swerve_physical_dims::STEER_GEARBOX,
-      str::swerve_physical_dims::STEER_GEARBOX_RATIO,
-      str::swerve_physical_dims::STEER_ENCODER_RATIO,
-      str::swerve_physical_dims::MODULE_MOI,
-      str::swerve_physical_dims::DRIVE_GEARBOX,
-      str::swerve_physical_dims::DRIVE_GEARBOX_RATIO,
-      str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2,
-      units::unit_t<frictionCoefUnit>{0.01},
-      str::swerve_physical_dims::ROBOT_MASS,
-      str::swerve_physical_dims::ROBOT_MOI,
-      str::swerve_physical_dims::TREAD_STATIC_COEF_FRIC,
-      str::swerve_physical_dims::TREAD_KINETIC_COEF_FRIC
-    };
 
     std::array<double, 8> currentModuleDataForNT{};
     std::array<double, 3> currentEstimatorPoseForNT{};
