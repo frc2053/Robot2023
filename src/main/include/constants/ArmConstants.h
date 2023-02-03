@@ -30,8 +30,8 @@ namespace str {
         static constexpr auto elbowGearbox = frc::DCMotor{12_V, 3.36_Nm, 166_A, 0_A, 5880_rpm, 2};
         static constexpr auto shoulderGearing = 140;
         static constexpr auto elbowGearing = 90;
-        static constexpr auto positionTolerance = 0.01745*10;
-        static constexpr auto velocityTolerance = 0.08726*10;
+        static constexpr auto positionTolerance = 0.1745;
+        static constexpr auto velocityTolerance = 0.8726;
         static constexpr auto controlEffort = 12.0;
         static constexpr auto qPos = 0.01745;
         static constexpr auto qVel = 0.1745329;
