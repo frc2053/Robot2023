@@ -19,7 +19,7 @@ void SparkMaxDerivedVelocityController::Update() {
   units::meter_t newPosition = 0.0_m;//canData.data TODO
 
   if(isFresh) {
-    std::scoped_lock lock(notifier);
+    //std::scoped_lock lock(notifier);
     if(!firstCycle) {
       velocity = velocityFilter.Calculate((newPosition - position) / (newTimestamp - timestamp));
     }
@@ -38,7 +38,7 @@ void SparkMaxDerivedVelocityController::Update() {
 }
 
 void SparkMaxDerivedVelocityController::SetReference(units::meters_per_second_t velocity, units::volt_t ffVolts) {
-  std::scoped_lock lock(notifier);
+  //std::scoped_lock lock(notifier);
   velocityController.SetSetpoint(velocity.value());
   ff = ffVolts;
 
@@ -50,7 +50,7 @@ void SparkMaxDerivedVelocityController::SetReference(units::meters_per_second_t 
 }
 
 void SparkMaxDerivedVelocityController::Disable() {
-  std::scoped_lock lock(notifier);
+  //std::scoped_lock lock(notifier);
   if(enabled) {
     sparkMax->StopMotor();
   }
@@ -58,17 +58,17 @@ void SparkMaxDerivedVelocityController::Disable() {
 }
 
 void SparkMaxDerivedVelocityController::SetPID(double p, double i, double d) {
-  std::scoped_lock lock(notifier);
+  //std::scoped_lock lock(notifier);
   velocityController.SetPID(p,i,d);
 }
 
 units::meter_t SparkMaxDerivedVelocityController::GetPosition() {
-  std::scoped_lock lock(notifier);
+  //std::scoped_lock lock(notifier);
   return position;
 }
 
 units::meters_per_second_t SparkMaxDerivedVelocityController::GetVelocity() {
-  std::scoped_lock lock(notifier);
+  //std::scoped_lock lock(notifier);
   return velocity;
 }
 

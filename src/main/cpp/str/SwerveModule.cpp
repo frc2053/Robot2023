@@ -49,7 +49,7 @@ void str::SwerveModule::SimulationPeriodic() {
     turnAbsolutePositionSim -= units::radian_t{2 * std::numbers::pi};
   }
 
-  fmt::print("Angle Diff: {}, TurnRel: {}, TurnAbs: {}\n", angleDiff, turnRelativePositionSim, turnAbsolutePositionSim);
+  //fmt::print("Angle Diff: {}, TurnRel: {}, TurnAbs: {}\n", angleDiff, turnRelativePositionSim, turnAbsolutePositionSim);
 
   units::meters_per_second_t linVel = str::Units::ConvertAngularVelocityToLinearVelocity(driveMotorSim.GetAngularVelocity(), str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2);
   driveDist += (linVel * 20_ms);
