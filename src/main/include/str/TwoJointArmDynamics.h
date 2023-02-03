@@ -1,5 +1,6 @@
 #pragma once
 
+#include "eigen_fix.h"
 #include <frc/EigenCore.h>
 #include <units/mass.h>
 #include <units/length.h>
@@ -94,5 +95,5 @@ private:
   std::random_device rd{};
   std::mt19937 gen{rd()};
   std::normal_distribution<> randNorm{0, 0.01};
-  //str::interpolating_map_xy<frc::Matrixd<2, 4>> kGainLookupTable;
+  str::interpolating_map_xy<frc::Matrixd<2, 4>> kGainLookupTable;
 };

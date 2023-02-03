@@ -70,8 +70,8 @@ void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
 void TwoJointArmDynamics::RecreateModels() {
   Relinearize(currentState, CalculateFeedForward(currentState));
   frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2));
-  frc::Translation2d idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
-  frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();//kGainLookupTable[idk]; 
+  str::ArmCoordinate idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
+  frc::Matrixd<2, 4> kMatrix = kGainLookupTable[idk]; //DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   ff = CalculateFeedForward(desiredState) + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
 }
@@ -135,8 +135,8 @@ frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(frc::LinearSys
 void TwoJointArmDynamics::CreateLQRLookupTable() {
   //iterate through each xy position in 5cm increments
   //to create lookup table for LQR gains
-  for(units::inch_t r = 70_in; r <= 0_in; r = r - 1_in) {
-    for(units::degree_t theta = 0_deg; theta <= 180_deg; theta = theta + 1_deg) {
+  for(units::inch_t r = 70_in; r >= 1_in; r = r - 5_in) {
+    for(units::degree_t theta = 0_deg; theta <= 180_deg; theta = theta + 5_deg) {
       units::meter_t x = r * units::math::sin(theta);
       units::meter_t y = r * units::math::cos(theta);
       frc::Vectord<2> angles = CalculateInverseKinematics(frc::Vectord<2>{x.value(),y.value()});
@@ -148,7 +148,7 @@ void TwoJointArmDynamics::CreateLQRLookupTable() {
       std::cout << "Control: " << control << "\n";
       frc::LinearSystem<6, 2, 2> system = CreateModel(state, control);
       frc::Matrixd<2, 4> resultKMatrix = DesignLQR(system, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
-      //kGainLookupTable.insert(frc::Translation2d{x,y}, resultKMatrix);
+      kGainLookupTable.insert(str::ArmCoordinate{x,y}, resultKMatrix);
     }
   }
 }

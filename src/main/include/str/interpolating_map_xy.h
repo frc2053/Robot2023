@@ -3,22 +3,22 @@
 
 #include <map>
 #include <utility>
-#include <frc/geometry/Translation2d.h>
+#include "str/ArmCoordinate.h"
 
 namespace str {
 template <typename Value>
 class interpolating_map_xy {
  public:
-  void insert(const frc::Translation2d& key, const Value& value) {
+  void insert(const str::ArmCoordinate& key, const Value& value) {
     m_container.insert(std::make_pair(key, value));
   }
 
-  void insert(frc::Translation2d&& key, Value&& value) {
+  void insert(str::ArmCoordinate&& key, Value&& value) {
     m_container.insert(std::make_pair(key, value));
   }
 
-  Value operator[](const frc::Translation2d& key) const {
-    using const_iterator = typename std::map<frc::Translation2d, Value>::const_iterator;
+  Value operator[](const str::ArmCoordinate& key) const {
+    using const_iterator = typename std::map<str::ArmCoordinate, Value>::const_iterator;
 
     // Get iterator to upper bound key-value pair for the given key
     const_iterator upper = m_container.upper_bound(key);
@@ -38,10 +38,11 @@ class interpolating_map_xy {
     --lower;
 
     // Perform linear interpolation between lower and upper bound
-    const units::meter_t deltaX = (key.X() - lower->first.X()) / (upper->first.X() - lower->first.X());
-    const units::meter_t deltaY = (key.Y() - lower->first.Y()) / (upper->first.Y() - lower->first.Y());
-    Value resultX = deltaX.value() * upper->second + (1.0 - deltaX.value()) * lower->second;
-    return resultX;
+    const double deltaX = (key.X() - lower->first.X()) / (upper->first.X() - lower->first.X());
+    const double deltaY = (key.Y() - lower->first.Y()) / (upper->first.Y() - lower->first.Y());
+    Value resultX = deltaX * upper->second + (1.0 - deltaX) * lower->second;
+    Value resultY = deltaY * upper->second + (1.0 - deltaY) * lower->second;
+    return resultX.cwiseProduct(resultY);
   }
 
   /**
@@ -50,7 +51,7 @@ class interpolating_map_xy {
   void clear() { m_container.clear(); }
 
  private:
-  std::map<frc::Translation2d, Value> m_container;
+  std::map<str::ArmCoordinate, Value> m_container;
 };
 
 }  // namespace str
