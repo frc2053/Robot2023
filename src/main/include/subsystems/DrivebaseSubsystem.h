@@ -19,6 +19,7 @@ public:
   void SimulationPeriodic() override;
 
   frc2::CommandPtr DriveFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> rot);
+  frc2::CommandPtr TurnToAngleFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> angle, std::function<bool()> wantsToOverride);
   frc2::CommandPtr FollowPathFactory(
     frc::Trajectory traj
   );

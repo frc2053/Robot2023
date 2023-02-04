@@ -37,7 +37,67 @@ void SwerveCommandRobot::ConfigureBindings() {
     )
   );
 
-  driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  driverController.Y().OnTrue((driveSubsystem.TurnToAngleFactory(
+    [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+    },
+    [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+    },
+    [this] { return 0; }, 
+    [this] { 
+      return std::abs(driverController.GetRightX()) > 0.2; 
+    }
+  )));
+
+  driverController.X().OnTrue((driveSubsystem.TurnToAngleFactory(
+  [this] {
+      double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+      return std::abs(fwdCmd) * fwdCmd;
+  },
+  [this] {
+      double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+      return std::abs(sideCmd) * sideCmd;
+  },
+  [this] { return std::numbers::pi / 2; }, 
+  [this] { 
+    return std::abs(driverController.GetRightX()) > 0.2; 
+  }
+  )));
+
+  driverController.A().OnTrue((driveSubsystem.TurnToAngleFactory(
+  [this] {
+      double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+      return std::abs(fwdCmd) * fwdCmd;
+  },
+  [this] {
+      double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+      return std::abs(sideCmd) * sideCmd;
+  },
+  [this] { return std::numbers::pi; }, 
+  [this] { 
+    return std::abs(driverController.GetRightX()) > 0.2; 
+  }
+  )));
+
+  driverController.B().OnTrue((driveSubsystem.TurnToAngleFactory(
+  [this] {
+      double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+      return std::abs(fwdCmd) * fwdCmd;
+  },
+  [this] {
+      double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+      return std::abs(sideCmd) * sideCmd;
+  },
+  [this] { return -std::numbers::pi / 2; }, 
+  [this] { 
+    return std::abs(driverController.GetRightX()) > 0.2; 
+  }
+  )));
+
+  /*driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
   ));
@@ -55,7 +115,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   driverController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() + .25_ft;}
-  ));
+  ));*/
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
