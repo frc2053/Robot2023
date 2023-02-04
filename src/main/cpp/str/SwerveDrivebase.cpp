@@ -72,10 +72,10 @@ void str::SwerveDrivebase::Drive(
 void str::SwerveDrivebase::DirectSetModuleStates(std::array<frc::SwerveModuleState, 4> states) {
   const auto [fl,fr,bl,br] = states;
   LogDesiredModuleInfo(fl, fr, bl, br);
-  flModule.SetDesiredState(fl, false, false);
-  frModule.SetDesiredState(fr, false, false);
-  blModule.SetDesiredState(bl, false, false);
-  brModule.SetDesiredState(br, false, false);
+  flModule.SetDesiredState(fl, false, true);
+  frModule.SetDesiredState(fr, false, true);
+  blModule.SetDesiredState(bl, false, true);
+  brModule.SetDesiredState(br, false, true);
 }
 
 void str::SwerveDrivebase::Periodic() {

@@ -40,7 +40,7 @@ namespace str {
     static constexpr double STEER_KI = 0;
     static constexpr double STEER_KD = 0;
 
-    static constexpr double DRIVE_KF = 2.4681;
+    static constexpr double DRIVE_KF = 0;
     static constexpr double DRIVE_KP = 0.00059876;
     static constexpr double DRIVE_KI = 0;
     static constexpr double DRIVE_KD = 0;

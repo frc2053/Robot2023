@@ -15,7 +15,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   frc::SmartDashboard::PutNumber("ResetPose/x_ft", 0);
   frc::SmartDashboard::PutNumber("ResetPose/y_ft", 0);
   frc::SmartDashboard::PutNumber("ResetPose/rot_deg", 0);
-  frc::SmartDashboard::PutNumber("Wheel Velocity", 0);
+  frc::SmartDashboard::PutNumber("Wheel Speed", 0);
 
   frc::SmartDashboard::PutData(
     "Reset Drivetrain Pose",
@@ -37,6 +37,18 @@ void SwerveCommandRobot::ConfigureBindings() {
     )
   );
 
+  frc::SmartDashboard::PutData(
+    "Set Wheel Speed",
+    new frc2::InstantCommand(
+      [this] {
+        double speed = frc::SmartDashboard::GetNumber("Wheel Speed", 0);
+        fmt::print("Speed: {}\n", speed);
+        driveSubsystem.SetWheelSpeeds(units::feet_per_second_t{speed});
+      },
+      {&driveSubsystem}
+    )
+  );
+
   driverController.Y().OnTrue((driveSubsystem.TurnToAngleFactory(
     [this] {
         double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
@@ -53,48 +65,48 @@ void SwerveCommandRobot::ConfigureBindings() {
   )));
 
   driverController.X().OnTrue((driveSubsystem.TurnToAngleFactory(
-  [this] {
-      double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
-      return std::abs(fwdCmd) * fwdCmd;
-  },
-  [this] {
-      double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
-      return std::abs(sideCmd) * sideCmd;
-  },
-  [this] { return frc::TrapezoidProfile<units::radians>::State{90_deg, 0_deg_per_s}; }, 
-  [this] { 
-    return std::abs(driverController.GetRightX()) > 0.2; 
-  }
+    [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+    },
+    [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+    },
+    [this] { return frc::TrapezoidProfile<units::radians>::State{90_deg, 0_deg_per_s}; }, 
+    [this] { 
+      return std::abs(driverController.GetRightX()) > 0.2; 
+    }
   )));
 
   driverController.A().OnTrue((driveSubsystem.TurnToAngleFactory(
-  [this] {
-      double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
-      return std::abs(fwdCmd) * fwdCmd;
-  },
-  [this] {
-      double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
-      return std::abs(sideCmd) * sideCmd;
-  },
-  [this] { return frc::TrapezoidProfile<units::radians>::State{180_deg, 0_deg_per_s}; }, 
-  [this] { 
-    return std::abs(driverController.GetRightX()) > 0.2; 
-  }
+    [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+    },
+    [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+    },
+    [this] { return frc::TrapezoidProfile<units::radians>::State{180_deg, 0_deg_per_s}; }, 
+    [this] { 
+      return std::abs(driverController.GetRightX()) > 0.2; 
+    }
   )));
 
   driverController.B().OnTrue((driveSubsystem.TurnToAngleFactory(
-  [this] {
-      double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
-      return std::abs(fwdCmd) * fwdCmd;
-  },
-  [this] {
-      double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
-      return std::abs(sideCmd) * sideCmd;
-  },
-  [this] { return frc::TrapezoidProfile<units::radians>::State{-90_deg, 0_deg_per_s}; }, 
-  [this] { 
-    return std::abs(driverController.GetRightX()) > 0.2; 
-  }
+    [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+    },
+    [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+    },
+    [this] { return frc::TrapezoidProfile<units::radians>::State{-90_deg, 0_deg_per_s}; }, 
+    [this] { 
+      return std::abs(driverController.GetRightX()) > 0.2; 
+    }
   )));
 
   /*driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(

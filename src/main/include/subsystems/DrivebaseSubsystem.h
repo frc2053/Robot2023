@@ -28,6 +28,7 @@ public:
     std::function<double()> y_ft,
     std::function<double()> rot_deg
   );
+  void SetWheelSpeeds(units::meters_per_second_t speed);
   void ProcessVisionData();
   void ResetOdom(
     std::function<double()> x_ft,

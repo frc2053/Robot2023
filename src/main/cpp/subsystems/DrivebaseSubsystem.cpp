@@ -170,3 +170,8 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(frc::Trajectory traj) {
     }
   }.ToPtr();
 }
+
+void DrivebaseSubsystem::SetWheelSpeeds(units::meters_per_second_t speed) {
+  frc::SwerveModuleState state{speed, frc::Rotation2d{0_deg}};
+  swerveDrivebase.DirectSetModuleStates({state, state, state, state});
+}
