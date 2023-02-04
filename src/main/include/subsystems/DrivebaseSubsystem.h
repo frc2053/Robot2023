@@ -18,8 +18,8 @@ public:
   void Periodic() override;
   void SimulationPeriodic() override;
 
-  frc2::CommandPtr DriveFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> rot);
-  frc2::CommandPtr TurnToAngleFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> angle, std::function<bool()> wantsToOverride);
+  frc2::CommandPtr DriveFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> rot, std::function<bool()> slowMode);
+  frc2::CommandPtr TurnToAngleFactory(std::function<double()> fow, std::function<double()> side, std::function<frc::TrapezoidProfile<units::radians>::State()> angleProfile, std::function<bool()> wantsToOverride);
   frc2::CommandPtr FollowPathFactory(
     frc::Trajectory traj
   );
@@ -38,7 +38,6 @@ public:
   frc::TrajectoryConfig autoTrajectoryConfig{str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V, str::swerve_drive_consts::MAX_CHASSIS_ACCEL};
 private:
   str::SwerveDrivebase swerveDrivebase{};
-
   std::shared_ptr<frc::AprilTagFieldLayout> tagLayout;
   std::shared_ptr<photonlib::PhotonCamera> camera;
   photonlib::SimVisionSystem system;

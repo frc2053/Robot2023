@@ -10,7 +10,7 @@
 #include "frc/ComputerVisionUtil.h"
 #include <pathplanner/lib/PathPlanner.h>
 #include <frc2/command/SwerveControllerCommand.h>
-#include <frc2/command/PIDCommand.h>
+#include <frc2/command/ProfiledPIDCommand.h>
 
 DrivebaseSubsystem::DrivebaseSubsystem() : 
   tagLayout(std::make_unique<frc::AprilTagFieldLayout>(frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp))),
@@ -33,6 +33,7 @@ DrivebaseSubsystem::DrivebaseSubsystem() :
   frc::SmartDashboard::PutNumberArray("AdvantageScope/All Vision Targets", allAprilTagDataForNt);
 
   autoTrajectoryConfig.SetKinematics(swerveDrivebase.GetKinematics());
+  thetaController.EnableContinuousInput(-180_deg, 180_deg);
 }
 
 void DrivebaseSubsystem::Periodic() {
@@ -73,14 +74,15 @@ void DrivebaseSubsystem::SimulationPeriodic() {
 frc2::CommandPtr DrivebaseSubsystem::DriveFactory(
   std::function<double()> fow,
   std::function<double()> side,
-  std::function<double()> rot
+  std::function<double()> rot,
+  std::function<bool()> slowMode
 ) {
   return frc2::RunCommand(
-    [this, fow, side, rot]() {
+    [this, fow, side, rot, slowMode]() {
       swerveDrivebase.Drive(
-        fow() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
-        side() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
-        rot() * str::swerve_drive_consts::MAX_CHASSIS_ROT_SPEED,
+        slowMode() ? fow() * str::swerve_drive_consts::MAX_CHASSIS_SPEED / 3 : fow() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
+        slowMode() ? side() * str::swerve_drive_consts::MAX_CHASSIS_SPEED / 3 : side() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
+        slowMode() ? rot() * str::swerve_drive_consts::MAX_CHASSIS_ROT_SPEED / 3 : rot() * str::swerve_drive_consts::MAX_CHASSIS_ROT_SPEED,
         true,
         true,
         false
@@ -94,16 +96,16 @@ frc2::CommandPtr DrivebaseSubsystem::DriveFactory(
 frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
   std::function<double()> fow,
   std::function<double()> side,
-  std::function<double()> angle,
+  std::function<frc::TrapezoidProfile<units::radians>::State()> angle,
   std::function<bool()> wantsToOverride
 ) {
-  return frc2::PIDCommand(
-    frc::PIDController{4,0,0}, 
+  return frc2::ProfiledPIDCommand<units::radians>(
+    thetaController, 
     [this] { 
-      return swerveDrivebase.GetRobotYaw().Radians().value(); 
+      return swerveDrivebase.GetRobotYaw().Radians(); 
     }, 
     angle,  
-    [this, fow, side, wantsToOverride] (double output) {
+    [this, fow, side, wantsToOverride] (double output, frc::TrapezoidProfile<units::radians>::State state) {
       swerveDrivebase.Drive(
         fow() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
         side() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,

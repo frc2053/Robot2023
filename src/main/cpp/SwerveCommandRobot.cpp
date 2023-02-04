@@ -46,7 +46,7 @@ void SwerveCommandRobot::ConfigureBindings() {
         double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
         return std::abs(sideCmd) * sideCmd;
     },
-    [this] { return 0; }, 
+    [this] { return frc::TrapezoidProfile<units::radians>::State{0_deg, 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
     }
@@ -61,7 +61,7 @@ void SwerveCommandRobot::ConfigureBindings() {
       double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
       return std::abs(sideCmd) * sideCmd;
   },
-  [this] { return std::numbers::pi / 2; }, 
+  [this] { return frc::TrapezoidProfile<units::radians>::State{90_deg, 0_deg_per_s}; }, 
   [this] { 
     return std::abs(driverController.GetRightX()) > 0.2; 
   }
@@ -76,7 +76,7 @@ void SwerveCommandRobot::ConfigureBindings() {
       double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
       return std::abs(sideCmd) * sideCmd;
   },
-  [this] { return std::numbers::pi; }, 
+  [this] { return frc::TrapezoidProfile<units::radians>::State{180_deg, 0_deg_per_s}; }, 
   [this] { 
     return std::abs(driverController.GetRightX()) > 0.2; 
   }
@@ -91,7 +91,7 @@ void SwerveCommandRobot::ConfigureBindings() {
       double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
       return std::abs(sideCmd) * sideCmd;
   },
-  [this] { return -std::numbers::pi / 2; }, 
+  [this] { return frc::TrapezoidProfile<units::radians>::State{-90_deg, 0_deg_per_s}; }, 
   [this] { 
     return std::abs(driverController.GetRightX()) > 0.2; 
   }
@@ -131,7 +131,10 @@ void SwerveCommandRobot::SetDriveAsDefault() {
       [this] {
         double rotCmd = frc::ApplyDeadband<double>(-driverController.GetRightX(), 0.2);
         return std::abs(rotCmd) * rotCmd;
-      }    
+      },
+      [this] {
+        return driverController.GetRightBumper();
+      }   
   ));
 }
 

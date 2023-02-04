@@ -51,7 +51,7 @@ namespace str {
 
     static constexpr auto GLOBAL_POSE_TRANS_KP = .85;
     static constexpr auto GLOBAL_POSE_TRANS_KD = 0.2;
-    static constexpr auto GLOBAL_POSE_ROT_KP = 0.001;
+    static constexpr auto GLOBAL_POSE_ROT_KP = 5;
     static constexpr auto GLOBAL_POSE_ROT_KD = 0;
 
     static constexpr units::volt_t MAX_DRIVE_VOLTAGE = 10_V;
