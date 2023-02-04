@@ -37,7 +37,9 @@ void SwerveCommandRobot::ConfigureBindings() {
     )
   );
 
-  driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  driverController.Y().OnTrue((driveSubsystem.TurnToAngleFactory([this] {return 0;}, [this] {return 0;}, [this] {return 0;})));
+
+  /*driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
   ));
@@ -55,7 +57,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   driverController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() + .25_ft;}
-  ));
+  ));*/
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
