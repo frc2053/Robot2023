@@ -94,9 +94,10 @@ frc2::CommandPtr DrivebaseSubsystem::DriveFactory(
 frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
   std::function<double()> fow,
   std::function<double()> side,
-  std::function<double()> angle
+  std::function<double()> angle,
+  std::function<bool()> wantsToOverride
 ) {
-  return frc2::PIDCommand(frc::PIDController{1,0,0}, [this]{return swerveDrivebase.GetRobotYaw().Radians().value();}, angle,  [this, fow, side](double output) {
+  return frc2::PIDCommand(frc::PIDController{4,0,0}, [this]{return swerveDrivebase.GetRobotYaw().Radians().value();}, angle,  [this, fow, side, wantsToOverride](double output) {
       swerveDrivebase.Drive(
         fow() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
         side() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
@@ -104,7 +105,7 @@ frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
         true, 
         true,
         false
-      );}, {this}).ToPtr();
+      );}, {this}).WithInterrupt(wantsToOverride);
 }
 
 frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(

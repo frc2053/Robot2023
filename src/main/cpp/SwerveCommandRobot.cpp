@@ -37,7 +37,16 @@ void SwerveCommandRobot::ConfigureBindings() {
     )
   );
 
-  driverController.Y().OnTrue((driveSubsystem.TurnToAngleFactory([this] {return 0;}, [this] {return 0;}, [this] {return 0;})));
+  driverController.Y().OnTrue((driveSubsystem.TurnToAngleFactory(
+   [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+      },
+      [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+      },
+  [this] {return 0;}, [this]{ return std::abs(driverController.GetRightX()) > 0.2; })));
 
   /*driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
