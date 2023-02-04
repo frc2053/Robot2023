@@ -62,7 +62,7 @@ namespace str {
     static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED = 15.76_fps;
     static constexpr units::meters_per_second_t MAX_CHASSIS_SPEED_10_V = 13.133_fps;
     static constexpr units::meters_per_second_squared_t MAX_CHASSIS_ACCEL = 9_mps_sq;
-    static constexpr units::radians_per_second_t MAX_CHASSIS_ROT_SPEED = 1080_deg_per_s;
+    static constexpr units::radians_per_second_t MAX_CHASSIS_ROT_SPEED = 360_deg_per_s;
     static constexpr units::radians_per_second_squared_t MAX_CHASSIS_ROT_ACCEL = 10000_deg_per_s_sq;
 
     extern const frc::TrapezoidProfile<units::radians>::Constraints GLOBAL_THETA_CONTROLLER_CONSTRAINTS;
