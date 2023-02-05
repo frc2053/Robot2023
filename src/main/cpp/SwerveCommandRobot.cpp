@@ -61,7 +61,10 @@ void SwerveCommandRobot::ConfigureBindings() {
     [this] { return frc::TrapezoidProfile<units::radians>::State{0_deg, 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
-    }
+    },
+    [this] {
+      return driverController.GetRightBumper();
+    }  
   )));
 
   driverController.X().OnTrue((driveSubsystem.TurnToAngleFactory(
@@ -76,7 +79,10 @@ void SwerveCommandRobot::ConfigureBindings() {
     [this] { return frc::TrapezoidProfile<units::radians>::State{90_deg, 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
-    }
+    },
+    [this] {
+      return driverController.GetRightBumper();
+    }  
   )));
 
   driverController.A().OnTrue((driveSubsystem.TurnToAngleFactory(
@@ -91,7 +97,10 @@ void SwerveCommandRobot::ConfigureBindings() {
     [this] { return frc::TrapezoidProfile<units::radians>::State{180_deg, 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
-    }
+    },
+    [this] {
+      return driverController.GetRightBumper();
+    }  
   )));
 
   driverController.B().OnTrue((driveSubsystem.TurnToAngleFactory(
@@ -106,7 +115,10 @@ void SwerveCommandRobot::ConfigureBindings() {
     [this] { return frc::TrapezoidProfile<units::radians>::State{-90_deg, 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
-    }
+    },
+    [this] {
+      return driverController.GetRightBumper();
+    }  
   )));
 
   /*driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(

@@ -97,7 +97,8 @@ frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
   std::function<double()> fow,
   std::function<double()> side,
   std::function<frc::TrapezoidProfile<units::radians>::State()> angle,
-  std::function<bool()> wantsToOverride
+  std::function<bool()> wantsToOverride,
+  std::function<bool()> slowMode
 ) {
   return frc2::ProfiledPIDCommand<units::radians>(
     thetaController, 
@@ -105,10 +106,10 @@ frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
       return swerveDrivebase.GetRobotYaw().Radians(); 
     }, 
     angle,  
-    [this, fow, side, wantsToOverride] (double output, frc::TrapezoidProfile<units::radians>::State state) {
+    [this, fow, side, wantsToOverride, slowMode] (double output, frc::TrapezoidProfile<units::radians>::State state) {
       swerveDrivebase.Drive(
-        fow() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
-        side() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
+        slowMode() ? fow() * str::swerve_drive_consts::MAX_CHASSIS_SPEED / 3 : fow() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
+        slowMode() ? side() * str::swerve_drive_consts::MAX_CHASSIS_SPEED / 3 : side() * str::swerve_drive_consts::MAX_CHASSIS_SPEED,
         output * 1_rad_per_s,
         true, 
         true,

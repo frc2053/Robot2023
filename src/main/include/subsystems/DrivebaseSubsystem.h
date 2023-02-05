@@ -18,8 +18,19 @@ public:
   void Periodic() override;
   void SimulationPeriodic() override;
 
-  frc2::CommandPtr DriveFactory(std::function<double()> fow, std::function<double()> side, std::function<double()> rot, std::function<bool()> slowMode);
-  frc2::CommandPtr TurnToAngleFactory(std::function<double()> fow, std::function<double()> side, std::function<frc::TrapezoidProfile<units::radians>::State()> angleProfile, std::function<bool()> wantsToOverride);
+  frc2::CommandPtr DriveFactory(
+    std::function<double()> fow, 
+    std::function<double()> side, 
+    std::function<double()> rot, 
+    std::function<bool()> slowMode
+  );
+  frc2::CommandPtr TurnToAngleFactory(
+    std::function<double()> fow, 
+    std::function<double()> side, 
+    std::function<frc::TrapezoidProfile<units::radians>::State()> angleProfile, 
+    std::function<bool()> wantsToOverride,
+    std::function<bool()> slowMode
+  );
   frc2::CommandPtr FollowPathFactory(
     frc::Trajectory traj
   );
