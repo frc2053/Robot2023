@@ -72,8 +72,8 @@ namespace str {
     static constexpr units::meter_t WHEELBASE_WIDTH = 25.5_in;
     static constexpr units::meter_t WHEELBASE_LENGTH = 25.5_in;
     static constexpr units::meter_t DRIVE_WHEEL_DIAMETER = 3_in;
-    static constexpr units::scalar_t STEER_GEARBOX_RATIO = (84 / 29) * (76 / 21) * (64 / 14);
-    static constexpr units::scalar_t DRIVE_GEARBOX_RATIO = (22 / 14) * (45 / 15);
+    static constexpr units::scalar_t STEER_GEARBOX_RATIO = (84.0 / 29.0) * (76.0 / 21.0) * (64.0 / 14.0);
+    static constexpr double DRIVE_GEARBOX_RATIO = (22.0 / 14.0) * (45.0 / 15.0);
     static constexpr units::scalar_t STEER_ENCODER_RATIO = 1.0;
     static constexpr units::scalar_t TREAD_STATIC_COEF_FRIC = 1;
     static constexpr units::scalar_t TREAD_KINETIC_COEF_FRIC = 1;

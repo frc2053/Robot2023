@@ -49,97 +49,97 @@ void SwerveCommandRobot::ConfigureBindings() {
     )
   );
 
-  // driverController.Y().OnTrue((driveSubsystem.TurnToAngleFactory(
-  //   [this] {
-  //       double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
-  //       return std::abs(fwdCmd) * fwdCmd;
-  //   },
-  //   [this] {
-  //       double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
-  //       return std::abs(sideCmd) * sideCmd;
-  //   },
-  //   [this] { return frc::TrapezoidProfile<units::radians>::State{0_deg, 0_deg_per_s}; }, 
-  //   [this] { 
-  //     return std::abs(driverController.GetRightX()) > 0.2; 
-  //   },
-  //   [this] {
-  //     return driverController.GetRightBumper();
-  //   }  
-  // )));
+  driverController.Y().OnTrue((driveSubsystem.TurnToAngleFactory(
+    [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+    },
+    [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+    },
+    [this] { return frc::TrapezoidProfile<units::radians>::State{0_deg, 0_deg_per_s}; }, 
+    [this] { 
+      return std::abs(driverController.GetRightX()) > 0.2; 
+    },
+    [this] {
+      return driverController.GetRightBumper();
+    }  
+  )));
 
-  // driverController.X().OnTrue((driveSubsystem.TurnToAngleFactory(
-  //   [this] {
-  //       double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
-  //       return std::abs(fwdCmd) * fwdCmd;
-  //   },
-  //   [this] {
-  //       double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
-  //       return std::abs(sideCmd) * sideCmd;
-  //   },
-  //   [this] { return frc::TrapezoidProfile<units::radians>::State{90_deg, 0_deg_per_s}; }, 
-  //   [this] { 
-  //     return std::abs(driverController.GetRightX()) > 0.2; 
-  //   },
-  //   [this] {
-  //     return driverController.GetRightBumper();
-  //   }  
-  // )));
+  driverController.X().OnTrue((driveSubsystem.TurnToAngleFactory(
+    [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+    },
+    [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+    },
+    [this] { return frc::TrapezoidProfile<units::radians>::State{90_deg, 0_deg_per_s}; }, 
+    [this] { 
+      return std::abs(driverController.GetRightX()) > 0.2; 
+    },
+    [this] {
+      return driverController.GetRightBumper();
+    }  
+  )));
 
-  // driverController.A().OnTrue((driveSubsystem.TurnToAngleFactory(
-  //   [this] {
-  //       double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
-  //       return std::abs(fwdCmd) * fwdCmd;
-  //   },
-  //   [this] {
-  //       double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
-  //       return std::abs(sideCmd) * sideCmd;
-  //   },
-  //   [this] { return frc::TrapezoidProfile<units::radians>::State{180_deg, 0_deg_per_s}; }, 
-  //   [this] { 
-  //     return std::abs(driverController.GetRightX()) > 0.2; 
-  //   },
-  //   [this] {
-  //     return driverController.GetRightBumper();
-  //   }  
-  // )));
+  driverController.A().OnTrue((driveSubsystem.TurnToAngleFactory(
+    [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+    },
+    [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+    },
+    [this] { return frc::TrapezoidProfile<units::radians>::State{180_deg, 0_deg_per_s}; }, 
+    [this] { 
+      return std::abs(driverController.GetRightX()) > 0.2; 
+    },
+    [this] {
+      return driverController.GetRightBumper();
+    }  
+  )));
 
-  // driverController.B().OnTrue((driveSubsystem.TurnToAngleFactory(
-  //   [this] {
-  //       double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
-  //       return std::abs(fwdCmd) * fwdCmd;
-  //   },
-  //   [this] {
-  //       double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
-  //       return std::abs(sideCmd) * sideCmd;
-  //   },
-  //   [this] { return frc::TrapezoidProfile<units::radians>::State{-90_deg, 0_deg_per_s}; }, 
-  //   [this] { 
-  //     return std::abs(driverController.GetRightX()) > 0.2; 
-  //   },
-  //   [this] {
-  //     return driverController.GetRightBumper();
-  //   }  
-  // )));
+  driverController.B().OnTrue((driveSubsystem.TurnToAngleFactory(
+    [this] {
+        double fwdCmd = frc::ApplyDeadband<double>(-driverController.GetLeftY(), 0.2);
+        return std::abs(fwdCmd) * fwdCmd;
+    },
+    [this] {
+        double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
+        return std::abs(sideCmd) * sideCmd;
+    },
+    [this] { return frc::TrapezoidProfile<units::radians>::State{-90_deg, 0_deg_per_s}; }, 
+    [this] { 
+      return std::abs(driverController.GetRightX()) > 0.2; 
+    },
+    [this] {
+      return driverController.GetRightBumper();
+    }  
+  )));
 
-  driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
-  ));
+  // driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+  // ));
 
-  driverController.B().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + .25_ft; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
-  ));
+  // driverController.B().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointX() + .25_ft; },
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+  // ));
 
-  driverController.A().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - .25_ft; }
-  ));
+  // driverController.A().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointY() - .25_ft; }
+  // ));
 
-  driverController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + .25_ft;}
-  ));
+  // driverController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
+  //   [this] { return armSubsystem.GetArmEndEffectorSetpointY() + .25_ft;}
+  // ));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {

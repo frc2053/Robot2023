@@ -10,7 +10,7 @@ frc2::CommandPtr autos::OneMForward(DrivebaseSubsystem* drivebase) {
     {
       frc::Translation2d{1.5_ft, 0_m}
     },
-    frc::Pose2d{3_ft, 0_m, 0_rad},
+    frc::Pose2d{5_ft, 0_m, 90_deg},
     drivebase->autoTrajectoryConfig
   );
 
