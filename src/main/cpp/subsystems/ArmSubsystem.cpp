@@ -14,7 +14,7 @@ ArmSubsystem::ArmSubsystem() {
 
 void ArmSubsystem::SimulationPeriodic() {
   if(frc::RobotState::IsEnabled()) {
-    armSystem.Update(frc::Vectord<2>{shoulderMotorLeft.GetMotorOutputVoltage(), elbowMotor.GetMotorOutputVoltage()});
+    armSystem.Update(frc::Vectord<2>{shoulderMotor.GetMotorOutputVoltage(), elbowMotor.GetMotorOutputVoltage()});
   }
   frc::Vectord<6> actualCurrentState = armSystem.GetCurrentState();
 
@@ -43,7 +43,7 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Feed Forward Shoulder", feedForwards(0));
   frc::SmartDashboard::PutNumber("Feed Forward Elbow", feedForwards(1));
 
-  shoulderMotorLeft.SetVoltage(units::volt_t{feedForwards(0)});
+  shoulderMotor.SetVoltage(units::volt_t{feedForwards(0)});
   elbowMotor.SetVoltage(units::volt_t{feedForwards(1)});
 }
 
@@ -87,23 +87,17 @@ void ArmSubsystem::ConfigureMotors() {
   baseConfig.velocityMeasurementPeriod = ctre::phoenix::sensors::SensorVelocityMeasPeriod::Period_1Ms;
   baseConfig.velocityMeasurementWindow = 1;
 
-  shoulderMotorLeft.ConfigAllSettings(baseConfig);
-  shoulderMotorRight.ConfigAllSettings(baseConfig);
+  shoulderMotor.ConfigAllSettings(baseConfig);
   elbowMotor.ConfigAllSettings(baseConfig);
 
-  shoulderMotorLeft.ConfigVoltageCompSaturation(str::arm_motor_config::VOLTAGE_COMP_VOLTAGE.value());
-  shoulderMotorRight.ConfigVoltageCompSaturation(str::arm_motor_config::VOLTAGE_COMP_VOLTAGE.value());
+  shoulderMotor.ConfigVoltageCompSaturation(str::arm_motor_config::VOLTAGE_COMP_VOLTAGE.value());
   elbowMotor.ConfigVoltageCompSaturation(str::arm_motor_config::VOLTAGE_COMP_VOLTAGE.value());
 
-  shoulderMotorLeft.EnableVoltageCompensation(false);
-  shoulderMotorRight.EnableVoltageCompensation(false);
+  shoulderMotor.EnableVoltageCompensation(false);
   elbowMotor.EnableVoltageCompensation(false);
 
-  shoulderMotorRight.Follow(shoulderMotorLeft);
-  shoulderMotorRight.SetInverted(ctre::phoenix::motorcontrol::InvertType::OpposeMaster);
 
-  shoulderMotorLeft.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
-  shoulderMotorRight.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  shoulderMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   elbowMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 }
 
@@ -112,13 +106,12 @@ void ArmSubsystem::ResetEncoders() {
   shoulderSimCollection.SetIntegratedSensorVelocity(0);
   elbowSimCollection.SetIntegratedSensorRawPosition(0);
   elbowSimCollection.SetIntegratedSensorVelocity(0);
-  shoulderMotorLeft.SetSelectedSensorPosition(0);
-  shoulderMotorRight.SetSelectedSensorPosition(0);
+  shoulderMotor.SetSelectedSensorPosition(0);
   elbowMotor.SetSelectedSensorPosition(0);
 }
 
 units::radian_t ArmSubsystem::GetShoulderMotorAngle() {
-  return str::Units::ConvertTicksToAngle(shoulderMotorLeft.GetSelectedSensorPosition(), str::encoder_cprs::FALCON_CPR, str::arm_constants::shoulderGearing, false);
+  return str::Units::ConvertTicksToAngle(shoulderMotor.GetSelectedSensorPosition(), str::encoder_cprs::FALCON_CPR, str::arm_constants::shoulderGearing, false);
 }
 
 units::radian_t ArmSubsystem::GetElbowMotorAngle() {
@@ -126,7 +119,7 @@ units::radian_t ArmSubsystem::GetElbowMotorAngle() {
 }
 
 units::radians_per_second_t ArmSubsystem::GetShoulderMotorVelocity() {
-  return str::Units::ConvertTicksPer100MsToAngularVelocity(shoulderMotorLeft.GetSelectedSensorVelocity(), str::encoder_cprs::FALCON_CPR, str::arm_constants::shoulderGearing);
+  return str::Units::ConvertTicksPer100MsToAngularVelocity(shoulderMotor.GetSelectedSensorVelocity(), str::encoder_cprs::FALCON_CPR, str::arm_constants::shoulderGearing);
 }
 
 units::radians_per_second_t ArmSubsystem::GetElbowMotorVelocity() {

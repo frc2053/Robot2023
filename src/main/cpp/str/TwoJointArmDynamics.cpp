@@ -36,7 +36,7 @@ TwoJointArmDynamics::TwoJointArmDynamics(
     dSystem(frc::LinearSystem<6,2,2>{frc::Matrixd<6,6>::Zero(), frc::Matrixd<6,2>::Zero(), frc::Matrixd<2,6>::Zero(), frc::Matrixd<2,2>::Zero()})
 {
   currentState = initialState;
-  CreateLQRLookupTable();
+  //CreateLQRLookupTable();
   RecreateModels();
 
   ekf = std::make_unique<frc::ExtendedKalmanFilter<6,2,2>>(
@@ -69,9 +69,10 @@ void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
 
 void TwoJointArmDynamics::RecreateModels() {
   Relinearize(currentState, CalculateFeedForward(currentState));
-  frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2));
+  frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2), true);
   str::ArmCoordinate idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
-  frc::Matrixd<2, 4> kMatrix = kGainLookupTable[idk]; //DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
+  std::cout << "X: " << idk.X().value() << " Y: " << idk.Y().value() << "\n";
+  frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();//kGainLookupTable[idk];
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   ff = CalculateFeedForward(desiredState) + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
 }

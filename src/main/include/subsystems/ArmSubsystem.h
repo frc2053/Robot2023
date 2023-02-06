@@ -35,14 +35,13 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   void LogStateToAdvantageScope();
 
-  ctre::phoenix::motorcontrol::can::WPI_TalonFX shoulderMotorLeft{str::arm_can_ids::LEFT_SHOULDER_ID};
-  ctre::phoenix::motorcontrol::can::WPI_TalonFX shoulderMotorRight{str::arm_can_ids::RIGHT_SHOULDER_ID};
+  ctre::phoenix::motorcontrol::can::WPI_TalonFX shoulderMotor{str::arm_can_ids::SHOULDER_ID};
   ctre::phoenix::motorcontrol::can::WPI_TalonFX elbowMotor{str::arm_can_ids::ELBOW_ID};
 
-  ctre::phoenix::motorcontrol::TalonFXSimCollection shoulderSimCollection{shoulderMotorLeft.GetSimCollection()};
+  ctre::phoenix::motorcontrol::TalonFXSimCollection shoulderSimCollection{shoulderMotor.GetSimCollection()};
   ctre::phoenix::motorcontrol::TalonFXSimCollection elbowSimCollection{elbowMotor.GetSimCollection()};
 
-  frc::Vectord<6> initialState{0,0,0,0,0,0};
+  frc::Vectord<6> initialState{0.785,-0.785,0,0,0,0};
 
   units::meter_t currentEndEffectorSetpointX{42_in};
   units::meter_t currentEndEffectorSetpointY{24_in};

@@ -8,9 +8,8 @@
 
 namespace str {
     namespace arm_can_ids {
-        static constexpr int LEFT_SHOULDER_ID = 10;
-        static constexpr int RIGHT_SHOULDER_ID = 11;
-        static constexpr int ELBOW_ID = 12;
+        static constexpr int SHOULDER_ID = 10;
+        static constexpr int ELBOW_ID = 11;
     };
 
     namespace arm_motor_config {
@@ -18,17 +17,17 @@ namespace str {
     }
 
     namespace arm_constants {
-        static constexpr auto shoulderMass = 9.34_lb;
-        static constexpr auto elbowMass = 9.77_lb;
-        static constexpr auto shoulderLength = 46.25_in;
-        static constexpr auto elbowLength = 41.80_in;
-        static constexpr auto shoulderMoi = 0.86535_kg_sq_m;
-        static constexpr auto elbowMoi = 0.82662_kg_sq_m;
-        static constexpr auto cogDistShoulder = 21.64_in;
-        static constexpr auto cogDistElbow = 26.70_in;
-        static constexpr auto shoulderGearbox = frc::DCMotor{12_V, 3.36_Nm, 166_A, 0_A, 5880_rpm, 1};
-        static constexpr auto elbowGearbox = frc::DCMotor{12_V, 3.36_Nm, 166_A, 0_A, 5880_rpm, 2};
-        static constexpr auto shoulderGearing = 140;
+        static constexpr auto shoulderMass = 5_lb;
+        static constexpr auto elbowMass = 5_lb;
+        static constexpr auto shoulderLength = 18.990361_in;
+        static constexpr auto elbowLength = 25.973397_in;
+        static constexpr auto shoulderMoi = 0.087826505_kg_sq_m;
+        static constexpr auto elbowMoi = 0.079192275_kg_sq_m;
+        static constexpr auto cogDistShoulder = 8.066847_in;
+        static constexpr auto cogDistElbow = 22.9001_in;
+        static constexpr auto shoulderGearbox = frc::DCMotor::Falcon500(1);
+        static constexpr auto elbowGearbox = frc::DCMotor::Falcon500(1);
+        static constexpr auto shoulderGearing = 90;
         static constexpr auto elbowGearing = 90;
         static constexpr auto positionTolerance = 0.1745;
         static constexpr auto velocityTolerance = 0.8726;
