@@ -22,6 +22,7 @@ private:
   //ArmSubsystem armSubsystem;
 
   frc2::CommandPtr oneMeterForward = autos::OneMForward(&driveSubsystem);
+  frc2::CommandPtr testPath = autos::TestPath(&driveSubsystem);
 
   frc::SendableChooser<frc2::Command *> autoChooser;
 };

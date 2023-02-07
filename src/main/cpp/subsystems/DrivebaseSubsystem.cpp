@@ -172,6 +172,15 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(frc::Trajectory traj) {
   }.ToPtr();
 }
 
+frc2::CommandPtr DrivebaseSubsystem::FollowPathplannerFactory(
+  std::string pathName,
+  units::meters_per_second_t maxSpeed,
+  units::meters_per_second_squared_t maxAccel
+) {
+  pathplanner::PathPlannerTrajectory autoPath = pathplanner::PathPlanner::loadPath(pathName, pathplanner::PathConstraints(maxSpeed, maxAccel));
+  return autoBuilder.followPath(autoPath);
+}
+
 void DrivebaseSubsystem::SetWheelSpeeds(units::meters_per_second_t speed) {
   frc::SwerveModuleState state{speed, frc::Rotation2d{0_deg}};
   swerveDrivebase.DirectSetModuleStates({state, state, state, state});

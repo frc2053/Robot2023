@@ -7,6 +7,7 @@
 
 void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.SetDefaultOption("1MForward", oneMeterForward.get());
+  autoChooser.AddOption("TestPath", testPath.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 

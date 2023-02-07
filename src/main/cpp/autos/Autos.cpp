@@ -4,15 +4,13 @@
 #include <frc/trajectory/TrajectoryGenerator.h>
 
 frc2::CommandPtr autos::OneMForward(DrivebaseSubsystem* drivebase) {
-
-  frc::Trajectory traj = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{0_m, 0_m, 0_rad},
-    {
-      frc::Translation2d{1.5_ft, 0_m}
-    },
-    frc::Pose2d{5_ft, 0_m, 90_deg},
-    drivebase->autoTrajectoryConfig
+  return frc2::cmd::Sequence(
+    drivebase->FollowPathplannerFactory("1MForward", 15_fps, 4.267_mps_sq)
   );
+}
 
-  return frc2::cmd::Sequence(drivebase->FollowPathFactory(traj));
+frc2::CommandPtr autos::TestPath(DrivebaseSubsystem* drivebase) {
+  return frc2::cmd::Sequence(
+    drivebase->FollowPathplannerFactory("TestPath", 15_fps, 4.267_mps_sq)
+  );
 }

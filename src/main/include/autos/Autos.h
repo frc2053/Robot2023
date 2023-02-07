@@ -5,4 +5,5 @@
 
 namespace autos {
     frc2::CommandPtr OneMForward(DrivebaseSubsystem* drivebase);
+    frc2::CommandPtr TestPath(DrivebaseSubsystem* drivebase);
 }

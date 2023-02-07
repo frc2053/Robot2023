@@ -10,6 +10,7 @@
 #include <frc/apriltag/AprilTagFields.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/controller/ProfiledPIDController.h>
+#include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 
 class DrivebaseSubsystem : public frc2::SubsystemBase {
 public:
@@ -34,6 +35,11 @@ public:
   frc2::CommandPtr FollowPathFactory(
     frc::Trajectory traj
   );
+  frc2::CommandPtr FollowPathplannerFactory(
+    std::string pathName,
+    units::meters_per_second_t maxSpeed,
+    units::meters_per_second_squared_t maxAccel
+  );
   frc2::CommandPtr ResetOdomFactory(
     std::function<double()> x_ft,
     std::function<double()> y_ft,
@@ -57,6 +63,24 @@ private:
   std::vector<int> tagIdList = {1, 2, 3, 4, 5, 6, 7, 8};
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{};
+
+  pathplanner::SwerveAutoBuilder autoBuilder{
+    [this] {
+      return swerveDrivebase.GetRobotPose();
+    },
+    [this](frc::Pose2d resetToHere) {
+      swerveDrivebase.ResetPose(resetToHere);
+    },
+    swerveDrivebase.GetKinematics(),
+    pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
+    pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_ROT_KD),
+    [this](std::array<frc::SwerveModuleState, 4> states) {
+      swerveDrivebase.DirectSetModuleStates(states);
+    },
+    eventMap,
+    {this},
+    true
+  };
 
   frc::ProfiledPIDController<units::radians> thetaController{
     str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 
