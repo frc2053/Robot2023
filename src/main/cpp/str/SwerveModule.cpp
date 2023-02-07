@@ -11,7 +11,7 @@
 
 
 str::SwerveModule::SwerveModule(int driveCanId, int rotationCanId, units::radian_t moduleAngle) :
-  steerMotor(rotationCanId, str::MotorSimType::Neo550, true), driveMotor(driveCanId, str::MotorSimType::Neo, false), moduleAngleOffset(moduleAngle) {
+  steerMotor(rotationCanId, true), driveMotor(driveCanId, false), moduleAngleOffset(moduleAngle) {
     ConfigureRotationMotor();
     ConfigureDriveMotor();
 }
@@ -33,35 +33,7 @@ units::ampere_t str::SwerveModule::GetSteerMotorCurrent() {
 }
 
 void str::SwerveModule::SimulationPeriodic() {
-  driveMotorSim.SetInputVoltage(GetDriveAppliedVoltage());
-  steerMotorSim.SetInputVoltage(GetRotationAppliedVoltage());
 
-  driveMotorSim.Update(20_ms);
-  steerMotorSim.Update(20_ms);
-
-  units::radian_t angleDiff = steerMotorSim.GetAngularVelocity() * 20_ms;
-  turnRelativePositionSim += angleDiff;
-  turnAbsolutePositionSim += angleDiff;
-  while(turnAbsolutePositionSim < 0_rad) {
-    turnAbsolutePositionSim += units::radian_t{2 * std::numbers::pi};
-  }
-  while(turnAbsolutePositionSim > units::radian_t{2 * std::numbers::pi}) {
-    turnAbsolutePositionSim -= units::radian_t{2 * std::numbers::pi};
-  }
-
-  //fmt::print("Angle Diff: {}, TurnRel: {}, TurnAbs: {}\n", angleDiff, turnRelativePositionSim, turnAbsolutePositionSim);
-
-  units::meters_per_second_t linVel = str::Units::ConvertAngularVelocityToLinearVelocity(driveMotorSim.GetAngularVelocity(), str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER / 2);
-  driveDist += (linVel * 20_ms);
-
-  driveMotor.SetSimEncoderPosition(driveDist.value());
-  driveMotor.SetSimEncoderVelocity(linVel.value());
-
-  steerMotor.SetSimEncoderPosition((turnRelativePositionSim - moduleAngleOffset).value());  
-  steerMotor.SetSimEncoderVelocity(steerMotorSim.GetAngularVelocity().value());
-
-  steerMotor.SimUpdate();
-  driveMotor.SimUpdate();
 }
 
 frc::SwerveModuleState str::SwerveModule::GetState() {
@@ -116,12 +88,6 @@ void str::SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceS
 }
 
 void str::SwerveModule::ResetEncoders() {
-  steerMotor.SetSimEncoderPosition(0);
-  driveMotor.SetSimEncoderPosition(0);
-
-  driveMotor.SetSimEncoderVelocity(0);
-  steerMotor.SetSimEncoderVelocity(0);
-  
   driveMotor.ResetDriveEncoder();
   frc::DataLogManager::Log("Reset Swerve Encoders!");
 }

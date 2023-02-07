@@ -178,7 +178,7 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathplannerFactory(
   units::meters_per_second_squared_t maxAccel
 ) {
   pathplanner::PathPlannerTrajectory autoPath = pathplanner::PathPlanner::loadPath(pathName, pathplanner::PathConstraints(maxSpeed, maxAccel));
-  return autoBuilder.followPath(autoPath);
+  return autoBuilder.fullAuto(autoPath);
 }
 
 void DrivebaseSubsystem::SetWheelSpeeds(units::meters_per_second_t speed) {
