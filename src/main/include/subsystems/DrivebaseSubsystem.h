@@ -64,28 +64,9 @@ private:
   photonlib::RobotPoseEstimator visionEstimator;
   std::vector<int> tagIdList = {1, 2, 3, 4, 5, 6, 7, 8};
 
-  std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{
-    {"PlaceConeHigh", std::make_shared<frc2::Command>(new frc2::WaitCommand{1_s})},
-    {"GrabConeClose", std::make_shared<frc2::Command>(frc2::WaitCommand{1_s})}
-  };
-
-  pathplanner::SwerveAutoBuilder autoBuilder{
-    [this] {
-      return swerveDrivebase.GetRobotPose();
-    },
-    [this](frc::Pose2d resetToHere) {
-      swerveDrivebase.ResetPose(resetToHere);
-    },
-    swerveDrivebase.GetKinematics(),
-    pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
-    pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_ROT_KD),
-    [this](std::array<frc::SwerveModuleState, 4> states) {
-      swerveDrivebase.DirectSetModuleStates(states);
-    },
-    eventMap,
-    {this},
-    true
-  };
+  std::shared_ptr<frc2::Command> waitCommand;
+  std::unique_ptr<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>> eventMap;
+  std::unique_ptr<pathplanner::SwerveAutoBuilder> autoBuilder;
 
   frc::ProfiledPIDController<units::radians> thetaController{
     str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 
