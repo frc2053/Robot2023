@@ -11,6 +11,8 @@
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
+#include <frc2/command/WaitCommand.h>
+#include <memory>
 
 class DrivebaseSubsystem : public frc2::SubsystemBase {
 public:
@@ -62,7 +64,10 @@ private:
   photonlib::RobotPoseEstimator visionEstimator;
   std::vector<int> tagIdList = {1, 2, 3, 4, 5, 6, 7, 8};
 
-  std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{};
+  std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{
+    {"PlaceConeHigh", std::make_shared<frc2::Command>(new frc2::WaitCommand{1_s})},
+    {"GrabConeClose", std::make_shared<frc2::Command>(frc2::WaitCommand{1_s})}
+  };
 
   pathplanner::SwerveAutoBuilder autoBuilder{
     [this] {
