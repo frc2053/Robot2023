@@ -1,5 +1,15 @@
 {
   "HALProvider": {
+    "Encoders": {
+      "1": {
+        "header": {
+          "open": true
+        }
+      },
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "SPARK MAX [3]": {
         "header": {
@@ -30,6 +40,16 @@
         "header": {
           "open": true
         }
+      },
+      "navX-Sensor[4]": {
+        "header": {
+          "open": true
+        }
+      }
+    },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
       }
     }
   },

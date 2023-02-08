@@ -65,8 +65,8 @@ private:
   std::vector<int> tagIdList = {1, 2, 3, 4, 5, 6, 7, 8};
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{
-    {"PlaceConeHigh", std::make_shared<frc2::Command>(new frc2::WaitCommand{1_s})},
-    {"GrabConeClose", std::make_shared<frc2::Command>(frc2::WaitCommand{1_s})}
+    {"PlaceConeHigh", std::make_shared<frc2::WaitCommand>(frc2::WaitCommand{1_s})},
+    {"GrabConeClose", std::make_shared<frc2::WaitCommand>(frc2::WaitCommand{1_s})}
   };
 
   pathplanner::SwerveAutoBuilder autoBuilder{

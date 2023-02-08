@@ -10,6 +10,7 @@
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
+#include <str/SwerveModuleSim.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 
 namespace str {
@@ -55,27 +56,42 @@ namespace str {
       -str::swerve_physical_dims::WHEELBASE_LENGTH / 2,
       -str::swerve_physical_dims::WHEELBASE_WIDTH / 2
     };
-
-    str::SwerveModule flModule{
-      str::swerve_can_ids::FRONT_LEFT_DRIVE_TALON_ID,
-      str::swerve_can_ids::FRONT_LEFT_STEER_TALON_ID,
-      str::swerve_physical_dims::FL_ANGLE_OFFSET
-    };
-    str::SwerveModule frModule{
-      str::swerve_can_ids::FRONT_RIGHT_DRIVE_TALON_ID,
-      str::swerve_can_ids::FRONT_RIGHT_STEER_TALON_ID,
-      str::swerve_physical_dims::FR_ANGLE_OFFSET
-    };
-    str::SwerveModule blModule{
-      str::swerve_can_ids::REAR_LEFT_DRIVE_TALON_ID,
-      str::swerve_can_ids::REAR_LEFT_STEER_TALON_ID,
-      str::swerve_physical_dims::BL_ANGLE_OFFSET
-    };
-    str::SwerveModule brModule{
-      str::swerve_can_ids::REAR_RIGHT_DRIVE_TALON_ID,
-      str::swerve_can_ids::REAR_RIGHT_STEER_TALON_ID,
-      str::swerve_physical_dims::BR_ANGLE_OFFSET
-    };
+    
+    #if defined(__FRC_ROBORIO__)
+      str::SwerveModule flModule{
+        str::swerve_can_ids::FRONT_LEFT_DRIVE_TALON_ID,
+        str::swerve_can_ids::FRONT_LEFT_STEER_TALON_ID,
+        str::swerve_physical_dims::FL_ANGLE_OFFSET
+      };
+      str::SwerveModule frModule{
+        str::swerve_can_ids::FRONT_RIGHT_DRIVE_TALON_ID,
+        str::swerve_can_ids::FRONT_RIGHT_STEER_TALON_ID,
+        str::swerve_physical_dims::FR_ANGLE_OFFSET
+      };
+      str::SwerveModule blModule{
+        str::swerve_can_ids::REAR_LEFT_DRIVE_TALON_ID,
+        str::swerve_can_ids::REAR_LEFT_STEER_TALON_ID,
+        str::swerve_physical_dims::BL_ANGLE_OFFSET
+      };
+      str::SwerveModule brModule{
+        str::swerve_can_ids::REAR_RIGHT_DRIVE_TALON_ID,
+        str::swerve_can_ids::REAR_RIGHT_STEER_TALON_ID,
+        str::swerve_physical_dims::BR_ANGLE_OFFSET
+      };
+    #else
+      str::SwerveModuleSim flModule{
+        1, 2, 0, 1, 2, 3
+      };
+      str::SwerveModuleSim frModule{
+        3, 4, 4, 5, 6, 7
+      };
+      str::SwerveModuleSim blModule{
+        5, 6, 8, 9, 10, 11
+      };
+      str::SwerveModuleSim brModule{
+        7, 8, 12, 13, 14, 15
+      };
+    #endif
 
     frc::SwerveDriveKinematics<4> kinematics{flLocation, frLocation, blLocation, brLocation};
     frc::SwerveDrivePoseEstimator<4> estimator{
@@ -86,11 +102,6 @@ namespace str {
       {0.1, 0.1, 0.1},
       {0.9, 0.9, 0.9}
     };
-
-    frc::SwerveModulePosition prevflPos{};
-    frc::SwerveModulePosition prevfrPos{};
-    frc::SwerveModulePosition prevblPos{};
-    frc::SwerveModulePosition prevbrPos{};
 
     std::array<double, 8> currentModuleDataForNT{};
     std::array<double, 3> currentEstimatorPoseForNT{};

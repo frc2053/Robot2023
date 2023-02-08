@@ -105,7 +105,14 @@ void str::SwerveDrivebase::SimulationPeriodic() {
   blModule.SimulationPeriodic();
   brModule.SimulationPeriodic();
 
-  //imu.SetYaw(swerveSim.GetCurrentPose().Rotation().Radians());
+
+  frc::ChassisSpeeds speeds = kinematics.ToChassisSpeeds(flModule.GetState(), frModule.GetState(), blModule.GetState(), brModule.GetState());
+
+  units::radian_t oldYaw = imu.GetYaw().Radians();
+  units::radian_t deltaYaw = frc::Rotation2d{speeds.omega * 0.02_s}.Radians();
+  units::radian_t newYaw = oldYaw + deltaYaw;
+
+  imu.SetYaw(newYaw);
 }
 
 void str::SwerveDrivebase::ResetPose(const frc::Pose2d& newPose) {
