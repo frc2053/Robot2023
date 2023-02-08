@@ -1,5 +1,12 @@
 {
   "HALProvider": {
+    "Encoders": {
+      "1": {
+        "header": {
+          "open": true
+        }
+      }
+    },
     "Other Devices": {
       "SPARK MAX [3]": {
         "header": {
@@ -27,6 +34,11 @@
         }
       },
       "Talon FX[2]": {
+        "header": {
+          "open": true
+        }
+      },
+      "navX-Sensor[4]": {
         "header": {
           "open": true
         }
