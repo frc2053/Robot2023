@@ -5,9 +5,6 @@
         "header": {
           "open": true
         }
-      },
-      "window": {
-        "visible": true
       }
     },
     "Other Devices": {
@@ -45,11 +42,6 @@
         "header": {
           "open": true
         }
-      }
-    },
-    "PWM Outputs": {
-      "window": {
-        "visible": true
       }
     }
   },
