@@ -32,8 +32,6 @@ void str::SwerveModuleSim::SimulationPeriodic(units::second_t dt) {
   units::meters_per_second_t driveVel = units::meters_per_second_t{SimulatedVelocity(driveSim.GetSpeed(), 0.001, 0.15)};
   units::radians_per_second_t rotVel = units::radians_per_second_t{SimulatedVelocity(turnSim.GetSpeed(), 0.001, 0.05)};
   
-  fmt::print("Drive Vel: {}\n", driveVel);
-
   driveEncoderSim.SetRate(driveVel.value());
   driveEncoderSim.SetDistance(driveEncoderSim.GetDistance() + driveVel.value() * dt.value());
   turnEncoderSim.SetDistance(turnEncoderSim.GetDistance() + rotVel.value() * dt.value());
