@@ -18,30 +18,6 @@ DrivebaseSubsystem::DrivebaseSubsystem() :
   system("photonvision", 100_deg, frc::Transform3d{}, 4.572_m, 640, 480, 20),
   visionEstimator(tagLayout, photonlib::PoseStrategy::CLOSEST_TO_LAST_POSE, {{camera, str::vision::CAMERA_TO_ROBOT}}) {
 
-    waitCommand = std::make_shared<frc2::Command>(frc2::WaitCommand(1_s));
-
-    eventMap = std::make_unique<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>>();
-    eventMap->at("GrabConeFar") = waitCommand;
-    eventMap->at("PlaceConeHigh") = waitCommand;
-
-    autoBuilder = std::make_unique<pathplanner::SwerveAutoBuilder>(
-      [this] {
-        return swerveDrivebase.GetRobotPose();
-      },
-      [this](frc::Pose2d resetToHere) {
-        swerveDrivebase.ResetPose(resetToHere);
-      },
-      swerveDrivebase.GetKinematics(),
-      pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
-      pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_ROT_KD),
-      [this](std::array<frc::SwerveModuleState, 4> states) {
-        swerveDrivebase.DirectSetModuleStates(states);
-      },
-      eventMap,
-      {this},
-      true
-  );
-
   std::vector<double> allAprilTagDataForNt{};
   for(const int& tagId : tagIdList) {
     frc::Pose3d tagPose = tagLayout->GetTagPose(tagId).value();
@@ -203,7 +179,7 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathplannerFactory(
   units::meters_per_second_squared_t maxAccel
 ) {
   pathplanner::PathPlannerTrajectory autoPath = pathplanner::PathPlanner::loadPath(pathName, pathplanner::PathConstraints(maxSpeed, maxAccel));
-  return autoBuilder->fullAuto(autoPath);
+  return autoBuilder.fullAuto(autoPath);
 }
 
 void DrivebaseSubsystem::SetWheelSpeeds(units::meters_per_second_t speed) {
