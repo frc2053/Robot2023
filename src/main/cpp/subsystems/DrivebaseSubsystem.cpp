@@ -17,6 +17,7 @@ DrivebaseSubsystem::DrivebaseSubsystem() :
   camera(std::make_unique<photonlib::PhotonCamera>("photonvision")),
   system("photonvision", 100_deg, frc::Transform3d{}, 4.572_m, 640, 480, 20),
   visionEstimator(tagLayout, photonlib::PoseStrategy::CLOSEST_TO_LAST_POSE, {{camera, str::vision::CAMERA_TO_ROBOT}}) {
+
   std::vector<double> allAprilTagDataForNt{};
   for(const int& tagId : tagIdList) {
     frc::Pose3d tagPose = tagLayout->GetTagPose(tagId).value();
