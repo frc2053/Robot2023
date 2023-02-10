@@ -34,7 +34,7 @@ void ArmSubsystem::Periodic() {
   armShoulderEkf->SetAngle(units::radian_t{ekfState(0)});
   armElbowEkf->SetAngle(units::radian_t{ekfState(1)});
 
-  tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150);
+  tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
 
   LogStateToAdvantageScope();
 
@@ -63,7 +63,13 @@ units::meter_t ArmSubsystem::GetArmEndEffectorSetpointY() {
 void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos) {
   currentEndEffectorSetpointX = xPos;
   currentEndEffectorSetpointY = yPos;
-  frc::Vectord<2> anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, true);
+  frc::Vectord<2> anglesToGoTo;
+  if(xPos < 0_m) {
+    anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, false);
+  }
+  else {
+    anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, true);
+  }
   frc::Vectord<6> requestedState{anglesToGoTo(0), anglesToGoTo(1), 0, 0, 0, 0};
   armSystem.SetDesiredState(requestedState);
 }

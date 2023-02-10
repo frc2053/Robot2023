@@ -71,7 +71,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
     // Create a Mechanism2d display of an Arm
   frc::Mechanism2d armDisplay{300, 300};
-  frc::MechanismRoot2d* armBase = armDisplay.GetRoot("ArmBase", 150, 150);
+  frc::MechanismRoot2d* armBase = armDisplay.GetRoot("ArmBase", 150, 150 + 31);
   frc::MechanismLigament2d* armShoulderActual =
     armBase->Append<frc::MechanismLigament2d>(
         "ShoulderActual",
