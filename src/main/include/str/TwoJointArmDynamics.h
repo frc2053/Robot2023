@@ -44,7 +44,7 @@ public:
   //RELINEARIZATION
   void Relinearize(frc::Vectord<6> state, frc::Vectord<2> input);
   frc::LinearSystem<6, 2, 2> CreateModel(frc::Vectord<6> state, frc::Vectord<2> input);
-  frc::LinearQuadraticRegulator<4,2> DesignLQR(frc::LinearSystem<6,2,2> system, std::array<double, 4> qElems, std::array<double, 2> rElems) const;
+  frc::LinearQuadraticRegulator<4,2> DesignLQR(const frc::LinearSystem<6,2,2>& system, std::array<double, 4> qElems, std::array<double, 2> rElems) const;
   void CreateLQRLookupTable();
 
   //DYNAMICS

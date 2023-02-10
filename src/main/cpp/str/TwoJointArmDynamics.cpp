@@ -69,10 +69,7 @@ void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
 
 void TwoJointArmDynamics::RecreateModels() {
   Relinearize(currentState, CalculateFeedForward(currentState));
-  frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2), true);
-  str::ArmCoordinate idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
-  std::cout << "X: " << idk.X().value() << " Y: " << idk.Y().value() << "\n";
-  frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();//kGainLookupTable[idk];
+  frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   ff = CalculateFeedForward(desiredState) + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
 }
@@ -118,18 +115,12 @@ frc::LinearSystem<6, 2, 2> TwoJointArmDynamics::CreateModel(frc::Vectord<6> stat
 }
 
 //GOOD
-frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(frc::LinearSystem<6,2,2> system, std::array<double, 4> qElems, std::array<double, 2> rElems) const {
-  using std::chrono::high_resolution_clock;
-  using std::chrono::duration;
+frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(const frc::LinearSystem<6,2,2>& system, std::array<double, 4> qElems, std::array<double, 2> rElems) const {
   frc::Matrixd<4, 4> Ar = system.A().block<4, 4>(0,0);
   frc::Matrixd<4, 2> Br = system.B().block<4, 2>(0,0);
   frc::Matrixd<2, 4> Cr = system.C().block<2, 4>(0,0);
   frc::LinearSystem<4, 2, 2> reducedSystem{Ar, Br, Cr, system.D()};
-  auto t1 = high_resolution_clock::now();
   frc::LinearQuadraticRegulator<4, 2> lqr = frc::LinearQuadraticRegulator<4, 2>(reducedSystem, qElems, rElems, dt);
-  auto t2 = high_resolution_clock::now();
-  duration<double, std::milli> ms_double = t2 - t1;
-  std::cout << ms_double.count() << "ms\n";
   return lqr;
 }
 

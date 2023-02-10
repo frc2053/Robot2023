@@ -29,9 +29,9 @@ namespace str {
         static constexpr auto elbowGearbox = frc::DCMotor::Falcon500(1);
         static constexpr auto shoulderGearing = 90;
         static constexpr auto elbowGearing = 90;
-        static constexpr auto positionTolerance = 0.1745;
-        static constexpr auto velocityTolerance = 0.8726;
-        static constexpr auto controlEffort = 12.0;
+        static constexpr auto positionTolerance = 0.01745*10;
+        static constexpr auto velocityTolerance = 0.08726*10;
+        static constexpr auto controlEffort = 10.0;
         static constexpr auto qPos = 0.01745;
         static constexpr auto qVel = 0.1745329;
         static constexpr auto est = 10.0;

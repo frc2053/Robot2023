@@ -43,7 +43,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   frc::Vectord<6> initialState{0.785,-0.785,0,0,0,0};
 
-  units::meter_t currentEndEffectorSetpointX{42_in};
+  units::meter_t currentEndEffectorSetpointX{24_in};
   units::meter_t currentEndEffectorSetpointY{24_in};
 
   TwoJointArmDynamics armSystem {
