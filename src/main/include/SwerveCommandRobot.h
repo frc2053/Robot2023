@@ -9,6 +9,7 @@
 #include <str/PDP.h>
 #include <autos/Autos.h>
 #include "subsystems/ArmSubsystem.h"
+#include "subsystems/IntakeSubsystem.h"
 
 class SwerveCommandRobot {
 public:
@@ -19,6 +20,7 @@ public:
 private:
   frc2::CommandXboxController driverController{str::oi::DRIVER_CONTROLLER};
   DrivebaseSubsystem driveSubsystem;
+  IntakeSubsystem intakeSubsystem;
   //ArmSubsystem armSubsystem;
 
   frc2::CommandPtr oneMeterForward = autos::OneMForward(&driveSubsystem);

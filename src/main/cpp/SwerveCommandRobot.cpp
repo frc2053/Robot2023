@@ -122,6 +122,8 @@ void SwerveCommandRobot::ConfigureBindings() {
     }  
   )));
 
+  driverController.RightBumper().OnTrue(intakeSubsystem.IntakeFactory(0.5));
+
   // driverController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
   //   [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
   //   [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }

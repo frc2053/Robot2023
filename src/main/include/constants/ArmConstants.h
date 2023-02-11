@@ -37,4 +37,8 @@ namespace str {
         static constexpr auto est = 10.0;
         static constexpr auto rPos = 0.05;
     };
+
+    namespace intake_constants {
+        static constexpr auto maxAmps = 5.0;
+    }
 }
