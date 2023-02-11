@@ -30,6 +30,10 @@ frc::Rotation2d str::IMU::GetYaw() {
   return frc::Rotation2d(units::degree_t(-navxGyro.GetYaw()) + internalOffset);
 }
 
+units::degree_t str::IMU::GetPitch() {
+  return units::degree_t{-navxGyro.GetRoll()};
+}
+
 units::radians_per_second_t str::IMU::GetYawRate() {
   return units::degrees_per_second_t(-navxGyro.GetRate());
 }

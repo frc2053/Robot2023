@@ -122,6 +122,12 @@ void SwerveCommandRobot::ConfigureBindings() {
     }  
   )));
 
+  driverController.LeftBumper().OnTrue(driveSubsystem.BalanceFactory(    
+    [this] { 
+      return std::abs(driverController.GetLeftY()) > 0.2; 
+    }
+  ));
+
   operatorController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }

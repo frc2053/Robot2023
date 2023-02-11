@@ -19,6 +19,10 @@ frc::Rotation2d str::SwerveDrivebase::GetRobotYaw() {
   return imu.GetYaw();
 }
 
+units::degree_t str::SwerveDrivebase::GetRobotPitch() {
+  return imu.GetPitch();
+}
+
 frc::Pose2d str::SwerveDrivebase::GetRobotPose() {
   return estimator.GetEstimatedPosition();
 }

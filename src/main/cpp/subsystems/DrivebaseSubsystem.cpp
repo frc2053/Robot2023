@@ -136,6 +136,28 @@ frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
     .ToPtr();
 }
 
+frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> wantsToOverride) {
+  return frc2::RunCommand(
+    [this]() {
+      double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
+      double pitch = swerveDrivebase.GetRobotPitch().value();
+      double ySpeed = 0;
+      if(pitch < 0) {
+        ySpeed = -1;
+      }
+      else if(pitch > 0) {
+        ySpeed = 1;
+      }
+      else {
+        ySpeed = 0;
+      }
+      fmt::print("rotCmd {}\n", rotCmd);
+      swerveDrivebase.Drive(ySpeed * 0.3_mps, 0_mps, rotCmd * 1_rad_per_s, true, false, true);
+    },
+    {this}
+  ).BeforeStarting([this] {thetaController.SetGoal(0_rad); }).Until([this]{ return std::abs(swerveDrivebase.GetRobotPitch().value()) < 0.5; });
+}
+
 void DrivebaseSubsystem::ResetOdom(
   std::function<double()> x_ft,
   std::function<double()> y_ft,

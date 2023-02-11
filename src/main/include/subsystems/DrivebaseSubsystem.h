@@ -12,6 +12,7 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <frc2/command/PrintCommand.h>
+#include <frc/controller/BangBangController.h>
 #include <memory>
 
 class DrivebaseSubsystem : public frc2::SubsystemBase {
@@ -47,6 +48,7 @@ public:
     std::function<double()> y_ft,
     std::function<double()> rot_deg
   );
+  frc2::CommandPtr BalanceFactory(std::function<bool()> wantsToOverride);
   void SetWheelSpeeds(units::meters_per_second_t speed);
   void ProcessVisionData();
   void ResetOdom(
