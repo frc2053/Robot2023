@@ -44,7 +44,7 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Feed Forward Elbow", feedForwards(1));
 
   shoulderMotor.SetVoltage(units::volt_t{feedForwards(0)});
-  elbowMotor.SetVoltage(units::volt_t{feedForwards(1)});
+  //elbowMotor.SetVoltage(units::volt_t{feedForwards(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
@@ -82,6 +82,16 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::func
     {this}
   ).ToPtr();
 }
+
+frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle) {
+  return frc2::InstantCommand(
+    [this, shoulderAngle, elbowAngle] {
+      SetDesiredArmAngles(shoulderAngle(), elbowAngle());
+    },
+    {this}
+  ).ToPtr();
+}
+
 
 void ArmSubsystem::ConfigureMotors() {
   ctre::phoenix::motorcontrol::can::TalonFXConfiguration baseConfig;

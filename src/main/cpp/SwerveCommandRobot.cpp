@@ -128,14 +128,14 @@ void SwerveCommandRobot::ConfigureBindings() {
     }
   ));
 
-  operatorController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - .25_ft; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+  operatorController.X().OnTrue(armSubsystem.SetDesiredArmAnglesFactory(
+    [this] { return armSubsystem.GetShoulderMotorAngle() - 5_deg; },
+    [this] { return armSubsystem.GetElbowMotorAngle(); }
   ));
 
-  operatorController.B().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + .25_ft; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+  operatorController.B().OnTrue(armSubsystem.SetDesiredArmAnglesFactory(
+    [this] { return armSubsystem.GetShoulderMotorAngle() + 5_deg; },
+    [this] { return armSubsystem.GetElbowMotorAngle(); }
   ));
 
   operatorController.A().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(

@@ -15,18 +15,19 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   void Periodic() override;
   void SimulationPeriodic() override;
+  units::radian_t GetShoulderMotorAngle();
+  units::radian_t GetElbowMotorAngle();
+  units::radians_per_second_t GetShoulderMotorVelocity();
+  units::radians_per_second_t GetElbowMotorVelocity();
   void SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle);
   void SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos);
   units::meter_t GetArmEndEffectorSetpointX();
   units::meter_t GetArmEndEffectorSetpointY();
   frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos);
+  frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
  private:
   void ConfigureMotors();
   void ResetEncoders();
-  units::radian_t GetShoulderMotorAngle();
-  units::radian_t GetElbowMotorAngle();
-  units::radians_per_second_t GetShoulderMotorVelocity();
-  units::radians_per_second_t GetElbowMotorVelocity();
 
   int ConvertShoulderAngleToTicks(units::radian_t angle);
   int ConvertShoulderVelocityToTicks(units::radians_per_second_t vel);
