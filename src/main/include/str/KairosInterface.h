@@ -2,6 +2,7 @@
 
 #include <networktables/DoubleArrayTopic.h>
 #include <networktables/StringTopic.h>
+#include <str/ArmTrajectory.h>
 
 class KairosInterface {
 public:
@@ -22,7 +23,11 @@ public:
 
   void SetConfig(std::string jsonConfig) {
     configPublisher.Set(jsonConfig);
-  }
+  };
+
+  void Request(ArmTrajectoryParams params) {
+    
+  };
 
 private:
   nt::StringPublisher configPublisher;
