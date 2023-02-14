@@ -9,6 +9,7 @@
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
 #include <ctre/phoenix/motorcontrol/TalonFXSimCollection.h>
 #include <str/ArmConfig.h>
+#include <str/KairosInterface.h>
 
 class ArmSubsystem : public frc2::SubsystemBase {
  public:
@@ -71,6 +72,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
     str::arm_constants::est,
     str::arm_constants::rPos
   };
+
+  KairosInterface kairos;
 
     // Create a Mechanism2d display of an Arm
   frc::Mechanism2d armDisplay{300, 300};

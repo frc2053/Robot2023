@@ -50,6 +50,7 @@ public:
     else {
       wpi::json data = wpi::json::parse(file);
       ArmConfig config;
+      config.json_string = data.dump();
       config.origin = frc::Translation2d{units::meter_t{data["origin"][0].get<double>()}, units::meter_t{data["origin"][1].get<double>()}};
 
       //shoulder

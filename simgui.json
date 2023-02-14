@@ -289,6 +289,12 @@
           "open": true
         },
         "open": true
+      },
+      "kairos": {
+        "open": true,
+        "result": {
+          "open": true
+        }
       }
     }
   },

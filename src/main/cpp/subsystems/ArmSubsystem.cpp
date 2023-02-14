@@ -10,6 +10,8 @@ ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
   ConfigureMotors();
   ResetEncoders();
+
+  kairos.SetConfig(config.json_string);
 }
 
 void ArmSubsystem::SimulationPeriodic() {
