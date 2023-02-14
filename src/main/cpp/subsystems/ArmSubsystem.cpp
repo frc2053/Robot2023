@@ -44,7 +44,7 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Feed Forward Elbow", feedForwards(1));
 
   shoulderMotor.SetVoltage(units::volt_t{feedForwards(0)});
-  //elbowMotor.SetVoltage(units::volt_t{feedForwards(1)});
+  elbowMotor.SetVoltage(units::volt_t{feedForwards(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {

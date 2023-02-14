@@ -76,7 +76,9 @@ void TwoJointArmDynamics::RecreateModels() {
   //std::cout << "X: " << idk.X().value() << " Y: " << idk.Y().value() << "\n";
   frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();//kGainLookupTable[idk];
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
-  ff = CalculateFeedForward(desiredState) + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
+  frc::Vectord<2> feedForwardResults = CalculateFeedForward(desiredState);
+  feedForwardResults(1) = 0;
+  ff = feedForwardResults + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
 }
 
 frc::Vectord<2> TwoJointArmDynamics::UpdateMeasurementState(frc::Vectord<6> state, frc::Vectord<2> input) {
