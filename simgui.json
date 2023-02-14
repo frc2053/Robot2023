@@ -309,7 +309,10 @@
         {
           "height": 497
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }

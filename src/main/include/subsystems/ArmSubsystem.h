@@ -8,6 +8,7 @@
 #include <frc/smartdashboard/MechanismRoot2d.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
 #include <ctre/phoenix/motorcontrol/TalonFXSimCollection.h>
+#include <str/ArmConfig.h>
 
 class ArmSubsystem : public frc2::SubsystemBase {
  public:
@@ -46,20 +47,21 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   units::meter_t currentEndEffectorSetpointX{24_in};
   units::meter_t currentEndEffectorSetpointY{24_in};
-
+  
+  ArmConfig config{ArmConfig::LoadJson("arm_config.json")};
   TwoJointArmDynamics armSystem {
-    str::arm_constants::shoulderMass,
-    str::arm_constants::elbowMass,
-    str::arm_constants::shoulderLength,
-    str::arm_constants::elbowLength,
-    str::arm_constants::shoulderMoi,
-    str::arm_constants::elbowMoi,
-    str::arm_constants::cogDistShoulder,
-    str::arm_constants::cogDistElbow,
-    str::arm_constants::shoulderGearbox,
-    str::arm_constants::elbowGearbox,
-    str::arm_constants::shoulderGearing,
-    str::arm_constants::elbowGearing,
+    config.shoulder.mass,
+    config.elbow.mass,
+    config.shoulder.length,
+    config.elbow.length,
+    config.shoulder.moi,
+    config.elbow.moi,
+    config.shoulder.cgRadius,
+    config.elbow.cgRadius,
+    config.shoulder.motor,
+    config.elbow.motor,
+    config.shoulder.gearReduction,
+    config.elbow.gearReduction,
     initialState,
     str::arm_constants::positionTolerance,
     str::arm_constants::velocityTolerance,

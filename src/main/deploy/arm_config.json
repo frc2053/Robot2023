@@ -1,0 +1,81 @@
+{
+    "origin": [
+      -0.28448,
+      0.79248
+    ],
+    "shoulder": {
+      "mass": 2.26796,
+      "length": 0.4823551694,
+      "moi": 0.087826505,
+      "cgRadius": 0.2048979138,
+      "minAngle": -1.571,
+      "maxAngle": 5.75959,
+      "motor": {
+        "type": "falcon500",
+        "count": 1,
+        "reduction": 90.0
+      }
+    },
+    "elbow": {
+      "mass": 2.26796,
+      "length": 0.6597242838,
+      "moi": 0.079192275,
+      "cgRadius": 0.58166254,
+      "minAngle": -2,
+      "maxAngle": 2,
+      "motor": {
+        "type": "falcon500",
+        "count": 1,
+        "reduction": 90.0
+      }
+    },
+    "solver": {
+      "interiorPoints": 25,
+      "maxVoltage": 10,
+      "maxJerk": 30
+    },
+    "constraints": {
+      "floor": {
+        "type": "minY",
+        "args": [
+          0
+        ]
+      },
+      "height_limit": {
+        "type": "maxY",
+        "args": [
+          1.9812
+        ]
+      },
+      "max_extension_neg": {
+        "type": "minX",
+        "args": [
+          -1.2446
+        ]
+      },
+      "max_extension_pos": {
+        "type": "maX",
+        "args": [
+          1.88214
+        ]
+      },
+      "armSupport": {
+        "type": "rectangle",
+        "args": [
+          -0.3429,
+          0,
+          -0.226,
+          0.6096
+        ]
+      },
+      "robotBody": {
+        "type": "rectangle",
+        "args": [
+          -0.3683,
+          0,
+          0.3683,
+          0.187325
+        ]
+      }
+    }
+  }
