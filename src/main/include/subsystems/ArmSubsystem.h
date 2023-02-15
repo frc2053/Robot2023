@@ -49,6 +49,9 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   units::meter_t currentEndEffectorSetpointX{24_in};
   units::meter_t currentEndEffectorSetpointY{24_in};
+
+  units::radians_per_second_t prevShoulderVel{0_rad_per_s};
+  units::radians_per_second_t prevElbowVel{0_rad_per_s};
   
   ArmConfig config{ArmConfig::LoadJson("arm_config.json")};
   TwoJointArmDynamics armSystem {

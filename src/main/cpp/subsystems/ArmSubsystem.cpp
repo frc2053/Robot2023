@@ -35,10 +35,31 @@ void ArmSubsystem::SimulationPeriodic() {
 }
 
 void ArmSubsystem::Periodic() {
+
+  units::radian_t shoulderPos = GetShoulderMotorAngle();
+  units::radian_t elbowPos = GetElbowMotorAngle();
+
+  units::radians_per_second_t shoulderVel = GetShoulderMotorVelocity();
+  units::radians_per_second_t elbowVel = GetElbowMotorVelocity();
+
+  units::radians_per_second_squared_t shoulderAccel = (shoulderVel - prevShoulderVel) / 0.02_s;
+  units::radians_per_second_squared_t elbowAccel = (elbowVel - prevElbowVel) / 0.02_s;
+
+  frc::SmartDashboard::PutNumber("Shoulder Angle", shoulderPos.convert<units::degrees>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Angle", elbowPos.convert<units::degrees>().value()); 
+
+  frc::SmartDashboard::PutNumber("Shoulder Vel", shoulderVel.convert<units::degrees_per_second>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Vel", elbowVel.convert<units::degrees_per_second>().value()); 
+
+  frc::SmartDashboard::PutNumber("Shoulder Accel", shoulderAccel.convert<units::degrees_per_second_squared>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Accel", elbowAccel.convert<units::degrees_per_second_squared>().value()); 
+
+  armSystem.UpdateReal(shoulderPos, elbowPos, shoulderVel, elbowVel, shoulderAccel, elbowAccel);
+
   frc::Vectord<6> ekfState = armSystem.GetEKFState();
 
-  armShoulderActual->SetAngle(GetShoulderMotorAngle());
-  armElbowActual->SetAngle(GetElbowMotorAngle());
+  armShoulderActual->SetAngle(shoulderPos);
+  armElbowActual->SetAngle(elbowPos);
 
   armShoulderEkf->SetAngle(units::radian_t{ekfState(0)});
   armElbowEkf->SetAngle(units::radian_t{ekfState(1)});

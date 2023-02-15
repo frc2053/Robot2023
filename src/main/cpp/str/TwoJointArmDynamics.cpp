@@ -69,6 +69,12 @@ void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
   //ekf->Correct(input, currentState.head(2));
 }
 
+void TwoJointArmDynamics::UpdateReal(units::radian_t shoulderPos, units::radian_t elbowPos, units::radians_per_second_t shoulderVel, units::radians_per_second_t elbowVel, units::radians_per_second_squared_t shoulderAccel, units::radians_per_second_squared_t elbowAccel)
+ {
+  currentState = frc::Vectord<6>{shoulderPos.value(), elbowPos.value(), shoulderVel.value(), elbowVel.value(), shoulderAccel.value(), elbowAccel.value()};
+  RecreateModels();
+}
+
 void TwoJointArmDynamics::RecreateModels() {
   Relinearize(currentState, CalculateFeedForward(currentState));
   //frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2), true);

@@ -12,6 +12,7 @@
 #include <frc/controller/LinearQuadraticRegulator.h>
 #include <random>
 #include <memory>
+#include <units/angular_acceleration.h>
 #include "str/interpolating_map_xy.h"
 
 class TwoJointArmDynamics {
@@ -31,6 +32,8 @@ public:
   //LOOPS
   void Update(frc::Vectord<2> input);
   void RecreateModels();
+  void UpdateReal(units::radian_t shoulderPos, units::radian_t elbowPos, units::radians_per_second_t shoulderVel, units::radians_per_second_t elbowVel, units::radians_per_second_squared_t shoulderAccel, units::radians_per_second_squared_t elbowAccel);
+
 
   //KALMAN NOISY
   frc::Vectord<2> UpdateMeasurementState(frc::Vectord<6> state, frc::Vectord<2> input);
