@@ -5,12 +5,18 @@
 #include <frc2/command/InstantCommand.h>
 #include <iostream>
 #include <frc/RobotState.h>
+#include <frc/RobotBase.h>
 #include <frc2/command/RunCommand.h>
 
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
   ConfigureMotors();
   ResetEncoders();
+
+  if(!frc::RobotBase::IsSimulation()) {
+    shoulderMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
+    elbowMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
+  }
 
   kairos.SetConfig(config.json_string);
 }
@@ -39,7 +45,7 @@ void ArmSubsystem::Periodic() {
 
   tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
 
-  LogStateToAdvantageScope();
+  //LogStateToAdvantageScope();
 
   frc::Vectord<2> feedForwards = armSystem.GetVoltagesToApply();
 
