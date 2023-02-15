@@ -4,12 +4,35 @@
 #include <units/time.h>
 #include <units/math.h>
 #include <cmath>
+#include <functional>
 #include <algorithm>
 
 struct ArmTrajectoryParams {
-  frc::Vectord<2> initialState;
-  frc::Vectord<2> finalState;
+  frc::Vectord<2> initialState{0,0};
+  frc::Vectord<2> finalState{0,0};
+
+  bool operator==(const ArmTrajectoryParams& other) {
+    return ((this->initialState - other.initialState).norm() < 1e-5) && ((this->finalState - other.finalState).norm() < 1e-5);
+  }
 };
+
+namespace std {
+  template <>
+  struct hash<ArmTrajectoryParams>
+  {
+    std::size_t operator()(const ArmTrajectoryParams& k) const
+    {
+      size_t res = 17;
+
+      res = res * 31 + std::hash<double>()(k.initialState(0));
+      res = res * 31 + std::hash<double>()(k.initialState(1));
+      res = res * 31 + std::hash<double>()(k.finalState(0));
+      res = res * 31 + std::hash<double>()(k.finalState(1));
+
+      return res;
+    }
+  };
+}
 
 class ArmTrajectory {
 public:
@@ -33,7 +56,7 @@ public:
   std::vector<frc::Vectord<2>> GetPoints() const {
     return points;
   };
-  frc::Matrixd<2, 3> Sample(units::second_t time) {
+  frc::Vectord<6> Sample(units::second_t time) const {
     units::second_t dt = totalTime / (points.size() - 1);
 
     int prevIndex = units::math::floor(time / dt);
@@ -70,9 +93,8 @@ public:
       accel1 = (nextVel1 - vel1) / dt.value();
     }
 
-    frc::Matrixd<2, 3> result;
-    result << pos0, vel0, accel0,
-              pos1, vel1, accel1;
+    frc::Vectord<6> result;
+    result << pos0, pos1, vel0, vel1, accel0, accel1;
 
     return result;
   };

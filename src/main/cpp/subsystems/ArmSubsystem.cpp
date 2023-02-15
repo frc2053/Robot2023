@@ -5,6 +5,7 @@
 #include <frc2/command/InstantCommand.h>
 #include <iostream>
 #include <frc/RobotState.h>
+#include <frc2/command/RunCommand.h>
 
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
@@ -73,6 +74,11 @@ void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::
     anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, true);
   }
   frc::Vectord<6> requestedState{anglesToGoTo(0), anglesToGoTo(1), 0, 0, 0, 0};
+
+  ArmTrajectoryParams params;
+  params.initialState = frc::Vectord<2>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value()};
+  params.finalState = anglesToGoTo;
+  kairos.Request(params);
   armSystem.SetDesiredState(requestedState);
 }
 
@@ -94,6 +100,18 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
   ).ToPtr();
 }
 
+frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectory& traj) {
+  return frc2::RunCommand(
+    [this, traj] {
+      armSystem.SetDesiredState(traj.Sample(armTrajTimer.Get()));
+    }
+  ).BeforeStarting(
+    [this] {
+      armTrajTimer.Reset();
+      armTrajTimer.Start();
+    }
+  ).WithTimeout(traj.GetTotalTime());
+}
 
 void ArmSubsystem::ConfigureMotors() {
   ctre::phoenix::motorcontrol::can::TalonFXConfiguration baseConfig;

@@ -19,6 +19,8 @@ public:
     requestPublisher = kairosTable->GetStringTopic("request").Publish(requestOptions);
 
     resultSubscriber = kairosTable->GetDoubleArrayTopic("result/0").Subscribe({}, fastUpdateOptions);
+
+    kairosTable->PutNumberArray("result/0", {});
   };
 
   void SetConfig(std::string jsonConfig) {
@@ -26,11 +28,19 @@ public:
   };
 
   void Request(ArmTrajectoryParams params) {
-    
+    wpi::json dataToSend;
+    dataToSend["hash"] = std::hash<ArmTrajectoryParams>()(params);
+    dataToSend["initial"] = {params.initialState(0), params.initialState(1)};
+    dataToSend["final"] = {params.finalState(0), params.finalState(1)};
+    dataToSend["constraintOverrides"] = wpi::json::array();
+
+    requestPublisher.Set(dataToSend.dump());
+    resultRecieved = false;
   };
 
 private:
   nt::StringPublisher configPublisher;
   nt::StringPublisher requestPublisher;
   nt::DoubleArraySubscriber resultSubscriber;
+  bool resultRecieved{false};
 };
