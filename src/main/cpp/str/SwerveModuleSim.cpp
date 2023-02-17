@@ -6,8 +6,8 @@
 #include <frc/motorcontrol/PWMSparkMax.h>
 
 str::SwerveModuleSim::SwerveModuleSim(int driveMotorPort, int turnMotorPort, int driveEncoderPortA, int driveEncoderPortB, int turnEncoderPortA, int turnEncoderPortB) :
-  driveMotor{frc::PWMSparkMax{driveMotorPort}}, driveSim{driveMotor}, turningMotor{frc::PWMSparkMax{turnMotorPort}}, turnSim{turningMotor},
-  driveEncoder{driveEncoderPortA, driveEncoderPortB}, driveEncoderSim{driveEncoder},
+  driveMotor{frc::PWMSparkMax{driveMotorPort}}, driveSim{driveMotor}, driveEncoder{driveEncoderPortA, driveEncoderPortB}, 
+  driveEncoderSim{driveEncoder}, turningMotor{frc::PWMSparkMax{turnMotorPort}}, turnSim{turningMotor},
   turnEncoder{turnEncoderPortA, turnEncoderPortB}, turnEncoderSim{turnEncoder},
   previousTime{frc::Timer::GetFPGATimestamp()} {
 

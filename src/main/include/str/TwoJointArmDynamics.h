@@ -12,6 +12,7 @@
 #include <frc/controller/LinearQuadraticRegulator.h>
 #include <random>
 #include <memory>
+#include <units/angular_acceleration.h>
 #include "str/interpolating_map_xy.h"
 
 class TwoJointArmDynamics {
@@ -31,6 +32,8 @@ public:
   //LOOPS
   void Update(frc::Vectord<2> input);
   void RecreateModels();
+  void UpdateReal(units::radian_t shoulderPos, units::radian_t elbowPos, units::radians_per_second_t shoulderVel, units::radians_per_second_t elbowVel, units::radians_per_second_squared_t shoulderAccel, units::radians_per_second_squared_t elbowAccel);
+
 
   //KALMAN NOISY
   frc::Vectord<2> UpdateMeasurementState(frc::Vectord<6> state, frc::Vectord<2> input);
@@ -44,7 +47,7 @@ public:
   //RELINEARIZATION
   void Relinearize(frc::Vectord<6> state, frc::Vectord<2> input);
   frc::LinearSystem<6, 2, 2> CreateModel(frc::Vectord<6> state, frc::Vectord<2> input);
-  frc::LinearQuadraticRegulator<4,2> DesignLQR(frc::LinearSystem<6,2,2> system, std::array<double, 4> qElems, std::array<double, 2> rElems) const;
+  frc::LinearQuadraticRegulator<4,2> DesignLQR(const frc::LinearSystem<6,2,2>& system, std::array<double, 4> qElems, std::array<double, 2> rElems) const;
   void CreateLQRLookupTable();
 
   //DYNAMICS

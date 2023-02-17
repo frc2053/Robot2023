@@ -8,6 +8,8 @@
 #include <frc/smartdashboard/MechanismRoot2d.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
 #include <ctre/phoenix/motorcontrol/TalonFXSimCollection.h>
+#include <str/ArmConfig.h>
+#include <str/KairosInterface.h>
 
 class ArmSubsystem : public frc2::SubsystemBase {
  public:
@@ -15,18 +17,20 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   void Periodic() override;
   void SimulationPeriodic() override;
+  units::radian_t GetShoulderMotorAngle();
+  units::radian_t GetElbowMotorAngle();
+  units::radians_per_second_t GetShoulderMotorVelocity();
+  units::radians_per_second_t GetElbowMotorVelocity();
   void SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle);
   void SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos);
   units::meter_t GetArmEndEffectorSetpointX();
   units::meter_t GetArmEndEffectorSetpointY();
   frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos);
+  frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
+  frc2::CommandPtr FollowTrajectory(const ArmTrajectory& traj);
  private:
   void ConfigureMotors();
   void ResetEncoders();
-  units::radian_t GetShoulderMotorAngle();
-  units::radian_t GetElbowMotorAngle();
-  units::radians_per_second_t GetShoulderMotorVelocity();
-  units::radians_per_second_t GetElbowMotorVelocity();
 
   int ConvertShoulderAngleToTicks(units::radian_t angle);
   int ConvertShoulderVelocityToTicks(units::radians_per_second_t vel);
@@ -41,24 +45,28 @@ class ArmSubsystem : public frc2::SubsystemBase {
   ctre::phoenix::motorcontrol::TalonFXSimCollection shoulderSimCollection{shoulderMotor.GetSimCollection()};
   ctre::phoenix::motorcontrol::TalonFXSimCollection elbowSimCollection{elbowMotor.GetSimCollection()};
 
-  frc::Vectord<6> initialState{0.785,-0.785,0,0,0,0};
+  frc::Vectord<6> initialState{0.248886761314,-1.8326,0,0,0,0};
 
-  units::meter_t currentEndEffectorSetpointX{42_in};
+  units::meter_t currentEndEffectorSetpointX{24_in};
   units::meter_t currentEndEffectorSetpointY{24_in};
 
+  units::radians_per_second_t prevShoulderVel{0_rad_per_s};
+  units::radians_per_second_t prevElbowVel{0_rad_per_s};
+  
+  ArmConfig config{ArmConfig::LoadJson("arm_config.json")};
   TwoJointArmDynamics armSystem {
-    str::arm_constants::shoulderMass,
-    str::arm_constants::elbowMass,
-    str::arm_constants::shoulderLength,
-    str::arm_constants::elbowLength,
-    str::arm_constants::shoulderMoi,
-    str::arm_constants::elbowMoi,
-    str::arm_constants::cogDistShoulder,
-    str::arm_constants::cogDistElbow,
-    str::arm_constants::shoulderGearbox,
-    str::arm_constants::elbowGearbox,
-    str::arm_constants::shoulderGearing,
-    str::arm_constants::elbowGearing,
+    config.shoulder.mass,
+    config.elbow.mass,
+    config.shoulder.length,
+    config.elbow.length,
+    config.shoulder.moi,
+    config.elbow.moi,
+    config.shoulder.cgRadius,
+    config.elbow.cgRadius,
+    config.shoulder.motor,
+    config.elbow.motor,
+    config.shoulder.gearReduction,
+    config.elbow.gearReduction,
     initialState,
     str::arm_constants::positionTolerance,
     str::arm_constants::velocityTolerance,
@@ -69,9 +77,12 @@ class ArmSubsystem : public frc2::SubsystemBase {
     str::arm_constants::rPos
   };
 
+  KairosInterface kairos;
+  frc::Timer armTrajTimer;
+
     // Create a Mechanism2d display of an Arm
   frc::Mechanism2d armDisplay{300, 300};
-  frc::MechanismRoot2d* armBase = armDisplay.GetRoot("ArmBase", 150, 150);
+  frc::MechanismRoot2d* armBase = armDisplay.GetRoot("ArmBase", 150, 150 + 31);
   frc::MechanismLigament2d* armShoulderActual =
     armBase->Append<frc::MechanismLigament2d>(
         "ShoulderActual",

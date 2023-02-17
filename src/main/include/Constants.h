@@ -15,6 +15,7 @@ namespace str {
 
   namespace oi {
     static constexpr int DRIVER_CONTROLLER = 0;
+    static constexpr int OPERATOR_CONTROLLER = 1;
   }
 
   namespace vision {

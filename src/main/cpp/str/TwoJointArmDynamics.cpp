@@ -6,6 +6,8 @@
 #include <frc/system/Discretization.h>
 #include <frc/StateSpaceUtil.h>
 #include <chrono>
+#include <wpi/json_serializer.h>
+#include <fstream>
 
 //GOOD
 //Can't figure out how to make NumericalJacobian take ptr to member func
@@ -67,14 +69,22 @@ void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
   //ekf->Correct(input, currentState.head(2));
 }
 
+void TwoJointArmDynamics::UpdateReal(units::radian_t shoulderPos, units::radian_t elbowPos, units::radians_per_second_t shoulderVel, units::radians_per_second_t elbowVel, units::radians_per_second_squared_t shoulderAccel, units::radians_per_second_squared_t elbowAccel)
+ {
+  currentState = frc::Vectord<6>{shoulderPos.value(), elbowPos.value(), shoulderVel.value(), elbowVel.value(), shoulderAccel.value(), elbowAccel.value()};
+  RecreateModels();
+}
+
 void TwoJointArmDynamics::RecreateModels() {
   Relinearize(currentState, CalculateFeedForward(currentState));
-  frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2), true);
-  str::ArmCoordinate idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
-  std::cout << "X: " << idk.X().value() << " Y: " << idk.Y().value() << "\n";
+  //frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2), true);
+  //str::ArmCoordinate idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
+  //std::cout << "X: " << idk.X().value() << " Y: " << idk.Y().value() << "\n";
   frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();//kGainLookupTable[idk];
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
-  ff = CalculateFeedForward(desiredState) + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
+  frc::Vectord<2> feedForwardResults = CalculateFeedForward(desiredState);
+  feedForwardResults(1) = 0;
+  ff = feedForwardResults + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
 }
 
 frc::Vectord<2> TwoJointArmDynamics::UpdateMeasurementState(frc::Vectord<6> state, frc::Vectord<2> input) {
@@ -118,38 +128,30 @@ frc::LinearSystem<6, 2, 2> TwoJointArmDynamics::CreateModel(frc::Vectord<6> stat
 }
 
 //GOOD
-frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(frc::LinearSystem<6,2,2> system, std::array<double, 4> qElems, std::array<double, 2> rElems) const {
-  using std::chrono::high_resolution_clock;
-  using std::chrono::duration;
+frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(const frc::LinearSystem<6,2,2>& system, std::array<double, 4> qElems, std::array<double, 2> rElems) const {
   frc::Matrixd<4, 4> Ar = system.A().block<4, 4>(0,0);
   frc::Matrixd<4, 2> Br = system.B().block<4, 2>(0,0);
   frc::Matrixd<2, 4> Cr = system.C().block<2, 4>(0,0);
   frc::LinearSystem<4, 2, 2> reducedSystem{Ar, Br, Cr, system.D()};
-  auto t1 = high_resolution_clock::now();
   frc::LinearQuadraticRegulator<4, 2> lqr = frc::LinearQuadraticRegulator<4, 2>(reducedSystem, qElems, rElems, dt);
-  auto t2 = high_resolution_clock::now();
-  duration<double, std::milli> ms_double = t2 - t1;
-  std::cout << ms_double.count() << "ms\n";
   return lqr;
 }
 
 void TwoJointArmDynamics::CreateLQRLookupTable() {
   //iterate through each xy position in 5cm increments
   //to create lookup table for LQR gains
-  for(units::inch_t r = 70_in; r >= 1_in; r = r - 5_in) {
-    for(units::degree_t theta = 0_deg; theta <= 180_deg; theta = theta + 5_deg) {
-      units::meter_t x = r * units::math::sin(theta);
-      units::meter_t y = r * units::math::cos(theta);
-      frc::Vectord<2> angles = CalculateInverseKinematics(frc::Vectord<2>{x.value(),y.value()});
-      std::cout << "Designing LQR for state (" << x.value() << "," << y.value() << ")\n";
-      frc::Vectord<6> state{angles(0), angles(1), 0, 0, 0, 0};
+  for(units::radian_t shoulderAngle = 0_rad; shoulderAngle <= 360_deg; shoulderAngle = shoulderAngle + 1_deg) {
+    for(units::radian_t elbowAngle = 0_rad; elbowAngle <= 360_deg; elbowAngle = elbowAngle + 1_deg) {
+      frc::Vectord<6> state{shoulderAngle.value(), elbowAngle.value(), 0, 0, 0, 0};
       frc::Vectord<2> control = CalculateFeedForward(state);
       std::cout << "State: " << state << "\n";
       std::cout << "----\n";
       std::cout << "Control: " << control << "\n";
       frc::LinearSystem<6, 2, 2> system = CreateModel(state, control);
       frc::Matrixd<2, 4> resultKMatrix = DesignLQR(system, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
-      kGainLookupTable.insert(str::ArmCoordinate{x,y}, resultKMatrix);
+
+      frc::Vectord<2> xAndY = CalculateInverseKinematics(frc::Vectord<2>{shoulderAngle.value(), elbowAngle.value()});
+      kGainLookupTable.insert(str::ArmCoordinate{units::meter_t{xAndY(0)},units::meter_t{xAndY(1)}}, resultKMatrix);
     }
   }
 }
@@ -199,6 +201,7 @@ frc::Vectord<6> TwoJointArmDynamics::DynamicsReal(frc::Vectord<6> state, frc::Ve
   frc::Vectord<2> alpha = M.inverse() * (torque - C * omegas - G);
   frc::Vectord<6> stateDot;
   stateDot << omegas, alpha, frc::Vectord<2>{0,0};
+
   return stateDot;
 }
 
@@ -247,7 +250,7 @@ frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(frc::Vectord<2> 
 //GOOD
 frc::Matrixd<2,2> TwoJointArmDynamics::CalculateInertiaMatrix(frc::Vectord<2> angleVec) const {
   frc::Matrixd<2,2> inertiaMatrix;
-  inertiaMatrix << massOfShoulder * std::pow(distToCogShoulder, 2) + massOfElbow * (std::pow(lengthOfShoulder, 2) + std::pow(distToCogElbow, 2)) + shoulderMoi + elbowMoi + 2 * massOfElbow * lengthOfShoulder * distToCogElbow * std::cos(angleVec(0)),
+  inertiaMatrix << massOfShoulder * std::pow(distToCogShoulder, 2) + massOfElbow * (std::pow(lengthOfShoulder, 2) + std::pow(distToCogElbow, 2)) + shoulderMoi + elbowMoi + 2 * massOfElbow * lengthOfShoulder * distToCogElbow * std::cos(angleVec(1)),
                    massOfElbow * std::pow(distToCogElbow, 2) + elbowMoi + massOfElbow * lengthOfShoulder * distToCogElbow * std::cos(angleVec(1)),
                    massOfElbow * std::pow(distToCogElbow, 2) + elbowMoi + massOfElbow * lengthOfShoulder * distToCogElbow * std::cos(angleVec(1)), 
                    massOfElbow * std::pow(distToCogElbow, 2) + elbowMoi;

@@ -18,6 +18,7 @@ namespace str {
   public:
     SwerveDrivebase();
     frc::Rotation2d GetRobotYaw();
+    units::degree_t GetRobotPitch();
     frc::Pose2d GetRobotPose();
     void Periodic();
     void SimulationPeriodic();

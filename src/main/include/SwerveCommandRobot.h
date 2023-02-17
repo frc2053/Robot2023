@@ -19,9 +19,10 @@ public:
 
 private:
   frc2::CommandXboxController driverController{str::oi::DRIVER_CONTROLLER};
+  frc2::CommandXboxController operatorController{str::oi::OPERATOR_CONTROLLER};
   DrivebaseSubsystem driveSubsystem;
   IntakeSubsystem intakeSubsystem;
-  //ArmSubsystem armSubsystem;
+  ArmSubsystem armSubsystem;
 
   frc2::CommandPtr oneMeterForward = autos::OneMForward(&driveSubsystem);
   frc2::CommandPtr testPath = autos::TestPath(&driveSubsystem);

@@ -5,11 +5,32 @@
 #include <frc2/command/InstantCommand.h>
 #include <iostream>
 #include <frc/RobotState.h>
+#include <frc/RobotBase.h>
+#include <str/ArmPose.h>
+#include <frc2/command/RunCommand.h>
 
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
   ConfigureMotors();
   ResetEncoders();
+
+  if(!frc::RobotBase::IsSimulation()) {
+    shoulderMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
+    elbowMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
+  }
+
+  kairos.SetConfig(config.json_string);
+
+  ArmPose startPose = ArmPose::StartingConfig();
+  ArmPose scorePose = ArmPose::ScoreConeHigh();
+
+  ArmTrajectoryParams param;
+  param.initialState = armSystem.CalculateInverseKinematics(startPose.AsVector());
+  param.finalState = armSystem.CalculateInverseKinematics(scorePose.AsVector());
+
+  fmt::print("param: {}, {}\n", param.initialState, param.finalState);
+
+  kairos.Request(param);
 }
 
 void ArmSubsystem::SimulationPeriodic() {
@@ -26,17 +47,46 @@ void ArmSubsystem::SimulationPeriodic() {
 }
 
 void ArmSubsystem::Periodic() {
+
+  kairos.Update();
+
+  KairosResults results = kairos.GetMostRecentResult();
+
+  fmt::print("Kairos results: t = {}, hash = {}\n", results.totalTime, results.hash);
+
+  units::radian_t shoulderPos = GetShoulderMotorAngle();
+  units::radian_t elbowPos = GetElbowMotorAngle();
+
+  units::radians_per_second_t shoulderVel = GetShoulderMotorVelocity();
+  units::radians_per_second_t elbowVel = GetElbowMotorVelocity();
+
+  units::radians_per_second_squared_t shoulderAccel = (shoulderVel - prevShoulderVel) / 0.02_s;
+  units::radians_per_second_squared_t elbowAccel = (elbowVel - prevElbowVel) / 0.02_s;
+
+  frc::SmartDashboard::PutNumber("Shoulder Angle", shoulderPos.convert<units::degrees>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Angle", elbowPos.convert<units::degrees>().value()); 
+
+  frc::SmartDashboard::PutNumber("Shoulder Vel", shoulderVel.convert<units::degrees_per_second>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Vel", elbowVel.convert<units::degrees_per_second>().value()); 
+
+  frc::SmartDashboard::PutNumber("Shoulder Accel", shoulderAccel.convert<units::degrees_per_second_squared>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Accel", elbowAccel.convert<units::degrees_per_second_squared>().value()); 
+
+  if(frc::RobotBase::IsReal()) {
+    armSystem.UpdateReal(shoulderPos, elbowPos, shoulderVel, elbowVel, shoulderAccel, elbowAccel);
+  }
+
   frc::Vectord<6> ekfState = armSystem.GetEKFState();
 
-  armShoulderActual->SetAngle(GetShoulderMotorAngle());
-  armElbowActual->SetAngle(GetElbowMotorAngle());
+  armShoulderActual->SetAngle(shoulderPos);
+  armElbowActual->SetAngle(elbowPos);
 
   armShoulderEkf->SetAngle(units::radian_t{ekfState(0)});
   armElbowEkf->SetAngle(units::radian_t{ekfState(1)});
 
-  tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150);
+  tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
 
-  LogStateToAdvantageScope();
+  //LogStateToAdvantageScope();
 
   frc::Vectord<2> feedForwards = armSystem.GetVoltagesToApply();
 
@@ -63,8 +113,19 @@ units::meter_t ArmSubsystem::GetArmEndEffectorSetpointY() {
 void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos) {
   currentEndEffectorSetpointX = xPos;
   currentEndEffectorSetpointY = yPos;
-  frc::Vectord<2> anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, true);
+  frc::Vectord<2> anglesToGoTo;
+  if(xPos < 0_m) {
+    anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, false);
+  }
+  else {
+    anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, true);
+  }
   frc::Vectord<6> requestedState{anglesToGoTo(0), anglesToGoTo(1), 0, 0, 0, 0};
+
+  ArmTrajectoryParams params;
+  params.initialState = frc::Vectord<2>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value()};
+  params.finalState = anglesToGoTo;
+  kairos.Request(params);
   armSystem.SetDesiredState(requestedState);
 }
 
@@ -75,6 +136,28 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::func
     },
     {this}
   ).ToPtr();
+}
+
+frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle) {
+  return frc2::InstantCommand(
+    [this, shoulderAngle, elbowAngle] {
+      SetDesiredArmAngles(shoulderAngle(), elbowAngle());
+    },
+    {this}
+  ).ToPtr();
+}
+
+frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectory& traj) {
+  return frc2::RunCommand(
+    [this, traj] {
+      armSystem.SetDesiredState(traj.Sample(armTrajTimer.Get()));
+    }
+  ).BeforeStarting(
+    [this] {
+      armTrajTimer.Reset();
+      armTrajTimer.Start();
+    }
+  ).WithTimeout(traj.GetTotalTime());
 }
 
 void ArmSubsystem::ConfigureMotors() {
