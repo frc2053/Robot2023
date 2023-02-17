@@ -6,6 +6,7 @@
 #include <iostream>
 #include <frc/RobotState.h>
 #include <frc/RobotBase.h>
+#include <str/ArmPose.h>
 #include <frc2/command/RunCommand.h>
 
 ArmSubsystem::ArmSubsystem() {
@@ -19,6 +20,17 @@ ArmSubsystem::ArmSubsystem() {
   }
 
   kairos.SetConfig(config.json_string);
+
+  ArmPose startPose = ArmPose::StartingConfig();
+  ArmPose scorePose = ArmPose::ScoreConeHigh();
+
+  ArmTrajectoryParams param;
+  param.initialState = armSystem.CalculateInverseKinematics(startPose.AsVector());
+  param.finalState = armSystem.CalculateInverseKinematics(scorePose.AsVector());
+
+  fmt::print("param: {}, {}\n", param.initialState, param.finalState);
+
+  kairos.Request(param);
 }
 
 void ArmSubsystem::SimulationPeriodic() {
@@ -35,6 +47,12 @@ void ArmSubsystem::SimulationPeriodic() {
 }
 
 void ArmSubsystem::Periodic() {
+
+  kairos.Update();
+
+  KairosResults results = kairos.GetMostRecentResult();
+
+  fmt::print("Kairos results: t = {}, hash = {}\n", results.totalTime, results.hash);
 
   units::radian_t shoulderPos = GetShoulderMotorAngle();
   units::radian_t elbowPos = GetElbowMotorAngle();
@@ -54,7 +72,9 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Shoulder Accel", shoulderAccel.convert<units::degrees_per_second_squared>().value()); 
   frc::SmartDashboard::PutNumber("Elbow Accel", elbowAccel.convert<units::degrees_per_second_squared>().value()); 
 
-  armSystem.UpdateReal(shoulderPos, elbowPos, shoulderVel, elbowVel, shoulderAccel, elbowAccel);
+  if(frc::RobotBase::IsReal()) {
+    armSystem.UpdateReal(shoulderPos, elbowPos, shoulderVel, elbowVel, shoulderAccel, elbowAccel);
+  }
 
   frc::Vectord<6> ekfState = armSystem.GetEKFState();
 
