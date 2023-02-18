@@ -128,7 +128,7 @@ frc::LinearSystem<6, 2, 2> TwoJointArmDynamics::CreateModel(frc::Vectord<6> stat
 }
 
 //GOOD
-frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(const frc::LinearSystem<6,2,2>& system, std::array<double, 4> qElems, std::array<double, 2> rElems) const {
+frc::LinearQuadraticRegulator<4,2> TwoJointArmDynamics::DesignLQR(const frc::LinearSystem<6,2,2>& system, const std::array<double, 4>& qElems, const std::array<double, 2>& rElems) const {
   frc::Matrixd<4, 4> Ar = system.A().block<4, 4>(0,0);
   frc::Matrixd<4, 2> Br = system.B().block<4, 2>(0,0);
   frc::Matrixd<2, 4> Cr = system.C().block<2, 4>(0,0);
@@ -157,7 +157,7 @@ void TwoJointArmDynamics::CreateLQRLookupTable() {
 }
 
 //GOOD
-std::tuple<frc::Matrixd<2,2>,frc::Matrixd<2,2>,frc::Vectord<2>> TwoJointArmDynamics::GetDynamicsMatrices(frc::Vectord<6> state) const {
+std::tuple<frc::Matrixd<2,2>,frc::Matrixd<2,2>,frc::Vectord<2>> TwoJointArmDynamics::GetDynamicsMatrices(const frc::Vectord<6>& state) const {
   frc::Matrixd<2,2> M = CalculateInertiaMatrix(state({0,1}));
   frc::Matrixd<2,2> C = CalculateCentrifugalCoriolisTerms(state({0,1}), state({2,3}));
   frc::Vectord<2> G = CalculateGravityTorque(state({0,1}), state({2,3}));
@@ -165,7 +165,7 @@ std::tuple<frc::Matrixd<2,2>,frc::Matrixd<2,2>,frc::Vectord<2>> TwoJointArmDynam
 }
 
 //GOOD
-frc::Vectord<6> TwoJointArmDynamics::Dynamics(frc::Vectord<6> state, frc::Vectord<2> input) const {
+frc::Vectord<6> TwoJointArmDynamics::Dynamics(const frc::Vectord<6>& state, const frc::Vectord<2>& input) const {
   frc::Matrixd<2,2> M;
   frc::Matrixd<2,2> C;
   frc::Vectord<2> G;
@@ -185,7 +185,7 @@ frc::Vectord<6> TwoJointArmDynamics::Dynamics(frc::Vectord<6> state, frc::Vector
 }
 
 //GOOD
-frc::Vectord<6> TwoJointArmDynamics::DynamicsReal(frc::Vectord<6> state, frc::Vectord<2> input) const {
+frc::Vectord<6> TwoJointArmDynamics::DynamicsReal(const frc::Vectord<6>& state, const frc::Vectord<2>& input) const {
   frc::Matrixd<2,2> M;
   frc::Matrixd<2,2> C;
   frc::Vectord<2> G;
@@ -206,7 +206,7 @@ frc::Vectord<6> TwoJointArmDynamics::DynamicsReal(frc::Vectord<6> state, frc::Ve
 }
 
 //GOOD
-frc::Vectord<2> TwoJointArmDynamics::CalculateFeedForward(frc::Vectord<6> state, frc::Vectord<2> accels) const {
+frc::Vectord<2> TwoJointArmDynamics::CalculateFeedForward(const frc::Vectord<6>& state, const frc::Vectord<2>& accels) const {
   frc::Matrixd<2,2> M;
   frc::Matrixd<2,2> C;
   frc::Vectord<2> G;
@@ -217,7 +217,7 @@ frc::Vectord<2> TwoJointArmDynamics::CalculateFeedForward(frc::Vectord<6> state,
 }
 
 //GOOD
-std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics::CalculateForwardKinematics(frc::Vectord<6> state) const {
+std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics::CalculateForwardKinematics(const frc::Vectord<6>& state) const {
   frc::Vectord<2> thetas = state({0,1});
 
   frc::Vectord<2> elbowJointPosition;
@@ -235,7 +235,7 @@ std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics:
 }
 
 //GOOD
-frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(frc::Vectord<2> position, bool invert) const {
+frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(const frc::Vectord<2>& position, bool invert) const {
   double elbowAngle = std::acos((std::pow(position(0), 2) + std::pow(position(1), 2) - (std::pow(lengthOfShoulder, 2) + std::pow(lengthOfElbow, 2))) / (2 * lengthOfShoulder * lengthOfElbow));
   if(invert) {
     elbowAngle = -elbowAngle;
@@ -248,7 +248,7 @@ frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(frc::Vectord<2> 
 }
 
 //GOOD
-frc::Matrixd<2,2> TwoJointArmDynamics::CalculateInertiaMatrix(frc::Vectord<2> angleVec) const {
+frc::Matrixd<2,2> TwoJointArmDynamics::CalculateInertiaMatrix(const frc::Vectord<2>& angleVec) const {
   frc::Matrixd<2,2> inertiaMatrix;
   inertiaMatrix << massOfShoulder * std::pow(distToCogShoulder, 2) + massOfElbow * (std::pow(lengthOfShoulder, 2) + std::pow(distToCogElbow, 2)) + shoulderMoi + elbowMoi + 2 * massOfElbow * lengthOfShoulder * distToCogElbow * std::cos(angleVec(1)),
                    massOfElbow * std::pow(distToCogElbow, 2) + elbowMoi + massOfElbow * lengthOfShoulder * distToCogElbow * std::cos(angleVec(1)),
@@ -258,7 +258,7 @@ frc::Matrixd<2,2> TwoJointArmDynamics::CalculateInertiaMatrix(frc::Vectord<2> an
 }
 
 //GOOD
-frc::Matrixd<2,2> TwoJointArmDynamics::CalculateCentrifugalCoriolisTerms(frc::Vectord<2> angleVec, frc::Vectord<2> velocityVec) const {
+frc::Matrixd<2,2> TwoJointArmDynamics::CalculateCentrifugalCoriolisTerms(const frc::Vectord<2>& angleVec, const frc::Vectord<2>& velocityVec) const {
   frc::Matrixd<2,2> ccMatrix;
   ccMatrix << -massOfElbow * lengthOfShoulder * distToCogElbow * std::sin(angleVec(1)) * velocityVec(1),
               -massOfElbow * lengthOfShoulder * distToCogElbow * std::sin(angleVec(1)) * (velocityVec(0) + velocityVec(1)),
@@ -268,7 +268,7 @@ frc::Matrixd<2,2> TwoJointArmDynamics::CalculateCentrifugalCoriolisTerms(frc::Ve
 }
 
 //GOOD
-frc::Vectord<2> TwoJointArmDynamics::CalculateGravityTorque(frc::Vectord<2> angleVec, frc::Vectord<2> velocityVec) const {
+frc::Vectord<2> TwoJointArmDynamics::CalculateGravityTorque(const frc::Vectord<2>& angleVec, const frc::Vectord<2>& velocityVec) const {
   frc::Vectord<2> gravityTorqueMatrix;
   gravityTorqueMatrix << (massOfShoulder * distToCogShoulder + massOfElbow * lengthOfShoulder) * GRAVITY * std::cos(angleVec(0)) + massOfElbow * distToCogElbow * GRAVITY * std::cos(angleVec(0) + angleVec(1)), 
                          massOfElbow * distToCogElbow * GRAVITY * std::cos(angleVec(0) + angleVec(1));
@@ -293,6 +293,5 @@ frc::Matrixd<2,2> TwoJointArmDynamics::CalculateBackEMF() const {
                   0,
                   (std::pow(elbowGearing, 2) * elbowGearbox.Kt.value()) / (elbowGearbox.Kv.value() * elbowGearbox.R.value());
   backEmfMatrix = backEmfMatrix.cwiseMin(12);
-  //std::cout << "backemf: " << backEmfMatrix << "\n";
   return backEmfMatrix;
 }

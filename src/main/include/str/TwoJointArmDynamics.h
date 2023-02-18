@@ -47,22 +47,22 @@ public:
   //RELINEARIZATION
   void Relinearize(frc::Vectord<6> state, frc::Vectord<2> input);
   frc::LinearSystem<6, 2, 2> CreateModel(frc::Vectord<6> state, frc::Vectord<2> input);
-  frc::LinearQuadraticRegulator<4,2> DesignLQR(const frc::LinearSystem<6,2,2>& system, std::array<double, 4> qElems, std::array<double, 2> rElems) const;
+  frc::LinearQuadraticRegulator<4,2> DesignLQR(const frc::LinearSystem<6,2,2>& system, const std::array<double, 4>& qElems, const std::array<double, 2>& rElems) const;
   void CreateLQRLookupTable();
 
   //DYNAMICS
-  std::tuple<frc::Matrixd<2,2>,frc::Matrixd<2,2>,frc::Vectord<2>> GetDynamicsMatrices(frc::Vectord<6> state) const;
-  frc::Vectord<6> Dynamics(frc::Vectord<6> state, frc::Vectord<2> input) const;
-  frc::Vectord<6> DynamicsReal(frc::Vectord<6> state, frc::Vectord<2> input) const;
-  frc::Vectord<2> CalculateFeedForward(frc::Vectord<6> state, frc::Vectord<2> accels = frc::Vectord<2>{0,0}) const;
+  std::tuple<frc::Matrixd<2,2>,frc::Matrixd<2,2>,frc::Vectord<2>> GetDynamicsMatrices(const frc::Vectord<6>& state) const;
+  frc::Vectord<6> Dynamics(const frc::Vectord<6>& state, const frc::Vectord<2>& input) const;
+  frc::Vectord<6> DynamicsReal(const frc::Vectord<6>& state, const frc::Vectord<2>& input) const;
+  frc::Vectord<2> CalculateFeedForward(const frc::Vectord<6>& state, const frc::Vectord<2>& accels = frc::Vectord<2>{0,0}) const;
 
   //HELPERS
-  std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> CalculateForwardKinematics(frc::Vectord<6> state) const;
-  frc::Vectord<2> CalculateInverseKinematics(frc::Vectord<2> position, bool invert = false) const;
+  std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> CalculateForwardKinematics(const frc::Vectord<6>& state) const;
+  frc::Vectord<2> CalculateInverseKinematics(const frc::Vectord<2>& position, bool invert = false) const;
 
-  frc::Matrixd<2,2> CalculateInertiaMatrix(frc::Vectord<2> angleVec) const;
-  frc::Matrixd<2,2> CalculateCentrifugalCoriolisTerms(frc::Vectord<2> angleVec, frc::Vectord<2> velocityVec) const;
-  frc::Vectord<2> CalculateGravityTorque(frc::Vectord<2> angleVec, frc::Vectord<2> velocityVec) const;
+  frc::Matrixd<2,2> CalculateInertiaMatrix(const frc::Vectord<2>& angleVec) const;
+  frc::Matrixd<2,2> CalculateCentrifugalCoriolisTerms(const frc::Vectord<2>& angleVec, const frc::Vectord<2>& velocityVec) const;
+  frc::Vectord<2> CalculateGravityTorque(const frc::Vectord<2>& angleVec, const frc::Vectord<2>& velocityVec) const;
   frc::Matrixd<2,2> CalculateMotorTorque() const;
   frc::Matrixd<2,2> CalculateBackEMF() const;
 
