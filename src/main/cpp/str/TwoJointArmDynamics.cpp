@@ -11,10 +11,10 @@
 
 //GOOD
 //Can't figure out how to make NumericalJacobian take ptr to member func
-frc::Vectord<6> DynamicsFreeFunc(frc::Vectord<6> state, frc::Vectord<2> input, TwoJointArmDynamics* arm) {
+frc::Vectord<6> DynamicsFreeFunc(const frc::Vectord<6>& state, const frc::Vectord<2>& input, TwoJointArmDynamics* arm) {
   return arm->Dynamics(state, input);
 }
-typedef frc::Vectord<6>(*dynamicsfunctype)(frc::Vectord<6> state, frc::Vectord<2> input, TwoJointArmDynamics* arm);
+typedef frc::Vectord<6>(*dynamicsfunctype)(const frc::Vectord<6>& state, const frc::Vectord<2>& input, TwoJointArmDynamics* arm);
 //end crazy-ness
 
 TwoJointArmDynamics::TwoJointArmDynamics(
@@ -34,8 +34,7 @@ TwoJointArmDynamics::TwoJointArmDynamics(
     shoulderGearbox(shoulderGearbox), elbowGearbox(elbowGearbox),
     shoulderGearing(shoulderGearing), elbowGearing(elbowGearing),
     lqrQPos(lqrPos), lqrQVel(lqrVel), lqrR(lqrEffort),
-    cSystem(frc::LinearSystem<6,2,2>{frc::Matrixd<6,6>::Zero(), frc::Matrixd<6,2>::Zero(), frc::Matrixd<2,6>::Zero(), frc::Matrixd<2,2>::Zero()}),
-    dSystem(frc::LinearSystem<6,2,2>{frc::Matrixd<6,6>::Zero(), frc::Matrixd<6,2>::Zero(), frc::Matrixd<2,6>::Zero(), frc::Matrixd<2,2>::Zero()})
+    cSystem(frc::LinearSystem<6,2,2>{frc::Matrixd<6,6>::Zero(), frc::Matrixd<6,2>::Zero(), frc::Matrixd<2,6>::Zero(), frc::Matrixd<2,2>::Zero()})
 {
   currentState = initialState;
   //CreateLQRLookupTable();
@@ -88,7 +87,7 @@ void TwoJointArmDynamics::RecreateModels() {
 }
 
 frc::Vectord<2> TwoJointArmDynamics::UpdateMeasurementState(frc::Vectord<6> state, frc::Vectord<2> input) {
-  return dSystem.C() * state + dSystem.D() * input + frc::Vectord<2>{randNorm(gen), randNorm(gen)};
+  return cSystem.C() * state + cSystem.D() * input + frc::Vectord<2>{randNorm(gen), randNorm(gen)};
 }
 
 void TwoJointArmDynamics::SetDesiredState(frc::Vectord<6> state) {
@@ -110,11 +109,6 @@ frc::Vectord<2> TwoJointArmDynamics::GetVoltagesToApply() const {
 //GOOD
 void TwoJointArmDynamics::Relinearize(frc::Vectord<6> state, frc::Vectord<2> input) {
   cSystem = CreateModel(state, input);
-  frc::Matrixd<6, 6> dA = frc::Matrixd<6, 6>::Zero();
-  frc::Matrixd<6, 2> dB = frc::Matrixd<6, 2>::Zero();
-  frc::DiscretizeAB(cSystem.A(), cSystem.B(), dt, &dA, &dB);
-  frc::LinearSystem<6, 2, 2> discretizedSystem{dA, dB, cSystem.C(), cSystem.D()};
-  dSystem = discretizedSystem;
 }
 
 //GOOD

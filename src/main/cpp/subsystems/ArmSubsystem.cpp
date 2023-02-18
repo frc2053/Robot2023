@@ -209,23 +209,23 @@ units::radians_per_second_t ArmSubsystem::GetElbowMotorVelocity() {
   return str::Units::ConvertTicksPer100MsToAngularVelocity(elbowMotor.GetSelectedSensorVelocity(), str::encoder_cprs::FALCON_CPR, str::arm_constants::elbowGearing);
 }
 
-int ArmSubsystem::ConvertShoulderAngleToTicks(units::radian_t angle) {
+int ArmSubsystem::ConvertShoulderAngleToTicks(units::radian_t angle) const {
   return str::Units::ConvertAngleToEncoderTicks(angle, str::encoder_cprs::FALCON_CPR, str::arm_constants::shoulderGearing, false);
 }
 
-int ArmSubsystem::ConvertShoulderVelocityToTicks(units::radians_per_second_t vel) {
+int ArmSubsystem::ConvertShoulderVelocityToTicks(units::radians_per_second_t vel) const {
   return str::Units::ConvertAngularVelocityToTicksPer100Ms(vel, str::encoder_cprs::FALCON_CPR, str::arm_constants::shoulderGearing);
 }
 
-int ArmSubsystem::ConvertElbowAngleToTicks(units::radian_t angle) {
+int ArmSubsystem::ConvertElbowAngleToTicks(units::radian_t angle) const {
   return str::Units::ConvertAngleToEncoderTicks(angle, str::encoder_cprs::FALCON_CPR, str::arm_constants::elbowGearing, false);
 }
 
-int ArmSubsystem::GetElbowVelocityToTicks(units::radians_per_second_t vel) {
+int ArmSubsystem::GetElbowVelocityToTicks(units::radians_per_second_t vel) const {
   return str::Units::ConvertAngularVelocityToTicksPer100Ms(vel, str::encoder_cprs::FALCON_CPR, str::arm_constants::elbowGearing);
 }
 
-void ArmSubsystem::LogStateToAdvantageScope() {
+void ArmSubsystem::LogStateToAdvantageScope() const {
   std::array<double, 7> shoulderState;
   std::array<double, 7> elbowState;
 

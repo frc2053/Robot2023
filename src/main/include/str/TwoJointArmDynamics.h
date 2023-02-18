@@ -90,7 +90,6 @@ public:
 private:
   //non const
   frc::LinearSystem<6,2,2> cSystem;
-  frc::LinearSystem<6,2,2> dSystem;
   frc::Vectord<6> desiredState{frc::Vectord<6>::Zero()};
   frc::Vectord<6> currentState{frc::Vectord<6>::Zero()};
   frc::Vectord<2> ff{frc::Vectord<2>::Zero()};

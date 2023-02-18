@@ -17,14 +17,18 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   void Periodic() override;
   void SimulationPeriodic() override;
+
   units::radian_t GetShoulderMotorAngle();
   units::radian_t GetElbowMotorAngle();
   units::radians_per_second_t GetShoulderMotorVelocity();
   units::radians_per_second_t GetElbowMotorVelocity();
+
   void SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle);
   void SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos);
+
   units::meter_t GetArmEndEffectorSetpointX();
   units::meter_t GetArmEndEffectorSetpointY();
+
   frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos);
   frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
   frc2::CommandPtr FollowTrajectory(const ArmTrajectory& traj);
@@ -32,12 +36,12 @@ class ArmSubsystem : public frc2::SubsystemBase {
   void ConfigureMotors();
   void ResetEncoders();
 
-  int ConvertShoulderAngleToTicks(units::radian_t angle);
-  int ConvertShoulderVelocityToTicks(units::radians_per_second_t vel);
-  int ConvertElbowAngleToTicks(units::radian_t angle);
-  int GetElbowVelocityToTicks(units::radians_per_second_t vel);
+  int ConvertShoulderAngleToTicks(units::radian_t angle) const;
+  int ConvertShoulderVelocityToTicks(units::radians_per_second_t vel) const;
+  int ConvertElbowAngleToTicks(units::radian_t angle) const;
+  int GetElbowVelocityToTicks(units::radians_per_second_t vel) const;
 
-  void LogStateToAdvantageScope();
+  void LogStateToAdvantageScope() const;
 
   ctre::phoenix::motorcontrol::can::WPI_TalonFX shoulderMotor{str::arm_can_ids::SHOULDER_ID};
   ctre::phoenix::motorcontrol::can::WPI_TalonFX elbowMotor{str::arm_can_ids::ELBOW_ID};
@@ -54,6 +58,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
   units::radians_per_second_t prevElbowVel{0_rad_per_s};
   
   ArmConfig config{ArmConfig::LoadJson("arm_config.json")};
+  
   TwoJointArmDynamics armSystem {
     config.shoulder.mass,
     config.elbow.mass,
@@ -110,7 +115,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
         frc::Color8Bit{frc::Color::kRed}
     );
 
-  frc::MechanismRoot2d* ekfArm = armDisplay.GetRoot("EKFArm", 150, 150);
+  frc::MechanismRoot2d* ekfArm = armDisplay.GetRoot("EKFArm", 150, 150 + 31);
   frc::MechanismLigament2d* armShoulderEkf =
     ekfArm->Append<frc::MechanismLigament2d>(
         "ShoulderEKF",
