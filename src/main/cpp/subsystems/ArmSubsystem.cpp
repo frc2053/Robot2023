@@ -39,6 +39,19 @@ void ArmSubsystem::SimulationPeriodic() {
 }
 
 void ArmSubsystem::Periodic() {
+  kairos.Update();
+
+  KairosResults armResults = kairos.GetMostRecentResult();
+
+  ArmTrajectory traj{ArmTrajectoryParams{}};
+  std::vector<frc::Vectord<2>> points;
+  for(int i = 0; i < armResults.elbowPoints.size(); i++) {
+    points.push_back(frc::Vectord<2>{armResults.shoulderPoints[i], armResults.elbowPoints[i]});
+  }
+  traj.SetPoints(kairos.GetMostRecentResult().totalTime, points);
+
+  trajToFollow = traj;
+
   units::radian_t shoulderPos = GetShoulderMotorAngle();
   units::radian_t elbowPos = GetElbowMotorAngle();
 
@@ -165,20 +178,25 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
   );
 }
 
-frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectory& traj) {
-  return frc2::RunCommand(
-    [this, traj] {
-      units::second_t timerVal = armTrajTimer.Get();
-      frc::Vectord<6> newState = traj.Sample(timerVal);
-      fmt::print("New State at time {}: {}\n", timerVal, newState);
-      armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), 0, 0});
-    }
-  ).BeforeStarting(
-    [this] {
-      armTrajTimer.Reset();
-      armTrajTimer.Start();
-    }
-  ).WithTimeout(traj.GetTotalTime()).FinallyDo([this](bool interrupt) {
+frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectoryParams& trajParams) {
+  return 
+  frc2::InstantCommand([this, trajParams] {
+    fmt::print("Sending traj params to kairos: {}, {}\n", trajParams.initialState, trajParams.finalState);
+    kairos.Request(trajParams);
+  }).ToPtr().AndThen(
+  frc2::WaitUntilCommand([this] {
+    return trajToFollow.IsGenerated();
+  }).ToPtr()
+  ).AndThen(frc2::InstantCommand([this] {
+    armTrajTimer.Reset();
+    armTrajTimer.Start();
+  }).ToPtr()
+  .AndThen(frc2::RunCommand([this] {
+    units::second_t timerVal = armTrajTimer.Get();
+    frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
+    fmt::print("Arm State set to @ time {}: {}\n", timerVal, newState);
+    armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), 0, 0});
+  }).ToPtr())).FinallyDo([this](bool inturupted) {
     armSystem.SetDesiredState(frc::Vectord<6>{armSystem.GetCurrentState()(0), armSystem.GetCurrentState()(1), 0, 0, 0, 0});
   });
 }

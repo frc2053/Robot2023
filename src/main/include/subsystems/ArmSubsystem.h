@@ -33,7 +33,9 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos);
   frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
-  frc2::CommandPtr FollowTrajectory(const ArmTrajectory& traj);
+  frc2::CommandPtr FollowTrajectory(const ArmTrajectoryParams& trajParams);
+
+  const TwoJointArmDynamics& GetArmSystem() const { return armSystem; };
  private:
   void ConfigureMotors();
   void ResetEncoders();
@@ -85,6 +87,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
   };
 
   KairosInterface kairos;
+  ArmTrajectory trajToFollow{ArmTrajectoryParams{}};
   frc::Timer armTrajTimer;
 
     // Create a Mechanism2d display of an Arm

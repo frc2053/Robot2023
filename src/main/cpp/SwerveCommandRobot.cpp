@@ -4,6 +4,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RepeatCommand.h>
+#include <str/ArmPose.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.SetDefaultOption("1MForward", oneMeterForward.get());
@@ -170,7 +171,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   ));
 
   operatorController.B().OnTrue(armSubsystem.FollowTrajectory(
-    ArmTrajectory::DefaultTraj()
+    ArmTrajectoryParams{ArmPose::StartingConfig().AsJointAngles(armSubsystem.GetArmSystem(), true), ArmPose::ScoreConeHigh().AsJointAngles(armSubsystem.GetArmSystem(), false)}
   ));
 }
 

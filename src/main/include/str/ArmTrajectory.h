@@ -22,7 +22,7 @@ namespace std {
   {
     std::size_t operator()(const ArmTrajectoryParams& k) const
     {
-      size_t res = 17;
+      std::size_t res = 17;
 
       res = res * 31 + std::hash<double>()(k.initialState(0));
       res = res * 31 + std::hash<double>()(k.initialState(1));
@@ -100,7 +100,11 @@ public:
   };
 
   static ArmTrajectory DefaultTraj() {
-    ArmTrajectory traj(ArmTrajectoryParams{});
+    ArmTrajectoryParams params;
+    params.initialState = frc::Vectord<2>{0.248886761314, -1.8326};
+    params.finalState = frc::Vectord<2>{2.2689280275926285, 0.5235987755982988};
+
+    ArmTrajectory traj(params);
 
     traj.SetPoints(0.8579333123188765_s, {
       frc::Vectord<2>{0.248886761314, -1.8326},

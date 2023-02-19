@@ -2,14 +2,16 @@
 
 #include <networktables/DoubleArrayTopic.h>
 #include <networktables/StringTopic.h>
+#include <networktables/IntegerTopic.h>
 #include <str/ArmTrajectory.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <inttypes.h>
 
 struct KairosResults {
   std::vector<double> shoulderPoints{};
   std::vector<double> elbowPoints{};
   units::second_t totalTime{0};
-  size_t hash{0};
+  std::size_t hash{0};
 };
 
 class KairosInterface {
@@ -27,6 +29,7 @@ public:
     requestPublisher = kairosTable->GetStringTopic("request").Publish(requestOptions);
 
     resultSubscriber = kairosTable->GetDoubleArrayTopic("result/0").Subscribe({}, fastUpdateOptions);
+    hashSubscriber = kairosTable->GetStringTopic("result/hash/0").Subscribe({}, fastUpdateOptions);
 
     kairosTable->PutNumberArray("result/0", {});
   };
@@ -44,15 +47,17 @@ public:
     }
 
     std::vector<double> results = resultSubscriber.Get();
+    std::stringstream ss(hashSubscriber.Get());
+    std::size_t hashResult = 0;
+    ss >> hashResult;
     if(results.size() > 0) {
-      size_t hash = static_cast<size_t>(results[0]);
-      if(hash == parameterHash) {
+      if(hashResult == parameterHash) {
         resultRecieved = true;
-        recentResults.hash = hash;
-        recentResults.totalTime = units::second_t{results[1]};
+        recentResults.hash = hashResult;
+        recentResults.totalTime = units::second_t{results[0]};
         recentResults.shoulderPoints.clear();
         recentResults.elbowPoints.clear();
-        for(size_t i = 0; i < (results.size() - 2 / 2); i++) {
+        for(std::size_t i = 0; i < (results.size() - 1 / 2); i++) {
           recentResults.shoulderPoints.push_back(i * 2 + 2);
           recentResults.elbowPoints.push_back(i * 2 + 3);
         }
@@ -69,7 +74,7 @@ public:
   };
 
   void Request(ArmTrajectoryParams params) {
-    size_t currentHash = std::hash<ArmTrajectoryParams>()(params);
+    std::size_t currentHash = std::hash<ArmTrajectoryParams>{}(params);
 
     if(currentHash == parameterHash) {
       fmt::print("Arm trajectory hashes are equal! We are not going to send another request!\n");
@@ -82,6 +87,8 @@ public:
     dataToSend["final"] = {params.finalState(0), params.finalState(1)};
     dataToSend["constraintOverrides"] = wpi::json::array();
 
+    fmt::print("Sending trajectory with hash {} to kairos\n", currentHash);
+
     parameterHash = currentHash;
     resultRecieved = false;
     requestPublisher.Set(dataToSend.dump());
@@ -91,8 +98,9 @@ private:
   nt::StringPublisher configPublisher;
   nt::StringPublisher requestPublisher;
   nt::DoubleArraySubscriber resultSubscriber;
+  nt::StringSubscriber hashSubscriber;
   bool isConnected{false};
   bool resultRecieved{true};
-  size_t parameterHash{0};
+  std::size_t parameterHash{0};
   KairosResults recentResults;
 };

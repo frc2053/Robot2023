@@ -21,5 +21,9 @@ public:
     return frc::Vectord<2>{endEffectorPosition.X().value(), endEffectorPosition.Y().value()};
   };
 
+  frc::Vectord<2> AsJointAngles(const TwoJointArmDynamics& dynamics, bool invert) {
+    return dynamics.CalculateInverseKinematics(frc::Vectord<2>{endEffectorPosition.X(), endEffectorPosition.Y()}, invert);
+  }
+
   frc::Translation2d endEffectorPosition{0_m, 0_m};
 };
