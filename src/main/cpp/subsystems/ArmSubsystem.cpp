@@ -200,7 +200,6 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectoryParams& trajP
   }).ToPtr()).Until(
     [this] { 
       bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime();
-      fmt::print("Is traj timer over: {}\n", isTimerOver);
       return isTimerOver; 
     }
   )).FinallyDo([this](bool inturupted) {
