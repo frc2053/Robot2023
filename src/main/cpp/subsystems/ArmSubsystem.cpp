@@ -23,6 +23,8 @@ ArmSubsystem::ArmSubsystem() {
     armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
   }
 
+  armSystem.SetDesiredState(armSystem.GetCurrentState());
+
   kairos.SetConfig(config.json_string);
 }
 
@@ -166,14 +168,19 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
 frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectory& traj) {
   return frc2::RunCommand(
     [this, traj] {
-      armSystem.SetDesiredState(traj.Sample(armTrajTimer.Get()));
+      units::second_t timerVal = armTrajTimer.Get();
+      frc::Vectord<6> newState = traj.Sample(timerVal);
+      fmt::print("New State at time {}: {}\n", timerVal, newState);
+      armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), 0, 0});
     }
   ).BeforeStarting(
     [this] {
       armTrajTimer.Reset();
       armTrajTimer.Start();
     }
-  ).WithTimeout(traj.GetTotalTime());
+  ).WithTimeout(traj.GetTotalTime()).FinallyDo([this](bool interrupt) {
+    armSystem.SetDesiredState(frc::Vectord<6>{armSystem.GetCurrentState()(0), armSystem.GetCurrentState()(1), 0, 0, 0, 0});
+  });
 }
 
 void ArmSubsystem::ConfigureMotors() {

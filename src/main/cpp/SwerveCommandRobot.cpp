@@ -168,6 +168,10 @@ void SwerveCommandRobot::ConfigureBindings() {
     [this] { return 20_in; },
     [this] { return 1_in;}
   ));
+
+  operatorController.B().OnTrue(armSubsystem.FollowTrajectory(
+    ArmTrajectory::DefaultTraj()
+  ));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
