@@ -32,6 +32,35 @@ public:
     hashSubscriber = kairosTable->GetStringTopic("result/hash/0").Subscribe({}, fastUpdateOptions);
 
     kairosTable->PutNumberArray("result/0", {});
+    
+    LoadTrajectoriesIntoCache();
+  };
+
+  void LoadTrajectoriesIntoCache() {
+    std::string filePath = frc::filesystem::GetDeployDirectory() + "/" + "arm_trajectory_cache.json";
+    std::error_code errorCode;
+    wpi::raw_fd_istream file(filePath, errorCode);
+
+    if(errorCode) {
+      fmt::print("Error opening arm_trajectory_cache! {}: {}", filePath, errorCode.message());
+    }
+    else {
+      wpi::json data = wpi::json::parse(file);
+      for(const auto& trajectory : data["trajectories"]) {
+        ArmTrajectoryParams params;
+        params.initialState = frc::Vectord<2>{trajectory["initialJointPositions"][0].get<double>(), trajectory["initialJointPositions"][1].get<double>()};
+        params.finalState = frc::Vectord<2>{trajectory["finalJointPositions"][0].get<double>(), trajectory["finalJointPositions"][1].get<double>()};
+        std::size_t currentHash = std::hash<ArmTrajectoryParams>{}(params);
+        KairosResults results;
+        results.hash = currentHash;
+        results.totalTime = units::second_t{trajectory["totalTime"].get<double>()};
+        for(std::size_t i = 0; i < (trajectory["points"].size() - 1) / 2; i++) {
+          results.shoulderPoints.push_back(trajectory["points"][i * 2].get<double>());
+          results.elbowPoints.push_back(trajectory["points"][i * 2 + 1].get<double>());
+        }
+        kairosCache[currentHash] = results;
+      }
+    }
   };
 
   void Update() {

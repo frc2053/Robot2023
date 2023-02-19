@@ -171,7 +171,11 @@ void SwerveCommandRobot::ConfigureBindings() {
   ));
 
   operatorController.B().OnTrue(armSubsystem.FollowTrajectory(
-    ArmTrajectoryParams{ArmPose::StartingConfig().AsJointAngles(armSubsystem.GetArmSystem(), true), ArmPose::ScoreConeHigh().AsJointAngles(armSubsystem.GetArmSystem(), false)}
+    ArmTrajectoryParams{ArmPose::StartingConfig().AsJointAngles(armSubsystem.GetArmSystem()), ArmPose::ScoreConeHigh().AsJointAngles(armSubsystem.GetArmSystem())}
+  ));
+
+  operatorController.X().OnTrue(armSubsystem.FollowTrajectory(
+    ArmTrajectoryParams{ArmPose::ScoreConeHigh().AsJointAngles(armSubsystem.GetArmSystem()), ArmPose::StartingConfig().AsJointAngles(armSubsystem.GetArmSystem())}
   ));
 }
 

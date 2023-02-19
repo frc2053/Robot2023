@@ -6,9 +6,13 @@
 #include <iostream>
 #include <frc/simulation/RoboRioSim.h>
 #include <wpinet/PortForwarder.h>
+#include <str/GenerateArmTrajectoryCacheRequest.h>
 
 void Robot::RobotInit() {
   std::cout << std::boolalpha;
+
+  GenerateArmTrajectoryCacheFile();
+
   wpi::PortForwarder::GetInstance().Add(5800, "10.20.53.11", 5800);
   wpi::PortForwarder::GetInstance().Add(1181, "10.20.53.11", 1181);
   frc::DataLogManager::Start();
