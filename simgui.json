@@ -46,6 +46,7 @@
       "/SmartDashboard/Arm Sim": "Mechanism2d",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/FrontCamera Sim Field": "Field2d",
       "/SmartDashboard/PPSwerveControllerCommand_field": "Field2d",
       "/SmartDashboard/Reset Drivetrain Pose": "Command",
       "/SmartDashboard/Set Wheel Speed": "Command",
@@ -280,14 +281,24 @@
     },
     "transitory": {
       "SmartDashboard": {
+        "Field": {
+          "open": true
+        },
         "ResetPose": {
           "open": true
-        }
+        },
+        "open": true
       },
       "kairos": {
         "result": {
           "open": true
         }
+      },
+      "photonvision": {
+        "FrontCamera": {
+          "open": true
+        },
+        "open": true
       }
     }
   },

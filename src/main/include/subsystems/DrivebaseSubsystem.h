@@ -3,17 +3,15 @@
 #include "str/SwerveDrivebase.h"
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc/apriltag/AprilTagFieldLayout.h>
 #include <photonlib/SimVisionSystem.h>
 #include <frc2/command/InstantCommand.h>
-#include <photonlib/RobotPoseEstimator.h>
-#include <frc/apriltag/AprilTagFields.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc/controller/BangBangController.h>
 #include <memory>
+#include <str/PhotonCameraWrapper.h>
 
 class DrivebaseSubsystem : public frc2::SubsystemBase {
 public:
@@ -60,11 +58,10 @@ public:
   frc::TrajectoryConfig autoTrajectoryConfig{str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V, str::swerve_drive_consts::MAX_CHASSIS_ACCEL};
 private:
   str::SwerveDrivebase swerveDrivebase{};
-  std::shared_ptr<frc::AprilTagFieldLayout> tagLayout;
-  std::shared_ptr<photonlib::PhotonCamera> camera;
+  PhotonCameraWrapper cameraWrapper{
+    
+  };
   photonlib::SimVisionSystem system;
-  photonlib::RobotPoseEstimator visionEstimator;
-  std::vector<int> tagIdList = {1, 2, 3, 4, 5, 6, 7, 8};
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{
     {"PlaceConeHigh", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"PlacedConeHigh!!!"})},
