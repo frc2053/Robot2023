@@ -19,6 +19,7 @@ DrivebaseSubsystem::DrivebaseSubsystem() :
   }
   autoTrajectoryConfig.SetKinematics(swerveDrivebase.GetKinematics());
   thetaController.EnableContinuousInput(-180_deg, 180_deg);
+  cameraWrapper.m_poseEstimator.GetCamera().SetVersionCheckEnabled(false);
 }
 
 void DrivebaseSubsystem::Periodic() {
