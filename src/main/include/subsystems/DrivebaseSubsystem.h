@@ -20,6 +20,10 @@ public:
   void Periodic() override;
   void SimulationPeriodic() override;
 
+  frc::Pose2d GetRobotPose() const {
+    return swerveDrivebase.GetRobotPose();
+  }
+
   frc2::CommandPtr DriveFactory(
     std::function<double()> fow, 
     std::function<double()> side, 
@@ -41,6 +45,10 @@ public:
     units::meters_per_second_t maxSpeed,
     units::meters_per_second_squared_t maxAccel
   );
+  frc2::CommandPtr GoToPoseFactory(
+    std::function<frc::Pose2d()> poseToGoTo,
+    std::function<bool()> override
+  );
   frc2::CommandPtr ResetOdomFactory(
     std::function<double()> x_ft,
     std::function<double()> y_ft,
@@ -58,9 +66,7 @@ public:
   frc::TrajectoryConfig autoTrajectoryConfig{str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V, str::swerve_drive_consts::MAX_CHASSIS_ACCEL};
 private:
   str::SwerveDrivebase swerveDrivebase{};
-  PhotonCameraWrapper cameraWrapper{
-    
-  };
+  PhotonCameraWrapper cameraWrapper{};
   photonlib::SimVisionSystem system;
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{
@@ -85,6 +91,10 @@ private:
     {this},
     true
   };
+
+  //Subtracting magic numbers for now because we want the controller to be more aggresive in teleop
+  frc::PIDController xController{str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP + .5, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD - .1};
+  frc::PIDController yController{str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP + .5, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD - .1};
 
   frc::ProfiledPIDController<units::radians> thetaController{
     str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 

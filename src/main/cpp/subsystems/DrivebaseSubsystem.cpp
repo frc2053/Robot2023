@@ -172,6 +172,26 @@ frc2::CommandPtr DrivebaseSubsystem::FollowPathplannerFactory(
   return autoBuilder.fullAuto(autoPath);
 }
 
+frc2::CommandPtr DrivebaseSubsystem::GoToPoseFactory(
+  std::function<frc::Pose2d()> poseToGoTo,
+  std::function<bool()> override
+) {
+  return frc2::InstantCommand([this, poseToGoTo] {
+    xController.SetSetpoint(poseToGoTo().X().value());
+    yController.SetSetpoint(poseToGoTo().Y().value());
+    thetaController.SetGoal(poseToGoTo().Rotation().Radians());
+  }).ToPtr().AndThen(frc2::RunCommand([this] {
+    swerveDrivebase.Drive(
+      xController.Calculate(GetRobotPose().X().value()) * 1_mps,
+      yController.Calculate(GetRobotPose().Y().value()) * 1_mps,
+      thetaController.Calculate(GetRobotPose().Rotation().Radians()) * 1_rad_per_s,
+      true, false, true
+    );
+  }).Until([this, override] {
+    return (xController.AtSetpoint() && yController.AtSetpoint() && thetaController.AtGoal()) || override();
+  }));
+}
+
 void DrivebaseSubsystem::SetWheelSpeeds(units::meters_per_second_t speed) {
   frc::SwerveModuleState state{speed, frc::Rotation2d{0_deg}};
   swerveDrivebase.DirectSetModuleStates({state, state, state, state});

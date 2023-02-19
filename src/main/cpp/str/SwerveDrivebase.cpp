@@ -23,7 +23,7 @@ units::degree_t str::SwerveDrivebase::GetRobotPitch() {
   return imu.GetPitch();
 }
 
-frc::Pose2d str::SwerveDrivebase::GetRobotPose() {
+frc::Pose2d str::SwerveDrivebase::GetRobotPose() const {
   return estimator.GetEstimatedPosition();
 }
 
