@@ -67,7 +67,7 @@ void TwoJointArmDynamics::Update(const frc::Vectord<2>& input) {
 
   RecreateModels();
   ekf->Predict(input, dt);
-  ekf->Correct(input, currentState.head(2));
+  ekf->Correct(input, cSystem.CalculateY(currentState, input));
 }
 
 void TwoJointArmDynamics::UpdateReal(units::radian_t shoulderPos, units::radian_t elbowPos, units::radians_per_second_t shoulderVel, units::radians_per_second_t elbowVel, units::radians_per_second_squared_t shoulderAccel, units::radians_per_second_squared_t elbowAccel)
@@ -86,7 +86,7 @@ void TwoJointArmDynamics::RecreateModels() {
 }
 
 frc::Vectord<2> TwoJointArmDynamics::UpdateMeasurementState(const frc::Vectord<6>& state, const frc::Vectord<2>& input) {
-  return cSystem.C() * state + cSystem.D() * input + frc::Vectord<2>{randNorm(gen), randNorm(gen)};
+  return input * frc::Vectord<1>{randNorm(gen)};
 }
 
 void TwoJointArmDynamics::SetDesiredState(const frc::Vectord<6>& state) {
