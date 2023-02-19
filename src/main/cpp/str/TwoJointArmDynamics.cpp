@@ -101,6 +101,10 @@ frc::Vectord<6> TwoJointArmDynamics::GetCurrentState() const {
   return currentState;
 }
 
+frc::Vectord<6> TwoJointArmDynamics::GetDesiredState() const {
+  return desiredState;
+}
+
 frc::Vectord<6> TwoJointArmDynamics::GetEKFState() const {
   return ekf->Xhat();
 }

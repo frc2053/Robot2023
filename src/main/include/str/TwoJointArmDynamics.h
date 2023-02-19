@@ -41,6 +41,7 @@ public:
   void SetDesiredState(const frc::Vectord<6>& state);
   void OverrideCurrentState(const frc::Vectord<6>& newState);
   frc::Vectord<6> GetCurrentState() const;
+  frc::Vectord<6> GetDesiredState() const;
   frc::Vectord<6> GetEKFState() const;
   frc::Vectord<2> GetFeedForwardVoltage() const;
   frc::Vectord<2> GetLQROutput() const;

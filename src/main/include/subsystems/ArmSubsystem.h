@@ -28,6 +28,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   units::meter_t GetArmEndEffectorSetpointX() const;
   units::meter_t GetArmEndEffectorSetpointY() const;
+  bool IsArmAtEndEffectorSetpoint() const;
+  bool IsArmAtDesiredAngles() const;
 
   frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos);
   frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);

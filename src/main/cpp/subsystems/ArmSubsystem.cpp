@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitUntilCommand.h>
 #include <iostream>
 #include <frc/RobotState.h>
 #include <frc/RobotBase.h>
@@ -79,10 +80,9 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("LQR Output Shoulder", lqrOutput(0));
   frc::SmartDashboard::PutNumber("LQR Output Elbow", lqrOutput(1));
 
-  frc::Vectord<2> ffAndLqr = feedForwards + lqrOutput;
-
-  shoulderMotor.SetVoltage(units::volt_t{ffAndLqr(0)});
-  elbowMotor.SetVoltage(units::volt_t{ffAndLqr(1)});
+  frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
+  shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
+  elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
@@ -96,6 +96,23 @@ units::meter_t ArmSubsystem::GetArmEndEffectorSetpointX() const {
 
 units::meter_t ArmSubsystem::GetArmEndEffectorSetpointY() const {
   return currentEndEffectorSetpointY;
+}
+
+bool ArmSubsystem::IsArmAtEndEffectorSetpoint() const {
+  frc::Vectord<2> endEffectorPos = std::get<2>(armSystem.CalculateForwardKinematics(armSystem.GetCurrentState()));
+  bool isXThere = units::math::fabs(GetArmEndEffectorSetpointX() - units::meter_t{endEffectorPos(0)}) < 1_in;
+  bool isYThere = units::math::fabs(GetArmEndEffectorSetpointY() - units::meter_t{endEffectorPos(1)}) < 1_in;
+  bool isSlowEnoughShoulder = std::fabs(armSystem.GetCurrentState()(2) - armSystem.GetDesiredState()(2)) < 1;
+  bool isSlowEnoughElbow = std::fabs(armSystem.GetCurrentState()(3) - armSystem.GetDesiredState()(3)) < 1;
+  return isXThere && isYThere && isSlowEnoughShoulder && isSlowEnoughElbow;
+}
+
+bool ArmSubsystem::IsArmAtDesiredAngles() const {
+  bool isShoulderThere = std::fabs(armSystem.GetDesiredState()(0) - armSystem.GetCurrentState()(0)) < 0.1;
+  bool isElbowThere = std::fabs(armSystem.GetDesiredState()(1) - armSystem.GetCurrentState()(1)) < 0.1;
+  bool isSlowEnoughShoulder = std::fabs(armSystem.GetCurrentState()(2) - armSystem.GetDesiredState()(2)) < 1;
+  bool isSlowEnoughElbow = std::fabs(armSystem.GetCurrentState()(3) - armSystem.GetDesiredState()(3)) < 1;
+  return isShoulderThere && isElbowThere && isSlowEnoughShoulder && isSlowEnoughElbow;
 }
 
 void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos) {
@@ -113,21 +130,37 @@ void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::
 }
 
 frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos) {
-  return frc2::InstantCommand(
-    [this, xPos, yPos] {
+  return frc2::WaitUntilCommand(
+    [this] {
+      return IsArmAtEndEffectorSetpoint();
+    }
+  ).BeforeStarting(
+    [this, xPos, yPos] { 
       SetDesiredArmEndAffectorPosition(xPos(), yPos());
     },
-    {this}
-  ).ToPtr();
+  {this}
+  ).FinallyDo(
+    [](bool interrupted){
+      fmt::print("FINISHED MOVING TO SETPOINT!\n");
+    }
+  );
 }
 
 frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle) {
-  return frc2::InstantCommand(
-    [this, shoulderAngle, elbowAngle] {
+  return frc2::WaitUntilCommand(
+    [this] {
+      return IsArmAtDesiredAngles();
+    }
+  ).BeforeStarting(
+    [this, shoulderAngle, elbowAngle] { 
       SetDesiredArmAngles(shoulderAngle(), elbowAngle());
     },
-    {this}
-  ).ToPtr();
+  {this}
+  ).FinallyDo(
+    [](bool interrupted){
+      fmt::print("FINISHED MOVING TO SETPOINT!\n");
+    }
+  );
 }
 
 frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectory& traj) {
