@@ -185,18 +185,25 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectoryParams& trajP
     kairos.Request(trajParams);
   }).ToPtr().AndThen(
   frc2::WaitUntilCommand([this] {
+    fmt::print("Waiting for traj to be generated\n");
     return trajToFollow.IsGenerated();
   }).ToPtr()
   ).AndThen(frc2::InstantCommand([this] {
+    fmt::print("Resetting Arm Traj Timer\n");
     armTrajTimer.Reset();
     armTrajTimer.Start();
   }).ToPtr()
   .AndThen(frc2::RunCommand([this] {
     units::second_t timerVal = armTrajTimer.Get();
     frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
-    fmt::print("Arm State set to @ time {}: {}\n", timerVal, newState);
     armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), 0, 0});
-  }).ToPtr())).FinallyDo([this](bool inturupted) {
+  }).ToPtr()).Until(
+    [this] { 
+      bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime();
+      fmt::print("Is traj timer over: {}\n", isTimerOver);
+      return isTimerOver; 
+    }
+  )).FinallyDo([this](bool inturupted) {
     armSystem.SetDesiredState(frc::Vectord<6>{armSystem.GetCurrentState()(0), armSystem.GetCurrentState()(1), 0, 0, 0, 0});
   });
 }

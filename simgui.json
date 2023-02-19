@@ -315,11 +315,9 @@
         },
         "ResetPose": {
           "open": true
-        },
-        "open": true
+        }
       },
       "kairos": {
-        "open": true,
         "result": {
           "hash": {
             "open": true

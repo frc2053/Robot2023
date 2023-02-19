@@ -17,6 +17,7 @@ DrivebaseSubsystem::DrivebaseSubsystem() :
   for(int i = 1; i <= 8; i++) {
     system.AddSimVisionTarget(photonlib::SimVisionTarget{cameraWrapper.m_poseEstimator.GetFieldLayout().GetTagPose(i).value(), 6_in, 6_in, i});
   }
+  system.cam.SetVersionCheckEnabled(false);
   autoTrajectoryConfig.SetKinematics(swerveDrivebase.GetKinematics());
   thetaController.EnableContinuousInput(-180_deg, 180_deg);
   cameraWrapper.m_poseEstimator.GetCamera().SetVersionCheckEnabled(false);

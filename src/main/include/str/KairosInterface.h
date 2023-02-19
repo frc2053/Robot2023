@@ -57,10 +57,11 @@ public:
         recentResults.totalTime = units::second_t{results[0]};
         recentResults.shoulderPoints.clear();
         recentResults.elbowPoints.clear();
-        for(std::size_t i = 0; i < (results.size() - 1 / 2); i++) {
-          recentResults.shoulderPoints.push_back(i * 2 + 2);
-          recentResults.elbowPoints.push_back(i * 2 + 3);
+        for(std::size_t i = 0; i < (results.size() - 2) / 2; i++) {
+          recentResults.shoulderPoints.push_back(results[i * 2 + 1]);
+          recentResults.elbowPoints.push_back(results[i * 2 + 2]);
         }
+        kairosCache[hashResult] = recentResults;
       }
     }
   }
@@ -75,6 +76,13 @@ public:
 
   void Request(ArmTrajectoryParams params) {
     std::size_t currentHash = std::hash<ArmTrajectoryParams>{}(params);
+
+    //break out if we have a cached trajectory
+    if(kairosCache.contains(currentHash)) {
+      fmt::print("Arm trajectory is in cache! Setting trajectory and not requesting...\n");
+      recentResults = kairosCache[currentHash];
+      return;
+    }
 
     if(currentHash == parameterHash) {
       fmt::print("Arm trajectory hashes are equal! We are not going to send another request!\n");
@@ -103,4 +111,5 @@ private:
   bool resultRecieved{true};
   std::size_t parameterHash{0};
   KairosResults recentResults;
+  std::unordered_map<std::size_t, KairosResults> kairosCache;
 };
