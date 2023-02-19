@@ -14,29 +14,18 @@ ArmSubsystem::ArmSubsystem() {
   ConfigureMotors();
   ResetEncoders();
 
-  if(!frc::RobotBase::IsSimulation()) {
+  //Reset encoders to starting config position but only in real robot
+  //because the sim robot sets the starting config already
+  if(frc::RobotBase::IsReal()) {
     shoulderMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
-    elbowMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
+    elbowMotor.SetSelectedSensorPosition(ConvertElbowAngleToTicks(units::radian_t{initialState(1)}));
+    armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
   }
 
   kairos.SetConfig(config.json_string);
-
-  ArmPose startPose = ArmPose::StartingConfig();
-  ArmPose scorePose = ArmPose::ScoreConeHigh();
-
-  ArmTrajectoryParams param;
-  param.initialState = armSystem.CalculateInverseKinematics(startPose.AsVector());
-  param.finalState = armSystem.CalculateInverseKinematics(scorePose.AsVector());
-
-  fmt::print("param: {}, {}\n", param.initialState, param.finalState);
-
-  kairos.Request(param);
 }
 
 void ArmSubsystem::SimulationPeriodic() {
-  if(frc::RobotState::IsEnabled()) {
-    armSystem.Update(frc::Vectord<2>{shoulderMotor.GetMotorOutputVoltage(), elbowMotor.GetMotorOutputVoltage()});
-  }
   frc::Vectord<6> actualCurrentState = armSystem.GetCurrentState();
 
   shoulderSimCollection.SetIntegratedSensorRawPosition(ConvertShoulderAngleToTicks(units::radian_t{actualCurrentState(0)}));
@@ -47,13 +36,6 @@ void ArmSubsystem::SimulationPeriodic() {
 }
 
 void ArmSubsystem::Periodic() {
-
-  kairos.Update();
-
-  KairosResults results = kairos.GetMostRecentResult();
-
-  fmt::print("Kairos results: t = {}, hash = {}\n", results.totalTime, results.hash);
-
   units::radian_t shoulderPos = GetShoulderMotorAngle();
   units::radian_t elbowPos = GetElbowMotorAngle();
 
@@ -72,8 +54,8 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Shoulder Accel", shoulderAccel.convert<units::degrees_per_second_squared>().value()); 
   frc::SmartDashboard::PutNumber("Elbow Accel", elbowAccel.convert<units::degrees_per_second_squared>().value()); 
 
-  if(frc::RobotBase::IsReal()) {
-    armSystem.UpdateReal(shoulderPos, elbowPos, shoulderVel, elbowVel, shoulderAccel, elbowAccel);
+  if(frc::RobotState::IsEnabled()) {
+    armSystem.Update(frc::Vectord<2>{shoulderMotor.GetMotorOutputVoltage(), elbowMotor.GetMotorOutputVoltage()});
   }
 
   frc::Vectord<6> ekfState = armSystem.GetEKFState();
@@ -86,15 +68,21 @@ void ArmSubsystem::Periodic() {
 
   tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
 
-  //LogStateToAdvantageScope();
+  LogStateToAdvantageScope();
 
-  frc::Vectord<2> feedForwards = armSystem.GetVoltagesToApply();
+  frc::Vectord<2> feedForwards = armSystem.GetFeedForwardVoltage();
+  frc::Vectord<2> lqrOutput = armSystem.GetLQROutput();
 
   frc::SmartDashboard::PutNumber("Feed Forward Shoulder", feedForwards(0));
   frc::SmartDashboard::PutNumber("Feed Forward Elbow", feedForwards(1));
 
-  shoulderMotor.SetVoltage(units::volt_t{feedForwards(0)});
-  elbowMotor.SetVoltage(units::volt_t{feedForwards(1)});
+  frc::SmartDashboard::PutNumber("LQR Output Shoulder", lqrOutput(0));
+  frc::SmartDashboard::PutNumber("LQR Output Elbow", lqrOutput(1));
+
+  frc::Vectord<2> ffAndLqr = feedForwards + lqrOutput;
+
+  shoulderMotor.SetVoltage(units::volt_t{ffAndLqr(0)});
+  elbowMotor.SetVoltage(units::volt_t{ffAndLqr(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
@@ -102,11 +90,11 @@ void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::rad
   armSystem.SetDesiredState(requestedState);
 }
 
-units::meter_t ArmSubsystem::GetArmEndEffectorSetpointX() {
+units::meter_t ArmSubsystem::GetArmEndEffectorSetpointX() const {
   return currentEndEffectorSetpointX;
 }
 
-units::meter_t ArmSubsystem::GetArmEndEffectorSetpointY() {
+units::meter_t ArmSubsystem::GetArmEndEffectorSetpointY() const {
   return currentEndEffectorSetpointY;
 }
 
@@ -121,11 +109,6 @@ void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::
     anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, true);
   }
   frc::Vectord<6> requestedState{anglesToGoTo(0), anglesToGoTo(1), 0, 0, 0, 0};
-
-  ArmTrajectoryParams params;
-  params.initialState = frc::Vectord<2>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value()};
-  params.finalState = anglesToGoTo;
-  kairos.Request(params);
   armSystem.SetDesiredState(requestedState);
 }
 
@@ -234,27 +217,27 @@ void ArmSubsystem::LogStateToAdvantageScope() const {
 
   const frc::Vectord<2> endOfShoulder = std::get<0>(jointPositions);
 
-  frc::Rotation3d shoulderAngle(-90_deg, 0_deg, units::radian_t{state(0)} + 90_deg);
+  frc::Rotation3d shoulderAngle(0_deg, units::radian_t{state(0)}, 0_deg);
   frc::Quaternion shoulderQuaternion = shoulderAngle.GetQuaternion();
 
-  frc::Rotation3d elbowAngle(90_deg, 180_deg, units::radian_t{state(1)} + 180_deg);
+  frc::Rotation3d elbowAngle(0_deg, 0_deg, units::radian_t{state(1)} + 0_deg);
   frc::Quaternion elbowQuaternion = elbowAngle.GetQuaternion();
 
   shoulderState[0] = 0;
   shoulderState[1] = 0;
-  shoulderState[2] = 0.095;
+  shoulderState[2] = 0;
   shoulderState[3] = shoulderQuaternion.X();
   shoulderState[4] = shoulderQuaternion.Y();
   shoulderState[5] = shoulderQuaternion.Z();
   shoulderState[6] = shoulderQuaternion.W();
 
-  elbowState[0] = endOfShoulder(0);
+  elbowState[0] = 0;//endOfShoulder(0);
   elbowState[1] = 0;
-  elbowState[2] = endOfShoulder(1) + 0.0475;
-  elbowState[3] = elbowQuaternion.X();
-  elbowState[4] = elbowQuaternion.Y();
-  elbowState[5] = elbowQuaternion.Z();
-  elbowState[6] = elbowQuaternion.W();
+  elbowState[2] = 0;//endOfShoulder(1);
+  elbowState[3] = 0;//elbowQuaternion.X();
+  elbowState[4] = 0;//elbowQuaternion.Y();
+  elbowState[5] = 0;//elbowQuaternion.Z();
+  elbowState[6] = 0;//elbowQuaternion.W();
 
   frc::SmartDashboard::PutNumberArray("AdvantageScope/ShoulderState", shoulderState);
   frc::SmartDashboard::PutNumberArray("AdvantageScope/ElbowState", elbowState);

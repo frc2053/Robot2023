@@ -8,7 +8,7 @@
 #include <frc/system/plant/DCMotor.h>
 #include <tuple>
 #include <frc/system/LinearSystem.h>
-#include <frc/estimator/ExtendedKalmanFilter.h>
+#include "frc/ExtendedKalmanFilterRKDP.h"
 #include <frc/controller/LinearQuadraticRegulator.h>
 #include <random>
 #include <memory>
@@ -30,23 +30,24 @@ public:
   );
 
   //LOOPS
-  void Update(frc::Vectord<2> input);
+  void Update(const frc::Vectord<2>& input);
   void RecreateModels();
   void UpdateReal(units::radian_t shoulderPos, units::radian_t elbowPos, units::radians_per_second_t shoulderVel, units::radians_per_second_t elbowVel, units::radians_per_second_squared_t shoulderAccel, units::radians_per_second_squared_t elbowAccel);
 
-
   //KALMAN NOISY
-  frc::Vectord<2> UpdateMeasurementState(frc::Vectord<6> state, frc::Vectord<2> input);
+  frc::Vectord<2> UpdateMeasurementState(const frc::Vectord<6>& state, const frc::Vectord<2>& input);
 
   //ACESSESSORS
-  void SetDesiredState(frc::Vectord<6> state);
+  void SetDesiredState(const frc::Vectord<6>& state);
+  void OverrideCurrentState(const frc::Vectord<6>& newState);
   frc::Vectord<6> GetCurrentState() const;
   frc::Vectord<6> GetEKFState() const;
-  frc::Vectord<2> GetVoltagesToApply() const;
+  frc::Vectord<2> GetFeedForwardVoltage() const;
+  frc::Vectord<2> GetLQROutput() const;
 
   //RELINEARIZATION
-  void Relinearize(frc::Vectord<6> state, frc::Vectord<2> input);
-  frc::LinearSystem<6, 2, 2> CreateModel(frc::Vectord<6> state, frc::Vectord<2> input);
+  void Relinearize(const frc::Vectord<6>& state, const frc::Vectord<2>& input);
+  frc::LinearSystem<6, 2, 2> CreateModel(const frc::Vectord<6>& state, const frc::Vectord<2>& input);
   frc::LinearQuadraticRegulator<4,2> DesignLQR(const frc::LinearSystem<6,2,2>& system, const std::array<double, 4>& qElems, const std::array<double, 2>& rElems) const;
   void CreateLQRLookupTable();
 
@@ -93,7 +94,8 @@ private:
   frc::Vectord<6> desiredState{frc::Vectord<6>::Zero()};
   frc::Vectord<6> currentState{frc::Vectord<6>::Zero()};
   frc::Vectord<2> ff{frc::Vectord<2>::Zero()};
-  std::unique_ptr<frc::ExtendedKalmanFilter<6, 2, 2>> ekf;
+  frc::Vectord<2> lqrOutput{frc::Vectord<2>::Zero()};
+  std::unique_ptr<frc::ExtendedKalmanFilterRKDP<6, 2, 2>> ekf;
   std::random_device rd{};
   std::mt19937 gen{rd()};
   std::normal_distribution<> randNorm{0, 0.01};

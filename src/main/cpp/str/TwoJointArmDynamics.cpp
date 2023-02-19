@@ -40,7 +40,7 @@ TwoJointArmDynamics::TwoJointArmDynamics(
   //CreateLQRLookupTable();
   RecreateModels();
 
-  ekf = std::make_unique<frc::ExtendedKalmanFilter<6,2,2>>(
+  ekf = std::make_unique<frc::ExtendedKalmanFilterRKDP<6,2,2>>(
     [this](frc::Vectord<6> state, frc::Vectord<2> input) {
       return Dynamics(state, input);
     },
@@ -51,11 +51,13 @@ TwoJointArmDynamics::TwoJointArmDynamics(
     std::array<double, 2>{rPos, rPos},
     dt
   );
+
+  ekf->SetXhat(currentState);
 }
 
-void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
+void TwoJointArmDynamics::Update(const frc::Vectord<2>& input) {
   currentState = frc::RKDP(
-    [this](frc::Vectord<6> stateIn, frc::Vectord<2> inputVec) {
+    [this](const frc::Vectord<6>& stateIn, const frc::Vectord<2>& inputVec) {
       return DynamicsReal(stateIn, inputVec);
     },
     currentState,
@@ -64,8 +66,8 @@ void TwoJointArmDynamics::Update(frc::Vectord<2> input) {
   );
 
   RecreateModels();
-  //ekf->Predict(input, dt);
-  //ekf->Correct(input, currentState.head(2));
+  ekf->Predict(input, dt);
+  ekf->Correct(input, currentState.head(2));
 }
 
 void TwoJointArmDynamics::UpdateReal(units::radian_t shoulderPos, units::radian_t elbowPos, units::radians_per_second_t shoulderVel, units::radians_per_second_t elbowVel, units::radians_per_second_squared_t shoulderAccel, units::radians_per_second_squared_t elbowAccel)
@@ -76,22 +78,23 @@ void TwoJointArmDynamics::UpdateReal(units::radian_t shoulderPos, units::radian_
 
 void TwoJointArmDynamics::RecreateModels() {
   Relinearize(currentState, CalculateFeedForward(currentState));
-  //frc::Vectord<2> kinematicResults = CalculateInverseKinematics(currentState.head(2), true);
-  //str::ArmCoordinate idk{units::meter_t{kinematicResults(0)}, units::meter_t{kinematicResults(1)}};
-  //std::cout << "X: " << idk.X().value() << " Y: " << idk.Y().value() << "\n";
-  frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();//kGainLookupTable[idk];
+  frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   frc::Vectord<2> feedForwardResults = CalculateFeedForward(desiredState);
-  feedForwardResults(1) = 0;
-  ff = feedForwardResults + (kMatrix * error).cwiseMin(12).cwiseMax(-12);
+  ff = feedForwardResults;
+  lqrOutput = (kMatrix * error).cwiseMin(12).cwiseMax(-12);
 }
 
-frc::Vectord<2> TwoJointArmDynamics::UpdateMeasurementState(frc::Vectord<6> state, frc::Vectord<2> input) {
+frc::Vectord<2> TwoJointArmDynamics::UpdateMeasurementState(const frc::Vectord<6>& state, const frc::Vectord<2>& input) {
   return cSystem.C() * state + cSystem.D() * input + frc::Vectord<2>{randNorm(gen), randNorm(gen)};
 }
 
-void TwoJointArmDynamics::SetDesiredState(frc::Vectord<6> state) {
+void TwoJointArmDynamics::SetDesiredState(const frc::Vectord<6>& state) {
   desiredState = state;
+}
+
+void TwoJointArmDynamics::OverrideCurrentState(const frc::Vectord<6>& newState) {
+  currentState = newState;
 }
 
 frc::Vectord<6> TwoJointArmDynamics::GetCurrentState() const {
@@ -102,17 +105,21 @@ frc::Vectord<6> TwoJointArmDynamics::GetEKFState() const {
   return ekf->Xhat();
 }
 
-frc::Vectord<2> TwoJointArmDynamics::GetVoltagesToApply() const {
+frc::Vectord<2> TwoJointArmDynamics::GetFeedForwardVoltage() const {
   return ff;
 }
 
+frc::Vectord<2> TwoJointArmDynamics::GetLQROutput() const {
+  return lqrOutput;
+}
+
 //GOOD
-void TwoJointArmDynamics::Relinearize(frc::Vectord<6> state, frc::Vectord<2> input) {
+void TwoJointArmDynamics::Relinearize(const frc::Vectord<6>& state, const frc::Vectord<2>& input) {
   cSystem = CreateModel(state, input);
 }
 
 //GOOD
-frc::LinearSystem<6, 2, 2> TwoJointArmDynamics::CreateModel(frc::Vectord<6> state, frc::Vectord<2> input) {
+frc::LinearSystem<6, 2, 2> TwoJointArmDynamics::CreateModel(const frc::Vectord<6>& state, const frc::Vectord<2>& input) {
   frc::Matrixd<6, 6> A = frc::NumericalJacobianX<6, 6, 2, dynamicsfunctype, TwoJointArmDynamics *&&>(DynamicsFreeFunc, state, input, this);
   frc::Matrixd<6, 2> B = frc::NumericalJacobianU<6, 6, 2, dynamicsfunctype, TwoJointArmDynamics *&&>(DynamicsFreeFunc, state, input, this);
   frc::Matrixd<2, 6> C;
@@ -168,7 +175,6 @@ frc::Vectord<6> TwoJointArmDynamics::Dynamics(const frc::Vectord<6>& state, cons
   frc::Vectord<2> omegas = state({2,3});
 
   frc::Vectord<2> basicTorque = CalculateMotorTorque() * input;
-  //basicTorque = basicTorque + state({4,5});
   frc::Vectord<2> backEmfLoss = CalculateBackEMF() * omegas;
 
   frc::Vectord<2> torque = basicTorque - backEmfLoss;
@@ -189,7 +195,7 @@ frc::Vectord<6> TwoJointArmDynamics::DynamicsReal(const frc::Vectord<6>& state, 
 
   frc::Vectord<2> basicTorque = CalculateMotorTorque() * input;
   frc::Vectord<2> backEmfLoss = CalculateBackEMF() * omegas;
-  frc::Vectord<2> disturbanceTorque = frc::Vectord<2>{0, 0};//frc::Vectord<2>{150, -90};
+  frc::Vectord<2> disturbanceTorque = frc::Vectord<2>{0, 2.8};
 
   frc::Vectord<2> torque = basicTorque - backEmfLoss + disturbanceTorque;
   frc::Vectord<2> alpha = M.inverse() * (torque - C * omegas - G);
