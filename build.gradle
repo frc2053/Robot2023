@@ -129,3 +129,5 @@ task generateArmTrajectories(type: Exec) {
     commandLine './build/exe/generateArmCacheRequest/windowsx86-64/release/generateArmCacheRequest.exe'
     commandLine './venv/Scripts/python.exe', 'src/main/python/run_generate_cache.py'
 }
+
+deploy.getDeployTask().get().dependsOn(generateArmTrajectories)
