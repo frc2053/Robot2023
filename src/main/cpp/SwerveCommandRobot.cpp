@@ -140,43 +140,28 @@ void SwerveCommandRobot::ConfigureBindings() {
 
   operatorController.RightBumper().OnTrue(intakeSubsystem.IntakeFactory(0.5));
 
-  // operatorController.X().OnTrue(armSubsystem.SetDesiredArmAnglesFactory(
-  //   [this] { return armSubsystem.GetShoulderMotorAngle() - 5_deg; },
-  //   [this] { return armSubsystem.GetElbowMotorAngle(); }
-  // ));
+  operatorController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+  ));
 
-  // operatorController.B().OnTrue(armSubsystem.SetDesiredArmAnglesFactory(
-  //   [this] { return armSubsystem.GetShoulderMotorAngle() + 5_deg; },
-  //   [this] { return armSubsystem.GetElbowMotorAngle(); }
-  // ));
-
-  // operatorController.A().OnTrue(armSubsystem.SetDesiredArmAnglesFactory(
-  //   [this] { return armSubsystem.GetShoulderMotorAngle(); },
-  //   [this] { return armSubsystem.GetElbowMotorAngle() - 5_deg; }
-  // ));
-
-  // operatorController.Y().OnTrue(armSubsystem.SetDesiredArmAnglesFactory(
-  //   [this] { return armSubsystem.GetShoulderMotorAngle(); },
-  //   [this] { return armSubsystem.GetElbowMotorAngle() + 5_deg; }
-  // ));
+  operatorController.B().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+  ));
 
   operatorController.A().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return -30_in; },
-    [this] { return 24_in; }
+    [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; }
   ));
 
   operatorController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return 20_in; },
-    [this] { return 1_in;}
+    [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; }
   ));
 
-  operatorController.B().OnTrue(armSubsystem.FollowTrajectory(
-    ArmTrajectoryParams{ArmPose::StartingConfig().AsJointAngles(armSubsystem.GetArmSystem()), ArmPose::ScoreConeHigh().AsJointAngles(armSubsystem.GetArmSystem())}
-  ));
-
-  operatorController.X().OnTrue(armSubsystem.FollowTrajectory(
-    ArmTrajectoryParams{ArmPose::ScoreConeHigh().AsJointAngles(armSubsystem.GetArmSystem()), ArmPose::StartingConfig().AsJointAngles(armSubsystem.GetArmSystem())}
-  ));
+  operatorController.LeftBumper().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }));
+  operatorController.RightBumper().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {

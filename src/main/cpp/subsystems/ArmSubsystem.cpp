@@ -7,7 +7,7 @@
 #include <iostream>
 #include <frc/RobotState.h>
 #include <frc/RobotBase.h>
-#include <str/ArmPose.h>
+#include <limits>
 #include <frc2/command/RunCommand.h>
 
 ArmSubsystem::ArmSubsystem() {
@@ -150,7 +150,8 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::func
       return IsArmAtEndEffectorSetpoint();
     }
   ).BeforeStarting(
-    [this, xPos, yPos] { 
+    [this, xPos, yPos] {
+      hasManuallyMoved = true;
       SetDesiredArmEndAffectorPosition(xPos(), yPos());
     },
   {this}
@@ -167,7 +168,8 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
       return IsArmAtDesiredAngles();
     }
   ).BeforeStarting(
-    [this, shoulderAngle, elbowAngle] { 
+    [this, shoulderAngle, elbowAngle] {
+      hasManuallyMoved = true;
       SetDesiredArmAngles(shoulderAngle(), elbowAngle());
     },
   {this}
@@ -178,11 +180,11 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
   );
 }
 
-frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectoryParams& trajParams) {
-  return 
+frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams) {
+  return
   frc2::InstantCommand([this, trajParams] {
-    fmt::print("Sending traj params to kairos: {}, {}\n", trajParams.initialState, trajParams.finalState);
-    kairos.Request(trajParams);
+    fmt::print("Sending traj params to kairos: {}, {}\n", trajParams().initialState, trajParams().finalState);
+    kairos.Request(trajParams());
   }).ToPtr().AndThen(
   frc2::WaitUntilCommand([this] {
     fmt::print("Waiting for traj to be generated\n");
@@ -204,7 +206,42 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(const ArmTrajectoryParams& trajP
     }
   )).FinallyDo([this](bool inturupted) {
     armSystem.SetDesiredState(frc::Vectord<6>{armSystem.GetCurrentState()(0), armSystem.GetCurrentState()(1), 0, 0, 0, 0});
-  });
+  }).Unless([this, trajParams] {return (trajParams().finalState - armSystem.GetCurrentState().head(2)).norm() < 1; });
+}
+
+ArmPose ArmSubsystem::GetClosestPosePreset() {
+  frc::Vectord<2> angles = armSystem.GetCurrentState().head(2);
+  double minNorm = std::numeric_limits<double>::max();
+  ArmPose closestPose;
+  for(const ArmPose& otherPose : AllPoses) {
+    frc::Vectord<2> otherPoseAngles = otherPose.AsJointAngles(armSystem);
+    double norm = (angles - otherPoseAngles).norm();
+    if(norm < minNorm) {
+      minNorm = norm;
+      closestPose = otherPose;
+    }
+  }
+  
+  return closestPose;
+}
+
+frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
+  return GoToPose(
+    [this]() {
+      if(hasManuallyMoved) {
+        ArmPose startPos;
+        startPos.endEffectorPosition = frc::Translation2d{GetArmEndEffectorSetpointX(), GetArmEndEffectorSetpointY()};
+        hasManuallyMoved = false;
+        return startPos;
+      }
+      return GetClosestPosePreset();
+    },
+    poseToGoTo
+  );
+}
+
+frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo) {
+  return FollowTrajectory([this, closesetPoseToPreset, poseToGoTo]{ return ArmTrajectoryParams{closesetPoseToPreset().AsJointAngles(armSystem), poseToGoTo().AsJointAngles(armSystem)}; });
 }
 
 void ArmSubsystem::ConfigureMotors() {

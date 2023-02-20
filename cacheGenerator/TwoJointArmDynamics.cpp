@@ -240,7 +240,7 @@ std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics:
 
 //GOOD
 frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(const frc::Vectord<2>& position, bool invert) const {
-  double elbowAngle = std::acos((std::pow(position(0), 2) + std::pow(position(1), 2) - (std::pow(lengthOfShoulder, 2) + std::pow(lengthOfElbow, 2))) / (2 * lengthOfShoulder * lengthOfElbow));
+  double elbowAngle = std::acos((std::pow(position(0), 2) + std::pow(position(1), 2) - std::pow(lengthOfShoulder, 2) - std::pow(lengthOfElbow, 2)) / (2 * lengthOfShoulder * lengthOfElbow));
   if(invert) {
     elbowAngle = -elbowAngle;
   }

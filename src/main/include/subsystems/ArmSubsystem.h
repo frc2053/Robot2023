@@ -10,6 +10,7 @@
 #include <ctre/phoenix/motorcontrol/TalonFXSimCollection.h>
 #include <str/ArmConfig.h>
 #include <str/KairosInterface.h>
+#include <str/ArmPose.h>
 
 class ArmSubsystem : public frc2::SubsystemBase {
  public:
@@ -33,12 +34,17 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos);
   frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
-  frc2::CommandPtr FollowTrajectory(const ArmTrajectoryParams& trajParams);
+  frc2::CommandPtr GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo);
+  frc2::CommandPtr GoToPose(std::function<ArmPose()> poseToGoTo);
+
+  frc2::CommandPtr FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams);
 
   const TwoJointArmDynamics& GetArmSystem() const { return armSystem; };
  private:
   void ConfigureMotors();
   void ResetEncoders();
+
+  ArmPose GetClosestPosePreset();
 
   int ConvertShoulderAngleToTicks(units::radian_t angle) const;
   int ConvertShoulderVelocityToTicks(units::radians_per_second_t vel) const;
@@ -62,6 +68,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
   units::radians_per_second_t prevElbowVel{0_rad_per_s};
   
   ArmConfig config{ArmConfig::LoadJson("arm_config.json")};
+
+  bool hasManuallyMoved{false};
   
   TwoJointArmDynamics armSystem {
     config.shoulder.mass,
