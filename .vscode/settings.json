@@ -112,6 +112,9 @@
     "__tuple_03": "cpp",
     "locale": "cpp",
     "queue": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "forward_list": "cpp",
+    "scoped_allocator": "cpp",
+    "shared_mutex": "cpp"
   }
 }

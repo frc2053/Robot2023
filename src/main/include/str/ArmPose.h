@@ -15,7 +15,7 @@ public:
 
   static constexpr ArmPose ScoreConeHigh() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-31_in, 23_in};
+    retVal.endEffectorPosition = {-45_in, 17_in};
     retVal.isInverted = false;
     return retVal;
   };

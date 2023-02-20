@@ -281,27 +281,27 @@ void ArmSubsystem::LogStateToAdvantageScope() const {
 
   const frc::Vectord<2> endOfShoulder = std::get<0>(jointPositions);
 
-  frc::Rotation3d shoulderAngle(0_deg, units::radian_t{state(0)}, 0_deg);
+  frc::Rotation3d shoulderAngle(0_deg, units::radian_t{state(0)} + 180_deg, 0_deg);
   frc::Quaternion shoulderQuaternion = shoulderAngle.GetQuaternion();
 
-  frc::Rotation3d elbowAngle(0_deg, 0_deg, units::radian_t{state(1)} + 0_deg);
+  frc::Rotation3d elbowAngle(0_deg, units::radian_t{state(0)} + units::radian_t{state(1)} + 180_deg, 0_deg);
   frc::Quaternion elbowQuaternion = elbowAngle.GetQuaternion();
 
-  shoulderState[0] = 0;
-  shoulderState[1] = 0;
-  shoulderState[2] = 0;
+  shoulderState[0] = 0.286;
+  shoulderState[1] = 0.01;
+  shoulderState[2] = 0.795;
   shoulderState[3] = shoulderQuaternion.X();
   shoulderState[4] = shoulderQuaternion.Y();
   shoulderState[5] = shoulderQuaternion.Z();
   shoulderState[6] = shoulderQuaternion.W();
 
-  elbowState[0] = 0;//endOfShoulder(0);
-  elbowState[1] = 0;
-  elbowState[2] = 0;//endOfShoulder(1);
-  elbowState[3] = 0;//elbowQuaternion.X();
-  elbowState[4] = 0;//elbowQuaternion.Y();
-  elbowState[5] = 0;//elbowQuaternion.Z();
-  elbowState[6] = 0;//elbowQuaternion.W();
+  elbowState[0] = 0.286 - endOfShoulder(0);
+  elbowState[1] = 0.01;
+  elbowState[2] = 0.795 + endOfShoulder(1);
+  elbowState[3] = elbowQuaternion.X();
+  elbowState[4] = elbowQuaternion.Y();
+  elbowState[5] = elbowQuaternion.Z();
+  elbowState[6] = elbowQuaternion.W();
 
   frc::SmartDashboard::PutNumberArray("AdvantageScope/ShoulderState", shoulderState);
   frc::SmartDashboard::PutNumberArray("AdvantageScope/ElbowState", elbowState);
