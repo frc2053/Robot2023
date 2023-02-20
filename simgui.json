@@ -318,6 +318,7 @@
         }
       },
       "kairos": {
+        "open": true,
         "result": {
           "hash": {
             "open": true

@@ -1,0 +1,220 @@
+{
+  "version": "2.2.2",
+  "layout": [
+    {
+      "type": 3,
+      "field": null,
+      "title": "Console"
+    },
+    {
+      "type": 8,
+      "fields": [],
+      "listFields": [],
+      "options": {
+        "ids": [
+          0,
+          1,
+          2
+        ],
+        "layouts": [
+          "Xbox Controller (White)",
+          "Xbox Controller (Blue)",
+          "None"
+        ]
+      },
+      "title": "Joysticks"
+    },
+    {
+      "type": 4,
+      "fields": [
+        null,
+        null,
+        null
+      ],
+      "selectionType": "full",
+      "selectionRangeMin": 0,
+      "selectionRangeMax": 10,
+      "measurementType": "independent",
+      "measurementSampling": "fixed",
+      "measurementSamplingPeriod": 20,
+      "histogramMin": 0,
+      "histogramMax": 10,
+      "histogramStep": 1,
+      "title": "Statistics"
+    },
+    {
+      "type": 9,
+      "fields": [
+        "/SmartDashboard/AdvantageScope/Current Swerve Module Data",
+        "/SmartDashboard/AdvantageScope/Desired Swerve Module Data",
+        "/SmartDashboard/AdvantageScope/Robot Estimator Pose/2"
+      ],
+      "listFields": [],
+      "options": {
+        "maxSpeed": 4.803648,
+        "rotationUnits": "radians",
+        "arrangement": "0,1,2,3",
+        "sizeLeftRight": 0.6477,
+        "sizeFrontBack": 0.6477,
+        "forwardDirection": "up"
+      },
+      "title": "Swerve"
+    },
+    {
+      "type": 5,
+      "fields": [],
+      "listFields": [
+        [
+          {
+            "type": "Robot",
+            "key": "/SmartDashboard/AdvantageScope/Robot Estimator Pose",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Ghost",
+            "key": "/SmartDashboard/Field/Robot Vision Pose Estimate",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Arrow (Center)",
+            "key": "/SmartDashboard/Field/BL Module Pose",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Arrow (Center)",
+            "key": "/SmartDashboard/Field/BR Module Pose",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Arrow (Center)",
+            "key": "/SmartDashboard/Field/FL Module Pose",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Arrow (Center)",
+            "key": "/SmartDashboard/Field/FR Module Pose",
+            "fieldTypeIndex": 0
+          }
+        ]
+      ],
+      "options": {
+        "game": "2023",
+        "unitDistance": "meters",
+        "unitRotation": "radians",
+        "origin": "right",
+        "size": 0.739775,
+        "allianceBumpers": "auto",
+        "allianceOrigin": "auto",
+        "orientation": "blue left, red right"
+      },
+      "title": "Odometry"
+    },
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        },
+        "discrete": {
+          "fields": []
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        }
+      },
+      "title": "Line Graph"
+    },
+    {
+      "type": 10,
+      "fields": [
+        "/SmartDashboard/Arm Sim",
+        null,
+        null
+      ],
+      "listFields": [],
+      "options": {},
+      "title": "Arm View"
+    },
+    {
+      "type": 6,
+      "fields": [],
+      "listFields": [
+        [
+          {
+            "type": "Component (Robot)",
+            "key": "/SmartDashboard/AdvantageScope/ShoulderState",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Component (Robot)",
+            "key": "/SmartDashboard/AdvantageScope/ElbowState",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Vision Target",
+            "key": "/photonvision/FrontCamera/targetPoseEntry",
+            "fieldTypeIndex": 0
+          }
+        ],
+        [
+          {
+            "type": "Robot",
+            "key": "/SmartDashboard/AdvantageScope/Robot Estimator Pose",
+            "fieldTypeIndex": 0
+          }
+        ]
+      ],
+      "options": {
+        "field": "2023",
+        "alliance": "blue",
+        "robot": "20532023",
+        "unitDistance": "meters",
+        "unitRotation": "radians"
+      },
+      "title": "FullFieldView"
+    },
+    {
+      "type": 6,
+      "fields": [],
+      "listFields": [
+        [
+          {
+            "type": "Component (Robot)",
+            "key": "/SmartDashboard/AdvantageScope/ShoulderState",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Component (Robot)",
+            "key": "/SmartDashboard/AdvantageScope/ElbowState",
+            "fieldTypeIndex": 0
+          }
+        ],
+        [
+          {
+            "type": "Robot",
+            "key": "/SmartDashboard/AdvantageScope/Robot Estimator Pose",
+            "fieldTypeIndex": 0
+          }
+        ]
+      ],
+      "options": {
+        "field": "2023",
+        "alliance": "blue",
+        "robot": "20532023",
+        "unitDistance": "meters",
+        "unitRotation": "radians"
+      },
+      "title": "CameraPOV"
+    }
+  ]
+}

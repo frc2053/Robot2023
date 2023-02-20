@@ -206,7 +206,7 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
     }
   )).FinallyDo([this](bool inturupted) {
     armSystem.SetDesiredState(frc::Vectord<6>{armSystem.GetCurrentState()(0), armSystem.GetCurrentState()(1), 0, 0, 0, 0});
-  }).Unless([this, trajParams] {return (trajParams().finalState - armSystem.GetCurrentState().head(2)).norm() < 1; });
+  }).Unless([this, trajParams] {return (trajParams().finalState - armSystem.GetCurrentState().head(2)).norm() < 0.5; });
 }
 
 ArmPose ArmSubsystem::GetClosestPosePreset() {
