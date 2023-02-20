@@ -124,10 +124,14 @@ model {
     }
 }
 
-task generateArmTrajectories(type: Exec) {
+task generateArmCacheRequest(type: Exec) {
     dependsOn 'installGenerateArmCacheRequestWindowsx86-64ReleaseExecutable'
-    commandLine './build/exe/generateArmCacheRequest/windowsx86-64/release/generateArmCacheRequest.exe'
+    commandLine './build/install/generateArmCacheRequest/windowsx86-64/release/generateArmCacheRequest.bat', ''
+}
+
+task generateArmTrajectories(type: Exec) {
+    dependsOn 'generateArmCacheRequest'
     commandLine './venv/Scripts/python.exe', 'src/main/python/run_generate_cache.py'
 }
 
-deploy.getDeployTask().get().dependsOn(generateArmTrajectories)
+discoverroborio.dependsOn(generateArmTrajectories)

@@ -45,7 +45,7 @@ void ArmSubsystem::Periodic() {
 
   ArmTrajectory traj{ArmTrajectoryParams{}};
   std::vector<frc::Vectord<2>> points;
-  for(int i = 0; i < armResults.elbowPoints.size(); i++) {
+  for(unsigned int i = 0; i < armResults.elbowPoints.size(); i++) {
     points.push_back(frc::Vectord<2>{armResults.shoulderPoints[i], armResults.elbowPoints[i]});
   }
   traj.SetPoints(kairos.GetMostRecentResult().totalTime, points);
