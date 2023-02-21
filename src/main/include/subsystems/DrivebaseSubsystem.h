@@ -38,14 +38,6 @@ public:
     std::function<bool()> wantsToOverride,
     std::function<bool()> slowMode
   );
-  frc2::CommandPtr FollowPathFactory(
-    frc::Trajectory traj
-  );
-  frc2::CommandPtr FollowPathplannerFactory(
-    std::string pathName,
-    units::meters_per_second_t maxSpeed,
-    units::meters_per_second_squared_t maxAccel
-  );
   frc2::CommandPtr GoToPoseFactory(
     std::function<frc::Pose2d()> poseToGoTo,
     std::function<bool()> override
@@ -64,39 +56,15 @@ public:
     std::function<double()> rot_deg
   );
 
+  str::SwerveDrivebase swerveDrivebase{};
   frc::TrajectoryConfig autoTrajectoryConfig{str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V, str::swerve_drive_consts::MAX_CHASSIS_ACCEL};
 private:
-  str::SwerveDrivebase swerveDrivebase{};
-
   //vision stuff
   std::shared_ptr<frc::AprilTagFieldLayout> fieldLayout;
   std::shared_ptr<photonlib::PhotonCamera> frontTagCamera;
   std::shared_ptr<photonlib::SimVisionSystem> system;
   std::shared_ptr<photonlib::PhotonPoseEstimator> visionPoseEstimator;
   frc::Pose3d prevEstimatedVisionPose{0_m, 0_m, 0_m, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
-
-  std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{
-    {"PlaceConeHigh", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"PlacedConeHigh!!!"})},
-    {"GrabConeFar", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"GrabbedConeFar!!!"})}
-  };
-
-  pathplanner::SwerveAutoBuilder autoBuilder{
-    [this] {
-      return swerveDrivebase.GetRobotPose();
-    },
-    [this](frc::Pose2d resetToHere) {
-      swerveDrivebase.ResetPose(resetToHere);
-    },
-    swerveDrivebase.GetKinematics(),
-    pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
-    pathplanner::PIDConstants(str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_ROT_KD),
-    [this](std::array<frc::SwerveModuleState, 4> states) {
-      swerveDrivebase.DirectSetModuleStates(states);
-    },
-    eventMap,
-    {this},
-    true
-  };
 
   //Subtracting magic numbers for now because we want the controller to be more aggresive in teleop
   frc::PIDController xController{str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP + .5, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD - .1};

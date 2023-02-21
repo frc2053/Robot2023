@@ -2,8 +2,28 @@
 
 #include <subsystems/DrivebaseSubsystem.h>
 #include <frc2/command/CommandPtr.h>
+#include <pathplanner/lib/auto/SwerveAutoBuilder.h>
+#include <subsystems/ArmSubsystem.h>
+#include <subsystems/IntakeSubsystem.h>
 
 namespace autos {
-    frc2::CommandPtr OneMForward(DrivebaseSubsystem* drivebase);
-    frc2::CommandPtr TestPath(DrivebaseSubsystem* drivebase);
+class Autos {
+public:
+  Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSubsystem* intakeSub);
+
+  std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{
+    {"PlaceConeHigh", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"PlacedConeHigh!!!"})},
+    {"GrabConeFar", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"GrabbedConeFar!!!"})}
+  };
+
+  std::unique_ptr<pathplanner::SwerveAutoBuilder> autoBuilder;
+
+  frc2::CommandPtr FollowPathplannerFactory(std::string pathName, units::meters_per_second_t maxSpeed, units::meters_per_second_squared_t maxAccel);
+  frc2::CommandPtr OneMForward();
+  frc2::CommandPtr TestPath();
+private:
+  DrivebaseSubsystem* m_driveSub;
+  ArmSubsystem* m_armSub;
+  IntakeSubsystem* m_intakeSub;
+};
 }

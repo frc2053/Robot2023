@@ -23,9 +23,10 @@ private:
   DrivebaseSubsystem driveSubsystem;
   IntakeSubsystem intakeSubsystem;
   ArmSubsystem armSubsystem;
+  autos::Autos autos{&driveSubsystem, &armSubsystem, &intakeSubsystem};
 
-  frc2::CommandPtr oneMeterForward = autos::OneMForward(&driveSubsystem);
-  frc2::CommandPtr testPath = autos::TestPath(&driveSubsystem);
+  frc2::CommandPtr oneMeterForward = autos.OneMForward();
+  frc2::CommandPtr testPath = autos.TestPath();
 
   frc::SendableChooser<frc2::Command *> autoChooser;
 };

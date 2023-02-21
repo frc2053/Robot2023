@@ -184,42 +184,6 @@ void DrivebaseSubsystem::ResetOdom(
   visionPoseEstimator->SetReferencePose(frc::Pose3d(refPose));
 }
 
-frc2::CommandPtr DrivebaseSubsystem::FollowPathFactory(frc::Trajectory traj) {
-  frc2::SwerveControllerCommand<4> swerveControllerCommands{
-    traj,
-    [this] { return swerveDrivebase.GetRobotPose(); },
-    swerveDrivebase.GetKinematics(),
-    frc::PIDController(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
-    frc::PIDController(str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD),
-    thetaController,
-    [this](auto moduleStates) { return swerveDrivebase.DirectSetModuleStates(moduleStates); },
-    {this}
-  };
-
-  return frc2::SequentialCommandGroup{
-    frc2::InstantCommand{
-      [this, traj]() {
-        swerveDrivebase.ResetPose(traj.InitialPose());
-      }
-    },
-    std::move(swerveControllerCommands),
-    frc2::InstantCommand{
-      [this]() {
-        swerveDrivebase.Drive(0_mps, 0_mps, 0_rad_per_s, false, false, false);
-      }
-    }
-  }.ToPtr();
-}
-
-frc2::CommandPtr DrivebaseSubsystem::FollowPathplannerFactory(
-  std::string pathName,
-  units::meters_per_second_t maxSpeed,
-  units::meters_per_second_squared_t maxAccel
-) {
-  pathplanner::PathPlannerTrajectory autoPath = pathplanner::PathPlanner::loadPath(pathName, pathplanner::PathConstraints(maxSpeed, maxAccel));
-  return autoBuilder.fullAuto(autoPath);
-}
-
 frc2::CommandPtr DrivebaseSubsystem::GoToPoseFactory(
   std::function<frc::Pose2d()> poseToGoTo,
   std::function<bool()> override
