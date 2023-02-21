@@ -19,6 +19,6 @@ namespace str {
   }
 
   namespace vision {
-    static frc::Transform3d CAMERA_TO_ROBOT{frc::Translation3d{13.5_in, 7_in, 6_in}, frc::Rotation3d{}};
+    static frc::Transform3d CAMERA_TO_ROBOT{frc::Translation3d{12.867755_in, -4.25_in, 21.25_in}, frc::Rotation3d{0_deg, 0_deg, 20_deg}};
   }
 }

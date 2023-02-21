@@ -1,278 +1,11 @@
 {
-  "HALProvider": {
-    "Encoders": {
-      "1": {
-        "header": {
-          "open": true
-        }
-      }
-    },
-    "Other Devices": {
-      "SPARK MAX [3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[10]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[10]/Integrated Sensor": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[11]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[11]/Integrated Sensor": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[2]": {
-        "header": {
-          "open": true
-        }
-      },
-      "navX-Sensor[4]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Arm Sim": "Mechanism2d",
-      "/SmartDashboard/Auto Chooser": "String Chooser",
-      "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/PPSwerveControllerCommand_field": "Field2d",
-      "/SmartDashboard/Reset Drivetrain Pose": "Command",
-      "/SmartDashboard/Set Wheel Speed": "Command",
-      "/SmartDashboard/photonvision Sim Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/Arm Sim": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Auto Chooser": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
-        "Auto Path": {
-          "arrowSize": 100,
-          "arrows": false,
-          "color": [
-            0.6813725233078003,
-            0.7188581228256226,
-            1.0,
-            255.0
-          ],
-          "style": "Line"
-        },
-        "Auto Path One": {
-          "arrows": false,
-          "style": "Line"
-        },
-        "Auto Path Two": {
-          "arrows": false,
-          "color": [
-            0.0,
-            97.50003051757813,
-            255.0,
-            255.0
-          ],
-          "style": "Line"
-        },
-        "BL Module Pose": {
-          "arrowSize": 8,
-          "image": "images\\swerve_module.png",
-          "length": 0.25,
-          "style": "Box/Image",
-          "width": 0.25
-        },
-        "BR Module Pose": {
-          "arrowSize": 8,
-          "image": "images\\swerve_module.png",
-          "length": 0.25,
-          "style": "Box/Image",
-          "width": 0.25
-        },
-        "FL Module Pose": {
-          "arrowSize": 8,
-          "image": "images\\swerve_module.png",
-          "length": 0.25,
-          "style": "Box/Image",
-          "width": 0.25
-        },
-        "FR Module Pose": {
-          "arrowSize": 8,
-          "image": "images\\swerve_module.png",
-          "length": 0.25,
-          "style": "Box/Image",
-          "width": 0.25
-        },
-        "PoseEstimator": {
-          "arrowColor": [
-            1.0,
-            0.0,
-            0.7058825492858887,
-            255.0
-          ],
-          "color": [
-            0.0,
-            0.029412031173706055,
-            1.0,
-            255.0
-          ],
-          "style": "Box/Image"
-        },
-        "Swerve Sim Position": {
-          "color": [
-            255.0,
-            0.0,
-            187.50006103515625,
-            255.0
-          ]
-        },
-        "bottom": 544,
-        "found-tag-1": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-2": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-3": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-4": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-5": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-6": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-7": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "found-tag-8": {
-          "arrowSize": 11,
-          "image": "images\\tag_img_found.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "height": 8.013679504394531,
-        "image": "C:\\Users\\willi\\dev\\Robot2023\\images\\2023-field.png",
-        "left": 46,
-        "right": 1088,
-        "tag-1": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-2": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-3": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-4": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-5": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-6": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-7": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "tag-8": {
-          "arrowSize": 11,
-          "image": "images\\tag_img.png",
-          "length": 0.20000000298023224,
-          "style": "Box/Image",
-          "width": 0.20000000298023224
-        },
-        "top": 36,
-        "units": "meters",
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/PPSwerveControllerCommand_field": {
-        "traj": {
-          "arrows": false,
-          "style": "Line"
-        },
         "window": {
           "visible": true
         }
@@ -280,15 +13,21 @@
     }
   },
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "transitory": {
+      "CameraPublisher": {
+        "open": true
+      },
       "SmartDashboard": {
-        "ResetPose": {
+        "open": true
+      },
+      "photonvision": {
+        "WPI2023": {
           "open": true
         },
-        "open": true
+        "open": true,
+        "photonvision": {
+          "open": true
+        }
       }
     }
   },
@@ -296,20 +35,8 @@
     "Clients": {
       "open": true
     },
-    "Connections": {
-      "open": true
-    },
     "Server": {
       "open": true
-    }
-  },
-  "Plot": {
-    "Plot <0>": {
-      "plots": [
-        {
-          "height": 497
-        }
-      ]
     }
   }
 }
