@@ -35,6 +35,8 @@ bool GenerateArmTrajectoryCacheFile() {
 
   wpi::json cacheRequestFile;
   cacheRequestFile["trajectories"] = wpi::json::array();
+  std::string filePath = std::filesystem::temp_directory_path().string() + "/arm_trajectory_cache_request.json";
+  std::ofstream trajectoryRequestFile(filePath);
 
   //iterate through all combos of poses
   for(const ArmPose& startPose : AllPoses) {
@@ -51,14 +53,12 @@ bool GenerateArmTrajectoryCacheFile() {
         trajectoryJson["finalJointPositions"].push_back(endJointAngles(1));
 
         cacheRequestFile["trajectories"].push_back(trajectoryJson);
-
-        std::string filePath = std::filesystem::temp_directory_path().string() + "/arm_trajectory_cache_request.json";
-        std::ofstream trajectoryRequestFile(filePath);
-        trajectoryRequestFile << cacheRequestFile.dump() << std::endl;
-        fmt::print("Wrote cache request file to: {}\n", filePath);
       }
     }
   }
+
+  trajectoryRequestFile << cacheRequestFile.dump() << std::endl;
+  fmt::print("Wrote cache request file to: {}\n", filePath);
 
   return true;
 }
