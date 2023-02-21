@@ -11,10 +11,7 @@ class Autos {
 public:
   Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSubsystem* intakeSub);
 
-  std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap{
-    {"PlaceConeHigh", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"PlacedConeHigh!!!"})},
-    {"GrabConeFar", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"GrabbedConeFar!!!"})}
-  };
+  std::unique_ptr<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>> eventMap;
 
   std::unique_ptr<pathplanner::SwerveAutoBuilder> autoBuilder;
 

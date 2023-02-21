@@ -4,7 +4,16 @@
 
 autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSubsystem* intakeSub) :
   m_driveSub{driveSub}, m_armSub{armSub}, m_intakeSub{intakeSub} {
-    autoBuilder = std::make_unique<pathplanner::SwerveAutoBuilder>(
+
+  std::unordered_map<std::string, std::shared_ptr<frc2::Command>> map{
+    {"MoveArmToHighPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).Unwrap())},
+    {"PlaceConeHigh", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"PlacedConeHigh!!!"})},
+    {"GrabConeFar", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"GrabbedConeFar!!!"})}
+  };
+
+  eventMap = std::make_unique<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>>(std::move(map));
+
+  autoBuilder = std::make_unique<pathplanner::SwerveAutoBuilder>(
     [this] {
       return m_driveSub->GetRobotPose();
     },
@@ -17,7 +26,7 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
     [this](std::array<frc::SwerveModuleState, 4> states) {
       m_driveSub->swerveDrivebase.DirectSetModuleStates(states);
     },
-    eventMap,
+    *eventMap.get(),
     std::initializer_list<frc2::Subsystem*>({m_driveSub}),
     true
   );
