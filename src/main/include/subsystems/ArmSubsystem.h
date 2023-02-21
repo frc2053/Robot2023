@@ -25,14 +25,14 @@ class ArmSubsystem : public frc2::SubsystemBase {
   units::radians_per_second_t GetElbowMotorVelocity();
 
   void SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle);
-  void SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos);
+  void SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos, bool shoulderUp = true);
 
   units::meter_t GetArmEndEffectorSetpointX() const;
   units::meter_t GetArmEndEffectorSetpointY() const;
   bool IsArmAtEndEffectorSetpoint() const;
   bool IsArmAtDesiredAngles() const;
 
-  frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos);
+  frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos, std::function<bool()> shoulderUp);
   frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
   frc2::CommandPtr GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo);
   frc2::CommandPtr GoToPose(std::function<ArmPose()> poseToGoTo);

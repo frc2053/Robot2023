@@ -142,22 +142,26 @@ void SwerveCommandRobot::ConfigureBindings() {
 
   operatorController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); },
+    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
   operatorController.B().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); }
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); },
+    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
   operatorController.A().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; }
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
+    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
   operatorController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; }
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
+    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
   operatorController.LeftBumper().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }));

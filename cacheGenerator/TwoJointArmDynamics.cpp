@@ -7,6 +7,7 @@
 #include <frc/StateSpaceUtil.h>
 #include <chrono>
 #include <wpi/json_serializer.h>
+#include <numbers>
 #include <fstream>
 
 //GOOD
@@ -239,12 +240,44 @@ std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics:
 }
 
 //GOOD
-frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(const frc::Vectord<2>& position, bool invert) const {
-  double elbowAngle = std::acos((std::pow(position(0), 2) + std::pow(position(1), 2) - std::pow(lengthOfShoulder, 2) - std::pow(lengthOfElbow, 2)) / (2 * lengthOfShoulder * lengthOfElbow));
-  if(invert) {
+//Reference: https://robotacademy.net.au/lesson/inverse-kinematics-for-a-2-joint-robot-arm-using-geometry/
+frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(const frc::Vectord<2>& position, bool fromTop) const {
+
+  double elbowAngle = 0.0;
+  double shoulderAngle = 0.0;
+
+  frc::Vectord<2> relativePositon = position;
+
+  bool isFlipped = position(0) < 0.0;
+
+  if(isFlipped) {
+    relativePositon(0) = -relativePositon(0);
+  }
+
+  if(fromTop) {
+    double elbowAngleNumerator = std::pow(relativePositon(0), 2) + std::pow(relativePositon(1), 2) - std::pow(lengthOfShoulder, 2) - std::pow(lengthOfElbow, 2);
+    double elbowAngleDenominator = 2 * lengthOfShoulder * lengthOfElbow;
+    elbowAngle = -std::acos(elbowAngleNumerator / elbowAngleDenominator);
+
+    double shoulderAngleNumerator = lengthOfElbow * std::sin(elbowAngle);
+    double shoulderAngleDenominator = lengthOfShoulder + (lengthOfElbow * std::cos(elbowAngle));
+    shoulderAngle = std::atan(relativePositon(1) / relativePositon(0)) - std::atan(shoulderAngleNumerator / shoulderAngleDenominator);
+  }
+  else {
+    double elbowAngleNumerator = std::pow(relativePositon(0), 2) + std::pow(relativePositon(1), 2) - std::pow(lengthOfShoulder, 2) - std::pow(lengthOfElbow, 2);
+    double elbowAngleDenominator = 2 * lengthOfShoulder * lengthOfElbow;
+    elbowAngle = std::acos(elbowAngleNumerator / elbowAngleDenominator);
+
+    double shoulderAngleNumerator = lengthOfElbow * std::sin(elbowAngle);
+    double shoulderAngleDenominator = lengthOfShoulder + lengthOfElbow * std::cos(elbowAngle);
+    shoulderAngle = std::atan(relativePositon(1) / relativePositon(0)) - std::atan(shoulderAngleNumerator / shoulderAngleDenominator);
+  }
+
+  if(isFlipped) {
+    shoulderAngle = std::numbers::pi - shoulderAngle;
     elbowAngle = -elbowAngle;
   }
-  double shoulderAngle = std::atan2(position(1), position(0)) - std::atan2(lengthOfElbow * std::sin(elbowAngle), lengthOfShoulder + lengthOfElbow * std::cos(elbowAngle));
+
   frc::Vectord<2> result;
   result << shoulderAngle,
             elbowAngle;

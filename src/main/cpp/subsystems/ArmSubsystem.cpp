@@ -130,29 +130,24 @@ bool ArmSubsystem::IsArmAtDesiredAngles() const {
   return isShoulderThere && isElbowThere && isSlowEnoughShoulder && isSlowEnoughElbow;
 }
 
-void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos) {
+void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos, bool shoulderUp) {
   currentEndEffectorSetpointX = xPos;
   currentEndEffectorSetpointY = yPos;
   frc::Vectord<2> anglesToGoTo;
-  if(xPos < 0_m) {
-    anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, false);
-  }
-  else {
-    anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, true);
-  }
+  anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, shoulderUp);
   frc::Vectord<6> requestedState{anglesToGoTo(0), anglesToGoTo(1), 0, 0, 0, 0};
   armSystem.SetDesiredState(requestedState);
 }
 
-frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos) {
+frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos, std::function<bool()> shoulderUp) {
   return frc2::WaitUntilCommand(
     [this] {
       return IsArmAtEndEffectorSetpoint();
     }
   ).BeforeStarting(
-    [this, xPos, yPos] {
+    [this, xPos, yPos, shoulderUp] {
       hasManuallyMoved = true;
-      SetDesiredArmEndAffectorPosition(xPos(), yPos());
+      SetDesiredArmEndAffectorPosition(xPos(), yPos(), shoulderUp());
     },
   {this}
   ).FinallyDo(

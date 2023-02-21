@@ -60,7 +60,7 @@ public:
 
   //HELPERS
   std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> CalculateForwardKinematics(const frc::Vectord<6>& state) const;
-  frc::Vectord<2> CalculateInverseKinematics(const frc::Vectord<2>& position, bool invert = false) const;
+  frc::Vectord<2> CalculateInverseKinematics(const frc::Vectord<2>& position, bool fromTop = true) const;
 
   frc::Matrixd<2,2> CalculateInertiaMatrix(const frc::Vectord<2>& angleVec) const;
   frc::Matrixd<2,2> CalculateCentrifugalCoriolisTerms(const frc::Vectord<2>& angleVec, const frc::Vectord<2>& velocityVec) const;
