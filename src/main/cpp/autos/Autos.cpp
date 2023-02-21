@@ -7,7 +7,8 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> map{
     {"MoveArmToHighPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).Unwrap())},
-    {"PlaceConeHigh", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"PlacedConeHigh!!!"})},
+    {"MoveArmToStowedPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::StowedConfig(); }).Unwrap())},
+    {"PoopPiece", std::move(m_intakeSub->PoopGamePiece(1_s).Unwrap())},
     {"GrabConeFar", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"GrabbedConeFar!!!"})}
   };
 

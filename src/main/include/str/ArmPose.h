@@ -13,6 +13,13 @@ public:
     return retVal;
   };
 
+  static constexpr ArmPose StowedConfig() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {10.5_in, -10.5_in};
+    retVal.isInverted = true;
+    return retVal;
+  };
+
   static constexpr ArmPose ScoreConeHigh() {
     ArmPose retVal;
     retVal.endEffectorPosition = {-45_in, 17_in};
@@ -32,4 +39,4 @@ public:
   bool isInverted{false};
 };
 
-static inline std::vector<ArmPose> AllPoses{ArmPose::StartingConfig(), ArmPose::ScoreConeHigh()};
+static inline std::vector<ArmPose> AllPoses{ArmPose::StartingConfig(), ArmPose::ScoreConeHigh(), ArmPose::StowedConfig()};
