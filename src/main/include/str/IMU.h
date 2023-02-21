@@ -17,6 +17,7 @@ namespace str {
 
     frc::Rotation2d GetYaw();
     units::degree_t GetPitch();
+    units::degrees_per_second_t GetPitchRate();
     units::radians_per_second_t GetYawRate();
     units::radian_t GetOffset();
 

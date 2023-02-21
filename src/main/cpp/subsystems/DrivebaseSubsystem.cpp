@@ -171,7 +171,14 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> wantsT
       swerveDrivebase.Drive(ySpeed * 0.3_mps, 0_mps, rotCmd * 1_rad_per_s, true, false, true);
     },
     {this}
-  ).BeforeStarting([this] {thetaController.SetGoal(0_rad); }).Until([this]{ return std::abs(swerveDrivebase.GetRobotPitch().value()) < 0.5; });
+  ).BeforeStarting([this] {thetaController.SetGoal(0_rad); })
+  .Until(
+    [this] {
+      bool isLevelEnough = std::abs(swerveDrivebase.GetRobotPitch().value()) < 3;
+      bool isTipping = swerveDrivebase.GetRobotPitchRate() > 15_deg_per_s;
+      return isLevelEnough || isTipping; 
+    }
+  );
 }
 
 void DrivebaseSubsystem::ResetOdom(

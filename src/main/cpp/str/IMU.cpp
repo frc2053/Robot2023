@@ -34,6 +34,10 @@ units::degree_t str::IMU::GetPitch() {
   return units::degree_t{-navxGyro.GetRoll()};
 }
 
+units::degrees_per_second_t str::IMU::GetPitchRate() {
+  return units::degrees_per_second_t{-navxGyro.GetRawGyroY()};
+}
+
 units::radians_per_second_t str::IMU::GetYawRate() {
   return units::degrees_per_second_t(-navxGyro.GetRate());
 }
