@@ -79,7 +79,7 @@ void DrivebaseSubsystem::ProcessVisionData() {
       }
     }
     str::Field::GetInstance().SetObjectPosition("Robot Vision Pose Estimate", result.value().estimatedPose.ToPose2d());
-    swerveDrivebase.AddVisionMeasurementToPoseEstimator(result.value().estimatedPose.ToPose2d(), result.value().timestamp);
+    //swerveDrivebase.AddVisionMeasurementToPoseEstimator(result.value().estimatedPose.ToPose2d(), result.value().timestamp);
   }
   frc::SmartDashboard::PutNumberArray("AdvantageScope/Detected Vision Targets", detectedVisionDataForNT);
 }
