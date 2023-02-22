@@ -15,6 +15,7 @@ void Robot::RobotInit() {
 
   wpi::PortForwarder::GetInstance().Add(5800, "10.20.53.11", 5800);
   wpi::PortForwarder::GetInstance().Add(1181, "10.20.53.11", 1181);
+  wpi::PortForwarder::GetInstance().Add(1182, "10.20.53.11", 1182);
   frc::DataLogManager::Start();
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
   robot.ConfigureBindings();

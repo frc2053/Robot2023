@@ -11,6 +11,7 @@
 #include <str/ArmConfig.h>
 #include <str/KairosInterface.h>
 #include <str/ArmPose.h>
+#include <frc/controller/ProfiledPIDController.h>
 
 class ArmSubsystem : public frc2::SubsystemBase {
  public:
@@ -70,6 +71,15 @@ class ArmSubsystem : public frc2::SubsystemBase {
   ArmConfig config{ArmConfig::LoadJson("arm_config.json")};
 
   bool hasManuallyMoved{false};
+  std::string lastRanTrajFinalPoseName{""};
+
+  frc::TrapezoidProfile<units::radians>::Constraints arm_constraints {
+    180_deg_per_s,
+    10000_deg_per_s_sq
+  };
+
+  frc::ProfiledPIDController<units::radians> shoulderPID{0.5, 0, 0, arm_constraints};
+  frc::ProfiledPIDController<units::radians> elbowPID{0.5, 0, 0, arm_constraints};
   
   TwoJointArmDynamics armSystem {
     config.shoulder.mass,

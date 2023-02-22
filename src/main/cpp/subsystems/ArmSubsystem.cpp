@@ -8,6 +8,8 @@
 #include <frc/RobotState.h>
 #include <frc/RobotBase.h>
 #include <limits>
+#include <frc2/command/ConditionalCommand.h>
+#include <frc2/command/PrintCommand.h>
 #include <frc2/command/RunCommand.h>
 
 ArmSubsystem::ArmSubsystem() {
@@ -18,14 +20,17 @@ ArmSubsystem::ArmSubsystem() {
   //Reset encoders to starting config position but only in real robot
   //because the sim robot sets the starting config already
   if(frc::RobotBase::IsReal()) {
-    shoulderMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
-    elbowMotor.SetSelectedSensorPosition(ConvertElbowAngleToTicks(units::radian_t{initialState(1)}));
+    // shoulderMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
+    // elbowMotor.SetSelectedSensorPosition(ConvertElbowAngleToTicks(units::radian_t{initialState(1)}));
     armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
   }
 
   armSystem.SetDesiredState(armSystem.GetCurrentState());
 
   kairos.SetConfig(config.json_string);
+
+  frc::SmartDashboard::PutNumber("PID Setpoint Shoulder", 0);
+  frc::SmartDashboard::PutNumber("PID Setpoint Elbow", 0);
 }
 
 void ArmSubsystem::SimulationPeriodic() {
@@ -95,9 +100,33 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("LQR Output Shoulder", lqrOutput(0));
   frc::SmartDashboard::PutNumber("LQR Output Elbow", lqrOutput(1));
 
-  frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
-  shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
-  elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
+  double pidSetpointShoulder = frc::SmartDashboard::GetNumber("PID Setpoint Shoulder", 0);
+  shoulderPID.SetGoal(
+    {
+      units::radian_t{armSystem.GetDesiredState()(0)},
+      units::radians_per_second_t{armSystem.GetDesiredState()(2)}
+    }
+  );
+
+  double pidSetpointElbow = frc::SmartDashboard::GetNumber("PID Setpoint Elbow", 0);
+  elbowPID.SetGoal(
+    {
+      units::radian_t{armSystem.GetDesiredState()(1)},
+      units::radians_per_second_t{armSystem.GetDesiredState()(3)}
+    }
+  );
+
+  double shoulderOutput = shoulderPID.Calculate(GetShoulderMotorAngle());
+  double elbowOutput = elbowPID.Calculate(GetElbowMotorAngle());
+  frc::SmartDashboard::PutNumber("PID Output Shoulder", shoulderOutput);
+  frc::SmartDashboard::PutNumber("PID Output Elbow", elbowOutput);
+  
+  shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
+  elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
+
+  // frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
+  // shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
+  // elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
@@ -217,26 +246,39 @@ ArmPose ArmSubsystem::GetClosestPosePreset() {
     }
   }
   
+  fmt::print("Closest pose was: {}\n", closestPose.name);
   return closestPose;
 }
 
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
-  return GoToPose(
-    [this]() {
-      if(hasManuallyMoved) {
-        ArmPose startPos;
-        startPos.endEffectorPosition = frc::Translation2d{GetArmEndEffectorSetpointX(), GetArmEndEffectorSetpointY()};
-        hasManuallyMoved = false;
-        return startPos;
-      }
-      return GetClosestPosePreset();
-    },
-    poseToGoTo
-  );
+  return frc2::ConditionalCommand(
+    GoToPose(
+      [this]() {
+        if(hasManuallyMoved) {
+          ArmPose startPos;
+          startPos.endEffectorPosition = frc::Translation2d{GetArmEndEffectorSetpointX(), GetArmEndEffectorSetpointY()};
+          hasManuallyMoved = false;
+          return startPos;
+        }
+        return GetClosestPosePreset();
+      },
+      poseToGoTo
+    ).Unwrap(),
+    frc2::PrintCommand("We are already at final pose!\n").ToPtr().Unwrap(),
+    [this, poseToGoTo] {
+      return lastRanTrajFinalPoseName != poseToGoTo().name;
+    }
+  ).ToPtr();
 }
 
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo) {
-  return FollowTrajectory([this, closesetPoseToPreset, poseToGoTo]{ return ArmTrajectoryParams{closesetPoseToPreset().AsJointAngles(armSystem), poseToGoTo().AsJointAngles(armSystem)}; });
+  return FollowTrajectory(
+    [this, closesetPoseToPreset, poseToGoTo] { 
+      fmt::print("Following trajectory from {} to {}\n", closesetPoseToPreset().name, poseToGoTo().name);
+      lastRanTrajFinalPoseName = poseToGoTo().name;
+      return ArmTrajectoryParams{closesetPoseToPreset().AsJointAngles(armSystem), poseToGoTo().AsJointAngles(armSystem)}; 
+    }
+  );
 }
 
 void ArmSubsystem::ConfigureMotors() {
@@ -261,6 +303,13 @@ void ArmSubsystem::ConfigureMotors() {
 
   shoulderMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   elbowMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+
+  if(frc::RobotBase::IsReal()) {
+    shoulderMotor.SetInverted(true);
+  }
+  else {
+    shoulderMotor.SetInverted(false);
+  }
 }
 
 void ArmSubsystem::ResetEncoders() {
@@ -277,7 +326,22 @@ units::radian_t ArmSubsystem::GetShoulderMotorAngle() {
 }
 
 units::radian_t ArmSubsystem::GetElbowMotorAngle() {
-  return str::Units::ConvertTicksToAngle(elbowMotor.GetSelectedSensorPosition(), str::encoder_cprs::FALCON_CPR, str::arm_constants::elbowGearing, false);
+  if(frc::RobotBase::IsReal()) {
+    return str::Units::ConvertTicksToAngle(
+            elbowMotor.GetSelectedSensorPosition(), 
+            str::encoder_cprs::FALCON_CPR, 
+            str::arm_constants::elbowGearing, 
+            false
+          ) - GetShoulderMotorAngle();
+  }
+  else {
+    return str::Units::ConvertTicksToAngle(
+        elbowMotor.GetSelectedSensorPosition(), 
+        str::encoder_cprs::FALCON_CPR, 
+        str::arm_constants::elbowGearing, 
+        false
+      );
+  }
 }
 
 units::radians_per_second_t ArmSubsystem::GetShoulderMotorVelocity() {

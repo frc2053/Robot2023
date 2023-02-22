@@ -10,6 +10,7 @@ public:
     ArmPose retVal;
     retVal.endEffectorPosition = {20_in, -25_in};
     retVal.fromTop = true;
+    retVal.name = "StartingConfig";
     return retVal;
   };
 
@@ -17,6 +18,7 @@ public:
     ArmPose retVal;
     retVal.endEffectorPosition = {.5588_m, .2032_m};
     retVal.fromTop = false;
+    retVal.name = "StowedConfig";
     return retVal;
   };
 
@@ -24,6 +26,15 @@ public:
     ArmPose retVal;
     retVal.endEffectorPosition = {-45_in, 17_in};
     retVal.fromTop = true;
+    retVal.name = "ScoreConeHigh";
+    return retVal;
+  };
+
+  static constexpr ArmPose StraightOut() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {51_in, 0_in};
+    retVal.fromTop = true;
+    retVal.name = "StraightOut";
     return retVal;
   };
 
@@ -37,6 +48,7 @@ public:
 
   frc::Translation2d endEffectorPosition{0_m, 0_m};
   bool fromTop{true};
+  std::string name{""};
 };
 
-static inline std::vector<ArmPose> AllPoses{ArmPose::StartingConfig(), ArmPose::ScoreConeHigh(), ArmPose::StowedConfig()};
+static inline std::vector<ArmPose> AllPoses{ArmPose::StartingConfig(), ArmPose::ScoreConeHigh(), ArmPose::StowedConfig(), ArmPose::StraightOut()};
