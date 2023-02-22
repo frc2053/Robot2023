@@ -75,8 +75,20 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Shoulder Accel", shoulderAccel.convert<units::degrees_per_second_squared>().value()); 
   frc::SmartDashboard::PutNumber("Elbow Accel", elbowAccel.convert<units::degrees_per_second_squared>().value()); 
 
-  if(frc::RobotState::IsEnabled()) {
-    armSystem.Update(frc::Vectord<2>{shoulderMotor.GetMotorOutputVoltage(), elbowMotor.GetMotorOutputVoltage()});
+  if(frc::RobotBase::IsReal()) {
+    armSystem.UpdateReal(
+      GetShoulderMotorAngle(),
+      GetElbowMotorAngle(),
+      GetShoulderMotorVelocity(),
+      GetElbowMotorVelocity(),
+      shoulderAccel,
+      elbowAccel
+    );
+  }
+  else {
+    if(frc::RobotState::IsEnabled()) {
+      armSystem.Update(frc::Vectord<2>{shoulderMotor.GetMotorOutputVoltage(), elbowMotor.GetMotorOutputVoltage()});
+    }
   }
 
   frc::Vectord<6> ekfState = armSystem.GetEKFState();
@@ -223,9 +235,10 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
     units::second_t timerVal = armTrajTimer.Get();
     frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
     armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), 0, 0});
-  }).ToPtr()).Until(
+  }, {this}).ToPtr()).Until(
     [this] { 
-      bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime();
+      bool isTimerOver = false;
+      //bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime();
       return isTimerOver; 
     }
   )).FinallyDo([this](bool inturupted) {
@@ -238,11 +251,14 @@ ArmPose ArmSubsystem::GetClosestPosePreset() {
   double minNorm = std::numeric_limits<double>::max();
   ArmPose closestPose;
   for(const ArmPose& otherPose : AllPoses) {
+    fmt::print("Comparing current arm angles to: {}\n", otherPose.name);
     frc::Vectord<2> otherPoseAngles = otherPose.AsJointAngles(armSystem);
-    double norm = (angles - otherPoseAngles).norm();
-    if(norm < minNorm) {
-      minNorm = norm;
+    frc::Vectord<2> diff = otherPoseAngles - angles;
+    fmt::print("other - current = {}\n", diff);
+    double maxDiff = std::max(std::abs(diff(0)), std::abs(diff(1)));
+    if(maxDiff < minNorm) {
       closestPose = otherPose;
+      minNorm = maxDiff;
     }
   }
   
