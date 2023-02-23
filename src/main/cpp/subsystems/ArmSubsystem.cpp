@@ -234,7 +234,7 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
   .AndThen(frc2::RunCommand([this] {
     units::second_t timerVal = armTrajTimer.Get();
     frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
-    armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), 0, 0});
+    armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), newState(4), newState(5)});
   }, {this}).ToPtr()).Until(
     [this] { 
       bool isTimerOver = false;

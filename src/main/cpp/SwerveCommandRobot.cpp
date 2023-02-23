@@ -165,7 +165,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   ));
 
   operatorController.LeftBumper().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }));
-  operatorController.RightBumper().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StraightOut(); }));
+  operatorController.RightBumper().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StowedConfig(); }));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
