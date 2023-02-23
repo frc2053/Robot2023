@@ -4,10 +4,10 @@
       0.79248
     ],
     "shoulder": {
-      "mass": 2.26796,
-      "length": 0.5161708244,
-      "moi": 0.087826505,
-      "cgRadius": 0.2048979138,
+      "mass": 2.34176,
+      "length": 0.5138953,
+      "moi": 0.087948909,
+      "cgRadius": 0.239497,
       "minAngle": -1.571,
       "maxAngle": 5.75959,
       "motor": {
@@ -17,10 +17,10 @@
       }
     },
     "elbow": {
-      "mass": 2.54012,
+      "mass": 2.76565,
       "length": 0.781603466,
-      "moi": 0.079192275,
-      "cgRadius": 0.4745482,
+      "moi": 0.079649927,
+      "cgRadius": 0.583896,
       "minAngle": -2,
       "maxAngle": 2,
       "motor": {
