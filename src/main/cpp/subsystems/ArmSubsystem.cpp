@@ -20,12 +20,16 @@ ArmSubsystem::ArmSubsystem() {
   //Reset encoders to starting config position but only in real robot
   //because the sim robot sets the starting config already
   if(frc::RobotBase::IsReal()) {
-    // shoulderMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(units::radian_t{initialState(0)}));
-    // elbowMotor.SetSelectedSensorPosition(ConvertElbowAngleToTicks(units::radian_t{initialState(1)}));
+    shoulderMotor.SetSelectedSensorPosition(str::arm_constants::shoulderTicksStarting);
+    elbowMotor.SetSelectedSensorPosition(str::arm_constants::elbowTicksStarting);
     armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
   }
 
   armSystem.SetDesiredState(armSystem.GetCurrentState());
+
+  const auto& fk = armSystem.CalculateForwardKinematics(armSystem.GetCurrentState());
+  currentEndEffectorSetpointX = units::meter_t{std::get<2>(fk)(0)};
+  currentEndEffectorSetpointY = units::meter_t{std::get<2>(fk)(1)};
 
   kairos.SetConfig(config.json_string);
 
