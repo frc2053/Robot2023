@@ -8,9 +8,17 @@ struct ArmPose {
 public:
   static constexpr ArmPose StartingConfig() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {20_in, -25_in};
+    retVal.endEffectorPosition = {20.210973_in, -24.125614_in};
     retVal.fromTop = true;
     retVal.name = "StartingConfig";
+    return retVal;
+  };
+
+  static constexpr ArmPose OutOfStartingConfig() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {18_in, -20_in};
+    retVal.fromTop = true;
+    retVal.name = "OutOfStartingConfig";
     return retVal;
   };
 
@@ -58,4 +66,4 @@ public:
   std::string name{""};
 };
 
-static inline std::vector<ArmPose> AllPoses{ArmPose::StartingConfig(), ArmPose::ScoreConeHigh(), ArmPose::StowedConfig(), ArmPose::StraightOut()};
+static inline std::vector<ArmPose> AllPoses{ArmPose::StartingConfig(), ArmPose::OutOfStartingConfig(), ArmPose::ScoreConeHigh(), ArmPose::StowedConfig(), ArmPose::StraightOut()};

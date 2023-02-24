@@ -11,30 +11,19 @@
 #include <frc2/command/ConditionalCommand.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/RunCommand.h>
+#include <frc/DriverStation.h>
 
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
   ConfigureMotors();
   ResetEncoders();
-
-  //Reset encoders to starting config position but only in real robot
-  //because the sim robot sets the starting config already
-  if(frc::RobotBase::IsReal()) {
-    shoulderMotor.SetSelectedSensorPosition(str::arm_constants::shoulderTicksStarting);
-    elbowMotor.SetSelectedSensorPosition(str::arm_constants::elbowTicksStarting);
-    armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
-  }
-
+  kairos.SetConfig(config.json_string);
+  armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
   armSystem.SetDesiredState(armSystem.GetCurrentState());
-
   const auto& fk = armSystem.CalculateForwardKinematics(armSystem.GetCurrentState());
   currentEndEffectorSetpointX = units::meter_t{std::get<2>(fk)(0)};
   currentEndEffectorSetpointY = units::meter_t{std::get<2>(fk)(1)};
-
-  kairos.SetConfig(config.json_string);
-
-  frc::SmartDashboard::PutNumber("PID Setpoint Shoulder", 0);
-  frc::SmartDashboard::PutNumber("PID Setpoint Elbow", 0);
+  tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
 }
 
 void ArmSubsystem::SimulationPeriodic() {
@@ -48,6 +37,7 @@ void ArmSubsystem::SimulationPeriodic() {
 }
 
 void ArmSubsystem::Periodic() {
+
   kairos.Update();
 
   KairosResults armResults = kairos.GetMostRecentResult();
@@ -116,19 +106,27 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("LQR Output Shoulder", lqrOutput(0));
   frc::SmartDashboard::PutNumber("LQR Output Elbow", lqrOutput(1));
 
-  double pidSetpointShoulder = frc::SmartDashboard::GetNumber("PID Setpoint Shoulder", 0);
+  frc::Vectord<6> desiredState = armSystem.GetDesiredState();
+
+  frc::SmartDashboard::PutNumber("Desired End Effector X", currentEndEffectorSetpointX.convert<units::inches>().value());
+  frc::SmartDashboard::PutNumber("Desired End Effector Y", currentEndEffectorSetpointY.convert<units::inches>().value());
+
+  frc::Vectord<2> currentEndEffectorPos = std::get<2>(armSystem.CalculateForwardKinematics(armSystem.GetCurrentState()));
+
+  frc::SmartDashboard::PutNumber("Current End Effector X", units::meter_t{currentEndEffectorPos(0)}.convert<units::inches>().value());
+  frc::SmartDashboard::PutNumber("Current End Effector Y", units::meter_t{currentEndEffectorPos(1)}.convert<units::inches>().value());
+
   shoulderPID.SetGoal(
     {
-      units::radian_t{armSystem.GetDesiredState()(0)},
-      units::radians_per_second_t{armSystem.GetDesiredState()(2)}
+      units::radian_t{desiredState(0)},
+      units::radians_per_second_t{desiredState(2)}
     }
   );
 
-  double pidSetpointElbow = frc::SmartDashboard::GetNumber("PID Setpoint Elbow", 0);
   elbowPID.SetGoal(
     {
-      units::radian_t{armSystem.GetDesiredState()(1)},
-      units::radians_per_second_t{armSystem.GetDesiredState()(3)}
+      units::radian_t{desiredState(1)},
+      units::radians_per_second_t{desiredState(3)}
     }
   );
 
@@ -338,12 +336,12 @@ void ArmSubsystem::ConfigureMotors() {
 }
 
 void ArmSubsystem::ResetEncoders() {
-  shoulderSimCollection.SetIntegratedSensorRawPosition(0);
+  shoulderSimCollection.SetIntegratedSensorRawPosition(str::arm_constants::shoulderTicksStarting);
   shoulderSimCollection.SetIntegratedSensorVelocity(0);
-  elbowSimCollection.SetIntegratedSensorRawPosition(0);
+  elbowSimCollection.SetIntegratedSensorRawPosition(str::arm_constants::elbowTicksStarting);
   elbowSimCollection.SetIntegratedSensorVelocity(0);
-  shoulderMotor.SetSelectedSensorPosition(0);
-  elbowMotor.SetSelectedSensorPosition(0);
+  shoulderMotor.SetSelectedSensorPosition(str::arm_constants::shoulderTicksStarting);
+  elbowMotor.SetSelectedSensorPosition(str::arm_constants::elbowTicksStarting);
 }
 
 units::radian_t ArmSubsystem::GetShoulderMotorAngle() {

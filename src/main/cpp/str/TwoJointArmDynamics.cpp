@@ -97,6 +97,8 @@ void TwoJointArmDynamics::SetDesiredState(const frc::Vectord<6>& state) {
 
 void TwoJointArmDynamics::OverrideCurrentState(const frc::Vectord<6>& newState) {
   currentState = newState;
+  ekf->Reset();
+  ekf->SetXhat(currentState);
 }
 
 frc::Vectord<6> TwoJointArmDynamics::GetCurrentState() const {

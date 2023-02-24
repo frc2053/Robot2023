@@ -38,7 +38,7 @@ namespace str {
         static constexpr auto rPos = 0.05;
 
         static constexpr int shoulderTicksStarting = -9789;
-        static constexpr int elbowTicksStarting = -41134;
+        static constexpr int elbowTicksStarting = -45036;
     };
 
     namespace intake_constants {
