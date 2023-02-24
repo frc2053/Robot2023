@@ -79,11 +79,12 @@ void TwoJointArmDynamics::UpdateReal(units::radian_t shoulderPos, units::radian_
 
 void TwoJointArmDynamics::RecreateModels() {
   Relinearize(currentState, CalculateFeedForward(currentState));
-  frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
+  //frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
   frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   frc::Vectord<2> feedForwardResults = CalculateFeedForward(desiredState);
   ff = feedForwardResults;
-  lqrOutput = (kMatrix * error).cwiseMin(12).cwiseMax(-12);
+  //lqrOutput = (kMatrix * error).cwiseMin(12).cwiseMax(-12);
+  lqrOutput = frc::Vectord<2>{0,0};
 }
 
 frc::Vectord<2> TwoJointArmDynamics::UpdateMeasurementState(const frc::Vectord<6>& state, const frc::Vectord<2>& input) {
@@ -156,8 +157,11 @@ void TwoJointArmDynamics::CreateLQRLookupTable() {
       frc::LinearSystem<6, 2, 2> system = CreateModel(state, control);
       frc::Matrixd<2, 4> resultKMatrix = DesignLQR(system, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
 
-      frc::Vectord<2> xAndY = CalculateInverseKinematics(frc::Vectord<2>{shoulderAngle.value(), elbowAngle.value()});
-      kGainLookupTable.insert(str::ArmCoordinate{units::meter_t{xAndY(0)},units::meter_t{xAndY(1)}}, resultKMatrix);
+      const auto& ikResults = CalculateInverseKinematics(frc::Vectord<2>{shoulderAngle.value(), elbowAngle.value()});
+      if(ikResults.has_value()) {
+        frc::Vectord<2> xAndY = ikResults.value();
+        kGainLookupTable.insert(str::ArmCoordinate{units::meter_t{xAndY(0)},units::meter_t{xAndY(1)}}, resultKMatrix);
+      }
     }
   }
 }
@@ -241,7 +245,7 @@ std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> TwoJointArmDynamics:
 
 //GOOD
 //Reference: https://robotacademy.net.au/lesson/inverse-kinematics-for-a-2-joint-robot-arm-using-geometry/
-frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(const frc::Vectord<2>& position, bool fromTop) const {
+std::optional<frc::Vectord<2>> TwoJointArmDynamics::CalculateInverseKinematics(const frc::Vectord<2>& position, bool fromTop) const {
 
   double elbowAngle = 0.0;
   double shoulderAngle = 0.0;
@@ -259,18 +263,34 @@ frc::Vectord<2> TwoJointArmDynamics::CalculateInverseKinematics(const frc::Vecto
     double elbowAngleDenominator = 2 * lengthOfShoulder * lengthOfElbow;
     elbowAngle = -std::acos(elbowAngleNumerator / elbowAngleDenominator);
 
+    if(std::isnan(elbowAngle)) {
+      return {};
+    }
+
     double shoulderAngleNumerator = lengthOfElbow * std::sin(elbowAngle);
     double shoulderAngleDenominator = lengthOfShoulder + (lengthOfElbow * std::cos(elbowAngle));
-    shoulderAngle = std::atan(relativePositon(1) / relativePositon(0)) - std::atan(shoulderAngleNumerator / shoulderAngleDenominator);
+    shoulderAngle = std::atan2(relativePositon(1),  relativePositon(0)) - std::atan2(shoulderAngleNumerator, shoulderAngleDenominator);
+
+    if(std::isnan(shoulderAngle)) {
+      return {};
+    }
   }
   else {
     double elbowAngleNumerator = std::pow(relativePositon(0), 2) + std::pow(relativePositon(1), 2) - std::pow(lengthOfShoulder, 2) - std::pow(lengthOfElbow, 2);
     double elbowAngleDenominator = 2 * lengthOfShoulder * lengthOfElbow;
     elbowAngle = std::acos(elbowAngleNumerator / elbowAngleDenominator);
 
+    if(std::isnan(elbowAngle)) {
+      return {};
+    }
+
     double shoulderAngleNumerator = lengthOfElbow * std::sin(elbowAngle);
     double shoulderAngleDenominator = lengthOfShoulder + lengthOfElbow * std::cos(elbowAngle);
-    shoulderAngle = std::atan(relativePositon(1) / relativePositon(0)) - std::atan(shoulderAngleNumerator / shoulderAngleDenominator);
+    shoulderAngle = std::atan2(relativePositon(1), relativePositon(0)) - std::atan2(shoulderAngleNumerator, shoulderAngleDenominator);
+
+    if(std::isnan(shoulderAngle)) {
+      return {};
+    }
   }
 
   if(isFlipped) {

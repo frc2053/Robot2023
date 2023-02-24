@@ -43,7 +43,14 @@ public:
   };
 
   frc::Vectord<2> AsJointAngles(const TwoJointArmDynamics& dynamics) const {
-    return dynamics.CalculateInverseKinematics(frc::Vectord<2>{endEffectorPosition.X(), endEffectorPosition.Y()}, fromTop);
+    const auto& ikResults = dynamics.CalculateInverseKinematics(frc::Vectord<2>{endEffectorPosition.X(), endEffectorPosition.Y()}, fromTop);
+    if(ikResults.has_value()) {
+      return ikResults.value();
+    }
+    else {
+      fmt::print("ERROR: A PRESET JOINT POSITION HAS BAD IK!\n");
+      return frc::Vectord<2>{0, 0};
+    }
   };
 
   frc::Translation2d endEffectorPosition{0_m, 0_m};

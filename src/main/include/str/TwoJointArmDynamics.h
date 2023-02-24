@@ -13,6 +13,7 @@
 #include <random>
 #include <memory>
 #include <units/angular_acceleration.h>
+#include <optional>
 #include "str/interpolating_map_xy.h"
 
 class TwoJointArmDynamics {
@@ -60,7 +61,7 @@ public:
 
   //HELPERS
   std::tuple<frc::Vectord<2>,frc::Vectord<2>,frc::Vectord<2>> CalculateForwardKinematics(const frc::Vectord<6>& state) const;
-  frc::Vectord<2> CalculateInverseKinematics(const frc::Vectord<2>& position, bool fromTop = true) const;
+  std::optional<frc::Vectord<2>> CalculateInverseKinematics(const frc::Vectord<2>& position, bool fromTop = true) const;
 
   frc::Matrixd<2,2> CalculateInertiaMatrix(const frc::Vectord<2>& angleVec) const;
   frc::Matrixd<2,2> CalculateCentrifugalCoriolisTerms(const frc::Vectord<2>& angleVec, const frc::Vectord<2>& velocityVec) const;

@@ -175,9 +175,12 @@ void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::
   currentEndEffectorSetpointX = xPos;
   currentEndEffectorSetpointY = yPos;
   frc::Vectord<2> anglesToGoTo;
-  anglesToGoTo = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, shoulderUp);
-  frc::Vectord<6> requestedState{anglesToGoTo(0), anglesToGoTo(1), 0, 0, 0, 0};
-  armSystem.SetDesiredState(requestedState);
+  const auto& ikResults = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, shoulderUp);
+  if(ikResults.has_value()) {
+    anglesToGoTo = ikResults.value();
+    frc::Vectord<6> requestedState{anglesToGoTo(0), anglesToGoTo(1), 0, 0, 0, 0};
+    armSystem.SetDesiredState(requestedState);
+  }
 }
 
 frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos, std::function<bool()> shoulderUp) {
@@ -292,6 +295,8 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToP
     [this, closesetPoseToPreset, poseToGoTo] { 
       fmt::print("Following trajectory from {} to {}\n", closesetPoseToPreset().name, poseToGoTo().name);
       lastRanTrajFinalPoseName = poseToGoTo().name;
+      currentEndEffectorSetpointX = poseToGoTo().endEffectorPosition.X();
+      currentEndEffectorSetpointY = poseToGoTo().endEffectorPosition.Y();
       return ArmTrajectoryParams{closesetPoseToPreset().AsJointAngles(armSystem), poseToGoTo().AsJointAngles(armSystem)}; 
     }
   );
