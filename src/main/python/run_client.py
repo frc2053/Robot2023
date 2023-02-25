@@ -12,7 +12,7 @@ import ntcore
 
 from solver import Solver
 
-SERVER_IP = "127.0.0.1"
+SERVER_IP = "10.20.53.2"
 DEVICE_ID = 0
 
 solver = None
