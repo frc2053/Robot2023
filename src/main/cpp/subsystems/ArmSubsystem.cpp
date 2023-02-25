@@ -12,6 +12,7 @@
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/RunCommand.h>
 #include <frc/DriverStation.h>
+#include <frc/DataLogManager.h>
 
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
@@ -198,7 +199,7 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::func
   {this}
   ).FinallyDo(
     [](bool interrupted){
-      fmt::print("FINISHED MOVING TO SETPOINT!\n");
+      frc::DataLogManager::Log("Finished moved to desired arm end effector setpoint!");
     }
   );
 }
@@ -216,7 +217,7 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
   {this}
   ).FinallyDo(
     [](bool interrupted){
-      fmt::print("FINISHED MOVING TO SETPOINT!\n");
+      frc::DataLogManager::Log("Finished moved to desired arm angles setpoint!");
     }
   );
 }
@@ -224,15 +225,15 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
 frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams) {
   return
   frc2::InstantCommand([this, trajParams] {
-    fmt::print("Sending traj params to kairos: {}, {}\n", trajParams().initialState, trajParams().finalState);
+    frc::DataLogManager::Log(fmt::format("Sending traj params to kairos: {}, {}", trajParams().initialState, trajParams().finalState));
     kairos.Request(trajParams());
   }).ToPtr().AndThen(
   frc2::WaitUntilCommand([this] {
-    fmt::print("Waiting for traj to be generated\n");
+    frc::DataLogManager::Log(fmt::format("Waiting for traj to be generated"));
     return trajToFollow.IsGenerated();
   }).ToPtr()
   ).AndThen(frc2::InstantCommand([this] {
-    fmt::print("Resetting Arm Traj Timer\n");
+    frc::DataLogManager::Log(fmt::format("Resetting Arm Traj Timer"));
     armTrajTimer.Reset();
     armTrajTimer.Start();
   }).ToPtr()
@@ -256,10 +257,10 @@ ArmPose ArmSubsystem::GetClosestPosePreset() {
   double minNorm = std::numeric_limits<double>::max();
   ArmPose closestPose;
   for(const ArmPose& otherPose : AllPoses) {
-    fmt::print("Comparing current arm angles to: {}\n", otherPose.name);
+    frc::DataLogManager::Log(fmt::format("Comparing current arm angles to: {}", otherPose.name));
     frc::Vectord<2> otherPoseAngles = otherPose.AsJointAngles(armSystem);
     frc::Vectord<2> diff = otherPoseAngles - angles;
-    fmt::print("other - current = {}\n", diff);
+    frc::DataLogManager::Log(fmt::format("other - current = {}", diff));
     double maxDiff = std::max(std::abs(diff(0)), std::abs(diff(1)));
     if(maxDiff < minNorm) {
       closestPose = otherPose;
@@ -267,7 +268,7 @@ ArmPose ArmSubsystem::GetClosestPosePreset() {
     }
   }
   
-  fmt::print("Closest pose was: {}\n", closestPose.name);
+  frc::DataLogManager::Log(fmt::format("Closest pose was: {}\n", closestPose.name));
   return closestPose;
 }
 
@@ -295,7 +296,7 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo) {
   return FollowTrajectory(
     [this, closesetPoseToPreset, poseToGoTo] { 
-      fmt::print("Following trajectory from {} to {}\n", closesetPoseToPreset().name, poseToGoTo().name);
+      frc::DataLogManager::Log(fmt::format("Following trajectory from {} to {}", closesetPoseToPreset().name, poseToGoTo().name));
       lastRanTrajFinalPoseName = poseToGoTo().name;
       currentEndEffectorSetpointX = poseToGoTo().endEffectorPosition.X();
       currentEndEffectorSetpointY = poseToGoTo().endEffectorPosition.Y();

@@ -1,4 +1,3 @@
-#include <eigen_fix.h>
 #include "str/SwerveDrivebase.h"
 #include "Constants.h"
 #include "str/Field.h"
@@ -151,7 +150,7 @@ void str::SwerveDrivebase::ResetPose(const frc::Pose2d& newPose) {
   frc::DataLogManager::Log("Reset Drivebase pose!");
 }
 
-void str::SwerveDrivebase::LogCurrentModuleInfo(std::array<frc::SwerveModuleState, 4> moduleStates) {
+void str::SwerveDrivebase::LogCurrentModuleInfo(const std::array<frc::SwerveModuleState, 4>& moduleStates) {
   frc::Pose2d currentRobotPose = GetRobotPose();
   str::Field::GetInstance().SetRobotPosition(currentRobotPose);
 
@@ -188,18 +187,9 @@ void str::SwerveDrivebase::LogCurrentModuleInfo(std::array<frc::SwerveModuleStat
 
   frc::SmartDashboard::PutNumberArray("AdvantageScope/Robot Estimator Pose", currentEstimatorPoseForNT);
   frc::SmartDashboard::PutNumberArray("AdvantageScope/Current Swerve Module Data", currentModuleDataForNT);
-
-  str::PDP::GetInstance().SetCurrentOnChannel(str::swerve_pdp_ports::FRONT_LEFT_DRIVE_TALON_ID, flModule.GetDriveMotorCurrent());
-  str::PDP::GetInstance().SetCurrentOnChannel(str::swerve_pdp_ports::FRONT_LEFT_STEER_TALON_ID, flModule.GetSteerMotorCurrent());
-  str::PDP::GetInstance().SetCurrentOnChannel(str::swerve_pdp_ports::FRONT_RIGHT_DRIVE_TALON_ID, frModule.GetDriveMotorCurrent());
-  str::PDP::GetInstance().SetCurrentOnChannel(str::swerve_pdp_ports::FRONT_RIGHT_STEER_TALON_ID, frModule.GetSteerMotorCurrent());
-  str::PDP::GetInstance().SetCurrentOnChannel(str::swerve_pdp_ports::REAR_LEFT_DRIVE_TALON_ID, blModule.GetDriveMotorCurrent());
-  str::PDP::GetInstance().SetCurrentOnChannel(str::swerve_pdp_ports::REAR_LEFT_STEER_TALON_ID, blModule.GetSteerMotorCurrent());
-  str::PDP::GetInstance().SetCurrentOnChannel(str::swerve_pdp_ports::REAR_RIGHT_DRIVE_TALON_ID, brModule.GetDriveMotorCurrent());
-  str::PDP::GetInstance().SetCurrentOnChannel(str::swerve_pdp_ports::REAR_RIGHT_STEER_TALON_ID, brModule.GetSteerMotorCurrent());
 }
 
-void str::SwerveDrivebase::LogDesiredModuleInfo(frc::SwerveModuleState flState, frc::SwerveModuleState frState, frc::SwerveModuleState blState, frc::SwerveModuleState brState) {
+void str::SwerveDrivebase::LogDesiredModuleInfo(const frc::SwerveModuleState& flState, const frc::SwerveModuleState& frState, const frc::SwerveModuleState& blState, const frc::SwerveModuleState& brState) {
   std::array<double, 8> desiredModuleDataForNT{};
   desiredModuleDataForNT[0] = flState.angle.Radians().to<double>(),
   desiredModuleDataForNT[1] = flState.speed.convert<units::feet_per_second>().to<double>();

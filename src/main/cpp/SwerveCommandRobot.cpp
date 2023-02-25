@@ -5,6 +5,7 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RepeatCommand.h>
 #include <str/ArmPose.h>
+#include <str/PDP.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.SetDefaultOption("1MForward", oneMeterForward.get());
@@ -44,7 +45,6 @@ void SwerveCommandRobot::ConfigureBindings() {
     new frc2::InstantCommand(
       [this] {
         double speed = frc::SmartDashboard::GetNumber("Wheel Speed", 0);
-        fmt::print("Speed: {}\n", speed);
         driveSubsystem.SetWheelSpeeds(units::feet_per_second_t{speed});
       },
       {&driveSubsystem}

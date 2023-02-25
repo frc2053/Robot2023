@@ -58,7 +58,7 @@ bool GenerateArmTrajectoryCacheFile() {
   }
 
   trajectoryRequestFile << cacheRequestFile.dump() << std::endl;
-  fmt::print("Wrote cache request file to: {}\n", filePath);
+  frc::DataLogManager::Log(fmt::format("Wrote cache request file to: {}", filePath));
 
   return true;
 }

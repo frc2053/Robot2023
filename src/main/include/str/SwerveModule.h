@@ -9,7 +9,6 @@
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
-#include <frc/simulation/FlywheelSim.h>
 
 namespace str {
   class SwerveModule {

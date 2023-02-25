@@ -7,6 +7,7 @@
 #include <frc/simulation/RoboRioSim.h>
 #include <wpinet/PortForwarder.h>
 #include <str/GenerateArmTrajectoryCacheRequest.h>
+#include <str/PDP.h>
 
 void Robot::RobotInit() {
   std::cout << std::boolalpha;

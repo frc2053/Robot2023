@@ -1,6 +1,5 @@
 #pragma once
 
-#include <eigen_fix.h>
 #include "constants/SwerveConstants.h"
 #include "str/IMU.h"
 #include "str/SwerveModule.h"
@@ -37,8 +36,8 @@ namespace str {
     void AddVisionMeasurementToPoseEstimator(frc::Pose2d visionMeasuredRobotPose, units::second_t timeStampWhenPicWasTaken);
 
   private:
-    void LogCurrentModuleInfo(std::array<frc::SwerveModuleState, 4> moduleStates);
-    void LogDesiredModuleInfo(frc::SwerveModuleState flState, frc::SwerveModuleState frState, frc::SwerveModuleState blState, frc::SwerveModuleState brState);
+    void LogCurrentModuleInfo(const std::array<frc::SwerveModuleState, 4>& moduleStates);
+    void LogDesiredModuleInfo(const frc::SwerveModuleState& flState, const frc::SwerveModuleState& frState, const frc::SwerveModuleState& blState, const frc::SwerveModuleState& brState);
 
     str::IMU imu{};
 

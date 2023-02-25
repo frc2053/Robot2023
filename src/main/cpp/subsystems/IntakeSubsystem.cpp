@@ -1,6 +1,9 @@
 #include "subsystems/IntakeSubsystem.h"
 #include <frc2/command/InstantCommand.h>
+#include <frc/DataLogManager.h>
 #include <frc2/command/WaitCommand.h>
+#include <frc2/command/RunCommand.h>
+#include <constants/ArmConstants.h>
 
 IntakeSubsystem::IntakeSubsystem() : intakeMotor(0, rev::CANSparkMaxLowLevel::MotorType::kBrushless) {
   intakeMotor.RestoreFactoryDefaults();
@@ -21,7 +24,7 @@ void IntakeSubsystem::SetIntakeSpeed(double speed) {
 frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {
   return frc2::InstantCommand(
     [this] {
-      fmt::print("Ejecting game object!\n");
+      frc::DataLogManager::Log(fmt::format("Ejecting game object!"));
       SetIntakeSpeed(-1);
     }
   ).ToPtr()
@@ -30,7 +33,7 @@ frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {
   )
   .FinallyDo(
     [this](bool interrupted) {
-      fmt::print("Stop ejecting game object!\n");
+      frc::DataLogManager::Log(fmt::format("Stop ejecting game object!"));
       SetIntakeSpeed(0);
     }
   );

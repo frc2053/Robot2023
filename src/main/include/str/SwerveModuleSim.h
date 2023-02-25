@@ -5,7 +5,6 @@
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/simulation/PWMSim.h>
-#include <frc/simulation/CallbackStore.h>
 #include <frc/simulation/EncoderSim.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/motorcontrol/PWMMotorController.h>

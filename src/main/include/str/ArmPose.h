@@ -3,6 +3,7 @@
 #include <frc/geometry/Translation2d.h>
 #include <frc/EigenCore.h>
 #include <str/TwoJointArmDynamics.h>
+#include <frc/DataLogManager.h>
 
 struct ArmPose {
 public:
@@ -56,7 +57,7 @@ public:
       return ikResults.value();
     }
     else {
-      fmt::print("ERROR: A PRESET JOINT POSITION HAS BAD IK!\n");
+      frc::DataLogManager::Log(fmt::format("ERROR: A PRESET JOINT POSITION HAS BAD IK!"));
       return frc::Vectord<2>{0, 0};
     }
   };

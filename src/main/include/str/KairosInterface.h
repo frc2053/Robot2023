@@ -42,7 +42,7 @@ public:
     wpi::raw_fd_istream file(filePath, errorCode);
 
     if(errorCode) {
-      fmt::print("Error opening arm_trajectory_cache! {}: {}", filePath, errorCode.message());
+      frc::DataLogManager::Log(fmt::format("Error opening arm_trajectory_cache! {}: {}", filePath, errorCode.message()));
     }
     else {
       wpi::json data = wpi::json::parse(file);
@@ -108,13 +108,13 @@ public:
 
     //break out if we have a cached trajectory
     if(kairosCache.contains(currentHash)) {
-      fmt::print("Arm trajectory is in cache! Setting trajectory and not requesting...\n");
+      frc::DataLogManager::Log(fmt::format("Arm trajectory is in cache! Setting trajectory and not requesting..."));
       recentResults = kairosCache[currentHash];
       return;
     }
 
     if(currentHash == parameterHash) {
-      fmt::print("Arm trajectory hashes are equal! We are not going to send another request!\n");
+      frc::DataLogManager::Log(fmt::format("Arm trajectory hashes are equal! We are not going to send another request!"));
       return;
     }
 
@@ -124,7 +124,7 @@ public:
     dataToSend["final"] = {params.finalState(0), params.finalState(1)};
     dataToSend["constraintOverrides"] = wpi::json::array();
 
-    fmt::print("Sending trajectory with hash {} to kairos\n", currentHash);
+    frc::DataLogManager::Log(fmt::format("Sending trajectory with hash {} to kairos", currentHash));
 
     parameterHash = currentHash;
     resultRecieved = false;

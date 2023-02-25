@@ -1,4 +1,3 @@
-#include <eigen_fix.h>
 #include "str/TwoJointArmDynamics.h"
 #include <Eigen/LU>
 #include <frc/system/NumericalJacobian.h>
@@ -9,6 +8,7 @@
 #include <wpi/json_serializer.h>
 #include <numbers>
 #include <fstream>
+#include <frc/DataLogManager.h>
 
 //GOOD
 //Can't figure out how to make NumericalJacobian take ptr to member func
@@ -153,9 +153,9 @@ void TwoJointArmDynamics::CreateLQRLookupTable() {
     for(units::radian_t elbowAngle = 0_rad; elbowAngle <= 360_deg; elbowAngle = elbowAngle + 1_deg) {
       frc::Vectord<6> state{shoulderAngle.value(), elbowAngle.value(), 0, 0, 0, 0};
       frc::Vectord<2> control = CalculateFeedForward(state);
-      std::cout << "State: " << state << "\n";
-      std::cout << "----\n";
-      std::cout << "Control: " << control << "\n";
+      frc::DataLogManager::Log(fmt::format("State: {}", state));
+      frc::DataLogManager::Log("----");
+      frc::DataLogManager::Log(fmt::format("Control: {}", control));
       frc::LinearSystem<6, 2, 2> system = CreateModel(state, control);
       frc::Matrixd<2, 4> resultKMatrix = DesignLQR(system, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "eigen_fix.h"
 #include <frc/EigenCore.h>
 #include <units/mass.h>
 #include <units/length.h>

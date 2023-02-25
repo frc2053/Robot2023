@@ -4,12 +4,9 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 #include <photonlib/SimVisionSystem.h>
-#include <frc2/command/InstantCommand.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
-#include <frc2/command/PrintCommand.h>
-#include <frc/controller/BangBangController.h>
 #include <memory>
 #include <photonlib/PhotonPoseEstimator.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>

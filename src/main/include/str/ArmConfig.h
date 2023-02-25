@@ -7,6 +7,7 @@
 #include <frc/system/plant/DCMotor.h>
 #include <frc/Filesystem.h>
 #include <wpi/raw_istream.h>
+#include <frc/DataLogManager.h>
 
 class SolverConfig {
 public:
@@ -45,7 +46,7 @@ public:
     wpi::raw_fd_istream file(filePath, errorCode);
 
     if(errorCode) {
-      fmt::print("Error opening armConfigFile! {}: {}", filePath, errorCode.message());
+      frc::DataLogManager::Log(fmt::format("Error opening armConfigFile! {}: {}", filePath, errorCode.message()));
     }
     else {
       wpi::json data = wpi::json::parse(file);
