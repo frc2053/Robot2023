@@ -39,6 +39,24 @@ frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {
   );
 }
 
+frc2::CommandPtr IntakeSubsystem::IntakeGamePiece(units::second_t howLongToSpin) {
+  return frc2::InstantCommand(
+    [this] {
+      frc::DataLogManager::Log(fmt::format("Intaking game object!"));
+      SetIntakeSpeed(1);
+    }
+  ).ToPtr()
+  .AndThen(
+    frc2::WaitCommand(howLongToSpin).ToPtr()
+  )
+  .FinallyDo(
+    [this](bool interrupted) {
+      frc::DataLogManager::Log(fmt::format("Stop intaking game object!"));
+      SetIntakeSpeed(0);
+    }
+  );
+}
+
 frc2::CommandPtr IntakeSubsystem::IntakeCurrentLimitFactory(double speed) {
    return frc2::RunCommand(
     [this, speed]() {

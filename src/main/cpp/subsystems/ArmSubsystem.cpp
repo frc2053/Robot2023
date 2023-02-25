@@ -243,8 +243,7 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
     armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), newState(4), newState(5)});
   }, {this}).ToPtr()).Until(
     [this] { 
-      bool isTimerOver = false;
-      //bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime();
+      bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime();
       return isTimerOver; 
     }
   )).FinallyDo([this](bool inturupted) {

@@ -17,6 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
+          "MoveOutOfStartingConfig",
           "MoveArmToHighPosition",
           "PoopPiece",
           "MoveArmToStowedPosition"
@@ -80,6 +81,24 @@
   "markers": [
     {
       "position": 1.5818181818181787,
+      "names": [
+        "MoveArmToHighPosition"
+      ]
+    },
+    {
+      "position": 0.45454545454545453,
+      "names": [
+        "MoveArmToGroundIntake"
+      ]
+    },
+    {
+      "position": 0.8363636363636365,
+      "names": [
+        "IntakeObject"
+      ]
+    },
+    {
+      "position": 0.2545454545454546,
       "names": [
         "MoveArmToHighPosition"
       ]

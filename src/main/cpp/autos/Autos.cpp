@@ -6,10 +6,13 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
   m_driveSub{driveSub}, m_armSub{armSub}, m_intakeSub{intakeSub} {
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> map{
+    {"MoveOutOfStartingConfig", std::move(m_armSub->GoToPose([]{ return ArmPose::OutOfStartingConfig(); }).Unwrap())},
     {"MoveArmToHighPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).Unwrap())},
+    {"MoveArmToMidPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); }).Unwrap())},
     {"MoveArmToStowedPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::StowedConfig(); }).Unwrap())},
     {"PoopPiece", std::move(m_intakeSub->PoopGamePiece(1_s).Unwrap())},
-    {"GrabConeFar", std::make_shared<frc2::PrintCommand>(frc2::PrintCommand{"GrabbedConeFar!!!"})}
+    {"IntakeObject", std::move(m_intakeSub->IntakeGamePiece(1_s).Unwrap())},
+    {"MoveArmToGroundIntake", std::move(m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).Unwrap())}
   };
 
   eventMap = std::make_unique<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>>(std::move(map));

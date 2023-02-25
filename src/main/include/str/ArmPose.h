@@ -55,6 +55,14 @@ public:
     return retVal;
   }
 
+  static constexpr ArmPose GroundIntakeFar() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {-19.296905_in, -23.598059_in};
+    retVal.fromTop = true;
+    retVal.name = "GroundIntakeFar";
+    return retVal;
+  }
+
   static constexpr ArmPose StraightOut() {
     ArmPose retVal;
     retVal.endEffectorPosition = {51_in, 0_in};
@@ -90,5 +98,6 @@ static inline std::vector<ArmPose> AllPoses{
   ArmPose::StowedConfig(), 
   ArmPose::StraightOut(), 
   ArmPose::ScoreConeMid(),
-  ArmPose::ScorePieceLow()
+  ArmPose::ScorePieceLow(),
+  ArmPose::GroundIntakeFar()
 };
