@@ -12,7 +12,8 @@ public:
     void SimulationPeriodic() override;
 
     frc2::CommandPtr PoopGamePiece(units::second_t howLongToSpin);
-    frc2::CommandPtr IntakeFactory(double speed);
+    frc2::CommandPtr IntakeCurrentLimitFactory(double speed);
+    frc2::CommandPtr IntakeManualFactory(double speed);
 private:
     void SetIntakeSpeed(double speed);
     rev::CANSparkMax intakeMotor;

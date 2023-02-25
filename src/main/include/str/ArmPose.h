@@ -39,6 +39,22 @@ public:
     return retVal;
   };
 
+  static constexpr ArmPose ScoreConeMid() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {-30.943291_in, 10_in};
+    retVal.fromTop = true;
+    retVal.name = "ScoreConeMid";
+    return retVal;
+  }
+
+  static constexpr ArmPose ScorePieceLow() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {-19.296905_in, -23.598059_in};
+    retVal.fromTop = true;
+    retVal.name = "ScorePieceLow";
+    return retVal;
+  }
+
   static constexpr ArmPose StraightOut() {
     ArmPose retVal;
     retVal.endEffectorPosition = {51_in, 0_in};
@@ -67,4 +83,12 @@ public:
   std::string name{""};
 };
 
-static inline std::vector<ArmPose> AllPoses{ArmPose::StartingConfig(), ArmPose::OutOfStartingConfig(), ArmPose::ScoreConeHigh(), ArmPose::StowedConfig(), ArmPose::StraightOut()};
+static inline std::vector<ArmPose> AllPoses{
+  ArmPose::StartingConfig(), 
+  ArmPose::OutOfStartingConfig(), 
+  ArmPose::ScoreConeHigh(), 
+  ArmPose::StowedConfig(), 
+  ArmPose::StraightOut(), 
+  ArmPose::ScoreConeMid(),
+  ArmPose::ScorePieceLow()
+};

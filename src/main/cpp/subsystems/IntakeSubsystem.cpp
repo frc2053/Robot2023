@@ -39,7 +39,7 @@ frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {
   );
 }
 
-frc2::CommandPtr IntakeSubsystem::IntakeFactory(double speed) {
+frc2::CommandPtr IntakeSubsystem::IntakeCurrentLimitFactory(double speed) {
    return frc2::RunCommand(
     [this, speed]() {
       SetIntakeSpeed(speed);
@@ -48,6 +48,17 @@ frc2::CommandPtr IntakeSubsystem::IntakeFactory(double speed) {
   ).Until([this] {
     return intakeMotor.GetOutputCurrent() >= str::intake_constants::maxAmps;
   }).AndThen([this] {
+    SetIntakeSpeed(0);
+  });
+}
+
+frc2::CommandPtr IntakeSubsystem::IntakeManualFactory(double speed) {
+  return frc2::RunCommand(
+    [this, speed]() {
+      SetIntakeSpeed(speed);
+    },
+    {this}
+  ).FinallyDo([this](bool interrupted) {
     SetIntakeSpeed(0);
   });
 }

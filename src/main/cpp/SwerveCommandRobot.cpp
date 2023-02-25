@@ -6,6 +6,7 @@
 #include <frc2/command/RepeatCommand.h>
 #include <str/ArmPose.h>
 #include <str/PDP.h>
+#include <frc2/command/button/Trigger.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.SetDefaultOption("1MForward", oneMeterForward.get());
@@ -138,34 +139,73 @@ void SwerveCommandRobot::ConfigureBindings() {
     }
   ));
 
-  operatorController.RightBumper().OnTrue(intakeSubsystem.IntakeFactory(0.5));
 
-  operatorController.X().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(-0.5));
+  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(0.5));
+
+  frc2::Trigger povLeftTrigger{operatorController.POVLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  frc2::Trigger povRightTrigger{operatorController.POVRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  frc2::Trigger povUpTrigger{operatorController.POVUp(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  frc2::Trigger povDownTrigger{operatorController.POVDown(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  frc2::Trigger povDownLeftTrigger{operatorController.POVDownLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  frc2::Trigger povDownRightTrigger{operatorController.POVDownRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  frc2::Trigger povUpLeftTrigger{operatorController.POVUpLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  frc2::Trigger povUpRightTrigger{operatorController.POVUpRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+
+  povLeftTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY(); },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
-  operatorController.B().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  povRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY(); },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
-  operatorController.A().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  povDownTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
-  operatorController.Y().OnTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+  povUpTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
-  operatorController.LeftBumper().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }));
-  operatorController.RightBumper().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::OutOfStartingConfig(); }));
+  povDownLeftTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
+    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
+  ));
+
+  povDownRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
+    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
+  ));
+
+  povUpLeftTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
+    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
+  ));
+
+  povUpRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
+    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
+    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
+    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
+  ));
+
+  operatorController.Y().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }));
+  operatorController.X().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }));
+  operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }));
+
+  operatorController.Back().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::OutOfStartingConfig(); }));
+  operatorController.Start().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StowedConfig(); }));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
