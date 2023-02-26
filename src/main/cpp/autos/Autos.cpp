@@ -1,21 +1,18 @@
 #include <autos/Autos.h>
 #include <frc2/command/Commands.h>
 #include <pathplanner/lib/PathPlanner.h>
+#include <frc2/command/Commands.h>
+#include <memory>
+#include <frc2/command/PrintCommand.h>
 
 autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSubsystem* intakeSub) :
   m_driveSub{driveSub}, m_armSub{armSub}, m_intakeSub{intakeSub} {
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> map{
-    {"MoveOutOfStartingConfig", std::move(m_armSub->GoToPose([]{ return ArmPose::OutOfStartingConfig(); }).Unwrap())},
-    {"MoveArmToHighPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).Unwrap())},
-    {"MoveArmToMidPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); }).Unwrap())},
-    {"MoveArmToStowedPosition", std::move(m_armSub->GoToPose([]{ return ArmPose::StowedConfig(); }).Unwrap())},
-    {"PoopPiece", std::move(m_intakeSub->PoopGamePiece(1_s).Unwrap())},
-    {"IntakeObject", std::move(m_intakeSub->IntakeGamePiece(1_s).Unwrap())},
-    {"MoveArmToGroundIntake", std::move(m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).Unwrap())}
+    {"IntakeObject", m_intakeSub->IntakeGamePiece(1_s).Unwrap()}
   };
 
-  eventMap = std::make_unique<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>>(std::move(map));
+  eventMap = std::make_unique<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>>(map);
 
   autoBuilder = std::make_unique<pathplanner::SwerveAutoBuilder>(
     [this] {
@@ -46,13 +43,9 @@ frc2::CommandPtr autos::Autos::FollowPathplannerFactory(
 }
 
 frc2::CommandPtr autos::Autos::OneMForward() {
-  return frc2::cmd::Sequence(
-    FollowPathplannerFactory("1MForward", 15_fps, 4.267_mps_sq)
-  );
+  return FollowPathplannerFactory("1MForward", 15_fps, 4.267_mps_sq);
 }
 
 frc2::CommandPtr autos::Autos::TestPath() {
-  return frc2::cmd::Sequence(
-    FollowPathplannerFactory("TestPath", 15_fps, 4.267_mps_sq)
-  );
+  return FollowPathplannerFactory("TestPath", 15_fps, 4.267_mps_sq);
 }

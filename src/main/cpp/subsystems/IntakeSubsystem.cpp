@@ -3,6 +3,7 @@
 #include <frc/DataLogManager.h>
 #include <frc2/command/WaitCommand.h>
 #include <frc2/command/RunCommand.h>
+#include <frc2/command/Commands.h>
 #include <constants/ArmConstants.h>
 
 IntakeSubsystem::IntakeSubsystem() : intakeMotor(0, rev::CANSparkMaxLowLevel::MotorType::kBrushless) {
@@ -22,39 +23,34 @@ void IntakeSubsystem::SetIntakeSpeed(double speed) {
 }
 
 frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {
-  return frc2::InstantCommand(
-    [this] {
+  return frc2::cmd::Sequence(
+    frc2::cmd::RunOnce([this] {
       frc::DataLogManager::Log(fmt::format("Ejecting game object!"));
       SetIntakeSpeed(-1);
-    }
-  ).ToPtr()
-  .AndThen(
-    frc2::WaitCommand(howLongToSpin).ToPtr()
-  )
-  .FinallyDo(
-    [this](bool interrupted) {
+    },{this}),
+    frc2::cmd::Wait(howLongToSpin),
+    frc2::cmd::RunOnce([this] {
       frc::DataLogManager::Log(fmt::format("Stop ejecting game object!"));
       SetIntakeSpeed(0);
-    }
+    },{this})
   );
 }
 
 frc2::CommandPtr IntakeSubsystem::IntakeGamePiece(units::second_t howLongToSpin) {
-  return frc2::InstantCommand(
-    [this] {
-      frc::DataLogManager::Log(fmt::format("Intaking game object!"));
-      SetIntakeSpeed(1);
-    }
-  ).ToPtr()
-  .AndThen(
-    frc2::WaitCommand(howLongToSpin).ToPtr()
-  )
-  .FinallyDo(
-    [this](bool interrupted) {
-      frc::DataLogManager::Log(fmt::format("Stop intaking game object!"));
-      SetIntakeSpeed(0);
-    }
+  return frc2::cmd::Sequence(
+    frc2::cmd::Print("Passed Marked Start!")
   );
+  // return frc2::cmd::Sequence(
+  //   frc2::cmd::RunOnce([this] {
+  //     frc::DataLogManager::Log(fmt::format("Intaking game object!"));
+  //     SetIntakeSpeed(1);
+  //   },{this}),
+  //   frc2::cmd::Wait(howLongToSpin),
+  //   frc2::cmd::RunOnce([this] {
+  //     frc::DataLogManager::Log(fmt::format("Stop intaking game object!"));
+  //     SetIntakeSpeed(0);
+  //   },{this})
+  // );
 }
 
 frc2::CommandPtr IntakeSubsystem::IntakeCurrentLimitFactory(double speed) {

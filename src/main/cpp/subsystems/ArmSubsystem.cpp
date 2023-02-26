@@ -13,6 +13,7 @@
 #include <frc2/command/RunCommand.h>
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
+#include <frc2/command/Commands.h>
 
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
@@ -223,32 +224,44 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
 }
 
 frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams) {
-  return
-  frc2::InstantCommand([this, trajParams] {
-    frc::DataLogManager::Log(fmt::format("Sending traj params to kairos: {}, {}", trajParams().initialState, trajParams().finalState));
-    kairos.Request(trajParams());
-  }).ToPtr().AndThen(
-  frc2::WaitUntilCommand([this] {
-    frc::DataLogManager::Log(fmt::format("Waiting for traj to be generated"));
-    return trajToFollow.IsGenerated();
-  }).ToPtr()
-  ).AndThen(frc2::InstantCommand([this] {
-    frc::DataLogManager::Log(fmt::format("Resetting Arm Traj Timer"));
-    armTrajTimer.Reset();
-    armTrajTimer.Start();
-  }).ToPtr()
-  .AndThen(frc2::RunCommand([this] {
-    units::second_t timerVal = armTrajTimer.Get();
-    frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
-    armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), newState(4), newState(5)});
-  }, {this}).ToPtr()).Until(
-    [this] { 
+  return frc2::cmd::Sequence(
+    frc2::cmd::RunOnce(
+      [this, trajParams] {
+        frc::DataLogManager::Log(fmt::format("Sending traj params to kairos: {}, {}", trajParams().initialState, trajParams().finalState));
+        kairos.Request(trajParams());
+      }
+    ),
+    frc2::cmd::WaitUntil(
+      [this] {
+        frc::DataLogManager::Log(fmt::format("Waiting for traj to be generated"));
+        return trajToFollow.IsGenerated();
+      }
+    ),
+    frc2::cmd::RunOnce(
+      [this, trajParams] {
+        frc::DataLogManager::Log(fmt::format("Resetting Arm Traj Timer"));
+        armTrajTimer.Reset();
+        armTrajTimer.Start();
+      }
+    ),
+    frc2::cmd::Run([this] {
+      units::second_t timerVal = armTrajTimer.Get();
+      frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
+      armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), newState(4), newState(5)});
+    }).Until([this] { 
       bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime();
       return isTimerOver; 
+    }),
+    frc2::cmd::RunOnce(
+      [this] {
+        armSystem.SetDesiredState(frc::Vectord<6>{armSystem.GetCurrentState()(0), armSystem.GetCurrentState()(1), 0, 0, 0, 0});
+      }
+    )
+  ).Unless(
+    [this, trajParams] {
+      return (trajParams().finalState - armSystem.GetCurrentState().head(2)).norm() < 0.5; 
     }
-  )).FinallyDo([this](bool inturupted) {
-    armSystem.SetDesiredState(frc::Vectord<6>{armSystem.GetCurrentState()(0), armSystem.GetCurrentState()(1), 0, 0, 0, 0});
-  }).Unless([this, trajParams] {return (trajParams().finalState - armSystem.GetCurrentState().head(2)).norm() < 0.5; });
+  );
 }
 
 ArmPose ArmSubsystem::GetClosestPosePreset() {
@@ -272,7 +285,7 @@ ArmPose ArmSubsystem::GetClosestPosePreset() {
 }
 
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
-  return frc2::ConditionalCommand(
+  return frc2::cmd::Either(
     GoToPose(
       [this]() {
         if(hasManuallyMoved) {
@@ -284,12 +297,12 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
         return GetClosestPosePreset();
       },
       poseToGoTo
-    ).Unwrap(),
-    frc2::PrintCommand("We are already at final pose!\n").ToPtr().Unwrap(),
+    ),
+    frc2::cmd::Print("We are already at final pose!\n"),
     [this, poseToGoTo] {
       return lastRanTrajFinalPoseName != poseToGoTo().name;
     }
-  ).ToPtr();
+  );
 }
 
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo) {
