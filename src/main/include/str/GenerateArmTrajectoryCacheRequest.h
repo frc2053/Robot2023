@@ -47,6 +47,8 @@ bool GenerateArmTrajectoryCacheFile() {
         frc::Vectord<2> endJointAngles = endPose.AsJointAngles(armSystem);
 
         wpi::json trajectoryJson;
+        trajectoryJson["startPoseName"] = startPose.name;
+        trajectoryJson["endPoseName"] = endPose.name;
         trajectoryJson["initialJointPositions"].push_back(initialJointAngles(0));
         trajectoryJson["initialJointPositions"].push_back(initialJointAngles(1));
         trajectoryJson["finalJointPositions"].push_back(endJointAngles(0));

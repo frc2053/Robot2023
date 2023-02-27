@@ -179,6 +179,14 @@ bool ArmSubsystem::IsArmAtDesiredAngles() const {
   return isShoulderThere && isElbowThere && isSlowEnoughShoulder && isSlowEnoughElbow;
 }
 
+bool ArmSubsystem::IsArmAtDesiredAngles(const frc::Vectord<2>& desiredState) const {
+  bool isShoulderThere = std::fabs(desiredState(0) - armSystem.GetCurrentState()(0)) < 0.1;
+  bool isElbowThere = std::fabs(desiredState(1) - armSystem.GetCurrentState()(1)) < 0.1;
+  bool isSlowEnoughShoulder = std::fabs(armSystem.GetCurrentState()(2) - 0) < 1;
+  bool isSlowEnoughElbow = std::fabs(armSystem.GetCurrentState()(3) - 0) < 1;
+  return isShoulderThere && isElbowThere && isSlowEnoughShoulder && isSlowEnoughElbow;
+}
+
 void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos, bool shoulderUp) {
   currentEndEffectorSetpointX = xPos;
   currentEndEffectorSetpointY = yPos;
@@ -252,9 +260,10 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
       units::second_t timerVal = armTrajTimer.Get();
       frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
       armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), newState(4), newState(5)});
-    }).Until([this] { 
+    }).Until([this, trajParams] { 
       bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime() + 0.5_s;
-      return isTimerOver; 
+      return isTimerOver;
+      //return IsArmAtDesiredAngles(trajParams().finalState);
     }),
     frc2::cmd::RunOnce(
       [this] {

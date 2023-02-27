@@ -71,6 +71,14 @@ public:
     return retVal;
   }
 
+  static constexpr ArmPose IntakeFromSubstation() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {-19_in, 8_in};
+    retVal.fromTop = true;
+    retVal.name = "IntakeFromSubstation";
+    return retVal;
+  }
+
   static constexpr ArmPose StraightOut() {
     ArmPose retVal;
     retVal.endEffectorPosition = {51_in, 0_in};
@@ -108,5 +116,6 @@ static inline std::vector<ArmPose> AllPoses{
   ArmPose::ScoreConeMid(),
   ArmPose::ScorePieceLow(),
   ArmPose::GroundIntakeFar(),
-  ArmPose::PlacePieceFromBack()
+  ArmPose::PlacePieceFromBack(),
+  ArmPose::IntakeFromSubstation()
 };
