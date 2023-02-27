@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     # start to high cone
     request = {
-        "initial": [0.07446406790163025, -0.12361448184990019],
+        "initial": [0.07446406790163025, -1.57],
         "final": [2.3540091607463673, 0.7030212966879287],
         "constraintOverrides": []
     }
