@@ -200,8 +200,11 @@ void SwerveCommandRobot::ConfigureBindings() {
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
   ));
 
+  operatorController.LeftTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }));
+
   operatorController.Y().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }));
   operatorController.X().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }));
+  operatorController.B().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }));
   operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }));
 
   operatorController.Back().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::OutOfStartingConfig(); }));
