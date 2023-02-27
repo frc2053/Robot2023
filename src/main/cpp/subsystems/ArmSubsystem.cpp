@@ -18,14 +18,8 @@
 ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
   ConfigureMotors();
-  ResetEncoders();
   kairos.SetConfig(config.json_string);
-  armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
-  armSystem.SetDesiredState(armSystem.GetCurrentState());
-  const auto& fk = armSystem.CalculateForwardKinematics(armSystem.GetCurrentState());
-  currentEndEffectorSetpointX = units::meter_t{std::get<2>(fk)(0)};
-  currentEndEffectorSetpointY = units::meter_t{std::get<2>(fk)(1)};
-  tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
+
 }
 
 void ArmSubsystem::SimulationPeriodic() {
@@ -39,6 +33,16 @@ void ArmSubsystem::SimulationPeriodic() {
 }
 
 void ArmSubsystem::Periodic() {
+
+  if(frc::DriverStation::IsDisabled()) {
+    ResetEncoders();
+    armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
+    armSystem.SetDesiredState(armSystem.GetCurrentState());
+    const auto& fk = armSystem.CalculateForwardKinematics(armSystem.GetCurrentState());
+    currentEndEffectorSetpointX = units::meter_t{std::get<2>(fk)(0)};
+    currentEndEffectorSetpointY = units::meter_t{std::get<2>(fk)(1)};
+    tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
+  }
 
   kairos.Update();
 
@@ -137,12 +141,12 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("PID Output Shoulder", shoulderOutput);
   frc::SmartDashboard::PutNumber("PID Output Elbow", elbowOutput);
   
-  shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
-  elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
+  //shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
+  //elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
 
-  // frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
-  // shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
-  // elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
+  frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
+  shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
+  elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
@@ -249,7 +253,7 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
       frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
       armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), newState(4), newState(5)});
     }).Until([this] { 
-      bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime();
+      bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime() + 0.5_s;
       return isTimerOver; 
     }),
     frc2::cmd::RunOnce(
@@ -349,11 +353,18 @@ void ArmSubsystem::ConfigureMotors() {
 }
 
 void ArmSubsystem::ResetEncoders() {
-  shoulderSimCollection.SetIntegratedSensorRawPosition(str::arm_constants::shoulderTicksStarting);
-  shoulderSimCollection.SetIntegratedSensorVelocity(0);
+  if(frc::RobotBase::IsReal()) {
+    shoulderSimCollection.SetIntegratedSensorRawPosition(str::arm_constants::shoulderTicksStarting);
+    shoulderSimCollection.SetIntegratedSensorVelocity(0);
+    shoulderMotor.SetSelectedSensorPosition(str::arm_constants::shoulderTicksStarting);
+  }
+  else {
+    shoulderSimCollection.SetIntegratedSensorRawPosition(-str::arm_constants::shoulderTicksStarting);
+    shoulderSimCollection.SetIntegratedSensorVelocity(0);
+    shoulderMotor.SetSelectedSensorPosition(-str::arm_constants::shoulderTicksStarting);
+  }
   elbowSimCollection.SetIntegratedSensorRawPosition(str::arm_constants::elbowTicksStarting);
   elbowSimCollection.SetIntegratedSensorVelocity(0);
-  shoulderMotor.SetSelectedSensorPosition(str::arm_constants::shoulderTicksStarting);
   elbowMotor.SetSelectedSensorPosition(str::arm_constants::elbowTicksStarting);
 }
 
