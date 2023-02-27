@@ -9,7 +9,13 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
   m_driveSub{driveSub}, m_armSub{armSub}, m_intakeSub{intakeSub} {
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> map{
-    {"IntakeObject", m_intakeSub->IntakeGamePiece(1_s).Unwrap()}
+    {"MoveOutOfStartingConfig", m_armSub->GoToPose([]{ return ArmPose::OutOfStartingConfig(); }).Unwrap()},
+    {"MoveArmToHighPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).Unwrap()},
+    {"MoveArmToMidPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); }).Unwrap()},
+    {"MoveArmToStowedPosition", m_armSub->GoToPose([]{ return ArmPose::StowedConfig(); }).Unwrap()},
+    {"PoopPiece", m_intakeSub->PoopGamePiece(1_s).Unwrap()},
+    {"IntakeObject", m_intakeSub->IntakeGamePiece(1_s).Unwrap()},
+    {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).Unwrap()}
   };
 
   eventMap = std::make_unique<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>>(map);

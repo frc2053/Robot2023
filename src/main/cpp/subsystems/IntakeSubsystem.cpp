@@ -38,19 +38,16 @@ frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {
 
 frc2::CommandPtr IntakeSubsystem::IntakeGamePiece(units::second_t howLongToSpin) {
   return frc2::cmd::Sequence(
-    frc2::cmd::Print("Passed Marked Start!")
+    frc2::cmd::RunOnce([this] {
+      frc::DataLogManager::Log(fmt::format("Intaking game object!"));
+      SetIntakeSpeed(1);
+    },{this}),
+    frc2::cmd::Wait(howLongToSpin),
+    frc2::cmd::RunOnce([this] {
+      frc::DataLogManager::Log(fmt::format("Stop intaking game object!"));
+      SetIntakeSpeed(0);
+    },{this})
   );
-  // return frc2::cmd::Sequence(
-  //   frc2::cmd::RunOnce([this] {
-  //     frc::DataLogManager::Log(fmt::format("Intaking game object!"));
-  //     SetIntakeSpeed(1);
-  //   },{this}),
-  //   frc2::cmd::Wait(howLongToSpin),
-  //   frc2::cmd::RunOnce([this] {
-  //     frc::DataLogManager::Log(fmt::format("Stop intaking game object!"));
-  //     SetIntakeSpeed(0);
-  //   },{this})
-  // );
 }
 
 frc2::CommandPtr IntakeSubsystem::IntakeCurrentLimitFactory(double speed) {

@@ -16,7 +16,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "MoveOutOfStartingConfig",
+          "MoveArmToHighPosition",
+          "PoopPiece",
+          "MoveArmToStowedPosition"
+        ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
@@ -63,7 +68,10 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "PoopPiece",
+          "MoveArmToStowedPosition"
+        ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
@@ -72,7 +80,19 @@
   ],
   "markers": [
     {
-      "position": 0.32727272727272727,
+      "position": 1.5818181818181787,
+      "names": [
+        "MoveArmToHighPosition"
+      ]
+    },
+    {
+      "position": 0.45454545454545453,
+      "names": [
+        "MoveArmToGroundIntake"
+      ]
+    },
+    {
+      "position": 0.8363636363636365,
       "names": [
         "IntakeObject"
       ]
