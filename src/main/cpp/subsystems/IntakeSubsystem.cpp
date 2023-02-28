@@ -6,12 +6,13 @@
 #include <frc2/command/Commands.h>
 #include <constants/ArmConstants.h>
 
-IntakeSubsystem::IntakeSubsystem() : intakeMotor(0, rev::CANSparkMaxLowLevel::MotorType::kBrushless) {
+IntakeSubsystem::IntakeSubsystem() {
   intakeMotor.RestoreFactoryDefaults();
+  intakeMotor.BurnFlash();
 }
 
 void IntakeSubsystem::Periodic() {
- 
+
 }
 
 void IntakeSubsystem::SimulationPeriodic() {
@@ -19,7 +20,7 @@ void IntakeSubsystem::SimulationPeriodic() {
 }
 
 void IntakeSubsystem::SetIntakeSpeed(double speed) {
-  intakeMotor.Set(std::clamp(speed, -1.0, 1.0));
+  intakeMotor.Set(speed);
 }
 
 frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {

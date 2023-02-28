@@ -140,8 +140,8 @@ void SwerveCommandRobot::ConfigureBindings() {
   ));
 
 
-  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(-0.5));
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(0.5));
+  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(1));
+  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(-.5));
 
   frc2::Trigger povLeftTrigger{operatorController.POVLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
   frc2::Trigger povRightTrigger{operatorController.POVRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
