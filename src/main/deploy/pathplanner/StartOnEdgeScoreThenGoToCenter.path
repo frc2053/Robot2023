@@ -1,0 +1,68 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.8744601353245647,
+        "y": 0.5305929753183313
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.892625033908387,
+        "y": 1.1042070026894986
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "MoveOutOfStartingConfig",
+          "MoveArmToHighPosition",
+          "PoopPiece"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.276947795398274,
+        "y": 0.9321227944781477
+      },
+      "prevControl": {
+        "x": 5.316144299551568,
+        "y": 0.8030596383196352
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "MoveArmToStowedPosition"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 0.09090909090909091,
+      "names": [
+        "MoveArmToGroundIntake"
+      ]
+    },
+    {
+      "position": 0.909090909090907,
+      "names": [
+        "IntakeObject"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+<dashboard-tab
+    tab-name="Robot Info"
+    slot="tab"
+    selected=""
+    source-provider="NetworkTables"
+    source-key="/FMSInfo"
+>
+    <frc-basic-fms-info
+        source-provider="NetworkTables"
+        style="transform: translate(7px, 5px); width: 420.156px; height: 82.5px;"
+        source-key="/FMSInfo"
+    ></frc-basic-fms-info>
+    <frc-field
+        source-key="/SmartDashboard/Field"
+        source-provider="NetworkTables"
+        style="transform: translate(429px, 5px); width: 912px; height: 463.812px;"
+        width="54.27083"
+        height="26.2916"
+        image="/field-images/2023-field.jpg"
+        top-left-field-corner-x="46"
+        top-left-field-corner-y="36"
+        bottom-right-field-corner-x="1088"
+        bottom-right-field-corner-y="544"
+    >
+        <frc-field-robot
+            source-key="/SmartDashboard/Field/Robot"
+            source-provider="NetworkTables"
+            style="width: 30.224px; height: 45.336px; transform: translate(114.517px, 32.8613px) rotate(-89.6757deg);"
+            pose="[0,0,0]"
+        ></frc-field-robot>
+        <frc-field-robot
+            source-key="/SmartDashboard/Field/Swerve Position"
+            source-provider="NetworkTables"
+            style="width: 30.224px; height: 45.336px; transform: translate(114.517px, 32.8613px) rotate(-89.6757deg);"
+            pose="[0,0,0]"
+        ></frc-field-robot>
+        <frc-field-robot
+            source-key="/SmartDashboard/Field/FL Module Pose"
+            source-provider="NetworkTables"
+            style="width: 30.224px; height: 45.336px; transform: translate(98.1118px, 49.0821px) rotate(18.8692deg);"
+            pose="[0,0,0]"
+        ></frc-field-robot>
+        <frc-field-robot
+            source-key="/SmartDashboard/Field/FR Module Pose"
+            source-provider="NetworkTables"
+            style="width: 30.224px; height: 45.336px; transform: translate(98.2965px, 16.4558px) rotate(-17.3417deg);"
+            pose="[0,0,0]"
+        ></frc-field-robot>
+        <frc-field-robot
+            source-key="/SmartDashboard/Field/BL Module Pose"
+            source-provider="NetworkTables"
+            style="width: 30.224px; height: 45.336px; transform: translate(130.738px, 49.2668px) rotate(118.098deg);"
+            pose="[0,0,0]"
+        ></frc-field-robot>
+        <frc-field-robot
+            source-key="/SmartDashboard/Field/BR Module Pose"
+            source-provider="NetworkTables"
+            style="width: 30.224px; height: 45.336px; transform: translate(130.923px, 16.6405px) rotate(82.0626deg);"
+            image="file:///C:/Users/willi/dev/Robot2023/images/swerve_module.png"
+            pose="[0,0,0]"
+        ></frc-field-robot>
+        <frc-field-robot
+            source-key="/SmartDashboard/Field/Robot Vision Pose Estimate"
+            source-provider="NetworkTables"
+            style="width: 30.224px; height: 45.336px; transform: translate(188.176px, 63.89px) rotate(-49.992deg);"
+            pose="[0,0,0]"
+        ></frc-field-robot>
+    </frc-field>
+    <frc-gyro
+        source-provider="NetworkTables"
+        style="transform: translate(476px, 524px); width: 284px; height: 284px;"
+        source-key="/SmartDashboard/IMU/imu_yaw_deg"
+        counter-clockwise=""
+    ></frc-gyro>
+    <frc-pdp
+        source-provider="NetworkTables"
+        style="transform: translate(0px, 91px); width: 426px; height: 311px;"
+        source-key="/SmartDashboard/PDP"
+    ></frc-pdp>
+    <frc-sendable-chooser
+        source-key="/SmartDashboard/Auto Chooser"
+        source-provider="NetworkTables"
+        style="transform: translate(948px, 479px); width: 388px; height: 77px;"
+        options="[]"
+    ></frc-sendable-chooser>
+    <frc-label
+        text="Robot Angle"
+        source-provider="NetworkTables"
+        style="transform: translate(574px, 500px); width: 91.1875px; height: 18px;"
+    ></frc-label>
+    <frc-robot-command
+        source-provider="NetworkTables"
+        style="transform: translate(6px, 415px); width: 423px; height: 54px;"
+        source-key="/SmartDashboard/Reset Drivetrain Pose"
+        name="Reset Robot Pose"
+        label="Reset Robot Pose"
+    ></frc-robot-command>
+    <frc-swerve-drivebase
+        source-provider="NetworkTables"
+        style="transform: translate(121px, 561px); width: 206px; height: 160px;"
+        source-key="/SmartDashboard/AdvantageScope/Swerve"
+        wheellocations="[&quot;0.32385&quot;,&quot;0.32385&quot;,&quot;0.32385&quot;,&quot;-0.32385&quot;,&quot;-0.32385&quot;,&quot;0.32385&quot;,&quot;-0.32385&quot;,&quot;-0.32385&quot;]"
+        measuredstates="[0,0,0,0,0,0,0,0]"
+        desiredstates="[]"
+        maxspeed="4.803648"
+        sizeleftright="0.6477"
+        sizefrontback="0.6477"
+    ></frc-swerve-drivebase>
+    <frc-camera
+        source-provider="NetworkTables"
+        style="transform: translate(950px, 557px); --image-width:350px; --image-height:196.875px; --crosshair-width:2px; --crosshair-color:#ffffff; --image-display:block;"
+        streams="[]"
+    ></frc-camera>
+    <frc-boolean-box
+        source-provider="NetworkTables"
+        style="transform: translate(8px, 844px);"
+        source-key="/SmartDashboard/Kairos Connected"
+        label="Karios Connected"
+    ></frc-boolean-box>
+</dashboard-tab>

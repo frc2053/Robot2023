@@ -55,3 +55,11 @@ frc2::CommandPtr autos::Autos::OneMForward() {
 frc2::CommandPtr autos::Autos::TestPath() {
   return FollowPathplannerFactory("TestPath", 15_fps, 4.267_mps_sq);
 }
+
+frc2::CommandPtr autos::Autos::DriveToCenter() {
+  return FollowPathplannerFactory("DriveToCenter", 15_fps, 4.267_mps_sq);
+}
+
+frc2::CommandPtr autos::Autos::StartOnEdgeScoreThenGoToCenter() {
+  return FollowPathplannerFactory("StartOnEdgeScoreThenGoToCenter", 15_fps, 4.267_mps_sq);
+}

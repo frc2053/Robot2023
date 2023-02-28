@@ -18,6 +18,8 @@ public:
   frc2::CommandPtr FollowPathplannerFactory(std::string pathName, units::meters_per_second_t maxSpeed, units::meters_per_second_squared_t maxAccel);
   frc2::CommandPtr OneMForward();
   frc2::CommandPtr TestPath();
+  frc2::CommandPtr DriveToCenter();
+  frc2::CommandPtr StartOnEdgeScoreThenGoToCenter();
 private:
   DrivebaseSubsystem* m_driveSub;
   ArmSubsystem* m_armSub;

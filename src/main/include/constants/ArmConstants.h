@@ -4,6 +4,7 @@
 #include <units/length.h>
 #include <units/moment_of_inertia.h>
 #include <frc/system/plant/DCMotor.h>
+#include <frc/RobotBase.h>
 #include <units/velocity.h>
 
 namespace str {
@@ -37,7 +38,11 @@ namespace str {
         static constexpr auto est = 10.0;
         static constexpr auto rPos = 0.05;
 
-        static constexpr int shoulderTicksStarting = 9789;
+        #if defined(__FRC_ROBORIO__)
+            static constexpr int shoulderTicksStarting = 9789;
+        #else
+            static constexpr int shoulderTicksStarting = -9789;
+        #endif
         static constexpr int elbowTicksStarting = -45036;
     };
 

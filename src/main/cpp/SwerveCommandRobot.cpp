@@ -9,7 +9,9 @@
 #include <frc2/command/button/Trigger.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
-  autoChooser.SetDefaultOption("1MForward", oneMeterForward.get());
+  autoChooser.SetDefaultOption("DriveToCenter", driveToCenter.get());
+  autoChooser.AddOption("StartOnEdgeScoreThenGoToCenter", startOnEdgeScoreThenGoToCenter.get());
+  autoChooser.AddOption("1 Meter Forward", oneMeterForward.get());
   autoChooser.AddOption("TestPath", testPath.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);

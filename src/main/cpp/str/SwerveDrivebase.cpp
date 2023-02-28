@@ -186,7 +186,7 @@ void str::SwerveDrivebase::LogCurrentModuleInfo(const std::array<frc::SwerveModu
   currentEstimatorPoseForNT[2] = currentRobotPose.Rotation().Radians().to<double>();
 
   frc::SmartDashboard::PutNumberArray("AdvantageScope/Robot Estimator Pose", currentEstimatorPoseForNT);
-  frc::SmartDashboard::PutNumberArray("AdvantageScope/Current Swerve Module Data", currentModuleDataForNT);
+  frc::SmartDashboard::PutNumberArray("AdvantageScope/Swerve/measuredStates", currentModuleDataForNT);
 }
 
 void str::SwerveDrivebase::LogDesiredModuleInfo(const frc::SwerveModuleState& flState, const frc::SwerveModuleState& frState, const frc::SwerveModuleState& blState, const frc::SwerveModuleState& brState) {
@@ -200,5 +200,5 @@ void str::SwerveDrivebase::LogDesiredModuleInfo(const frc::SwerveModuleState& fl
   desiredModuleDataForNT[6] = brState.angle.Radians().to<double>();
   desiredModuleDataForNT[7] = brState.speed.convert<units::feet_per_second>().to<double>();
 
-  frc::SmartDashboard::PutNumberArray("AdvantageScope/Desired Swerve Module Data", desiredModuleDataForNT);
+  frc::SmartDashboard::PutNumberArray("AdvantageScope/Swerve/desiredStates", desiredModuleDataForNT);
 }
