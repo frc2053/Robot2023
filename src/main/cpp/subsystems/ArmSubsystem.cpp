@@ -217,6 +217,15 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::func
   );
 }
 
+frc2::CommandPtr ArmSubsystem::DrivePositionFactory(std::function<double()> xJoy, std::function<double()> yJoy) {
+  return frc2::cmd::Run([this, xJoy, yJoy] {
+    hasManuallyMoved = true;
+    units::meters_per_second_t xSpeed = -2_fps * xJoy();
+    units::meters_per_second_t ySpeed = 2_fps * yJoy();
+    SetDesiredArmEndAffectorPosition(currentEndEffectorSetpointX + (xSpeed * 20_ms), currentEndEffectorSetpointY + (ySpeed * 20_ms), true);
+  });
+}
+
 frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle) {
   return frc2::WaitUntilCommand(
     [this] {

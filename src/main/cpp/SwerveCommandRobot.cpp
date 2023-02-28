@@ -143,62 +143,12 @@ void SwerveCommandRobot::ConfigureBindings() {
   operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(1));
   operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(-.5));
 
-  frc2::Trigger povLeftTrigger{operatorController.POVLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  frc2::Trigger povRightTrigger{operatorController.POVRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  frc2::Trigger povUpTrigger{operatorController.POVUp(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  frc2::Trigger povDownTrigger{operatorController.POVDown(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  frc2::Trigger povDownLeftTrigger{operatorController.POVDownLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  frc2::Trigger povDownRightTrigger{operatorController.POVDownRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  frc2::Trigger povUpLeftTrigger{operatorController.POVUpLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  frc2::Trigger povUpRightTrigger{operatorController.POVUpRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  frc2::Trigger manualMoveArmTrigger{[this] {
+    return std::fabs(operatorController.GetLeftX()) > .2 ||
+           std::fabs(operatorController.GetLeftY()) > .2;
+  }};
 
-  povLeftTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); },
-    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ).Repeatedly());
-
-  povRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY(); },
-    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ).Repeatedly());
-
-  povDownTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
-    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ).Repeatedly());
-
-  povUpTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
-    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ).Repeatedly());
-
-  povDownLeftTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
-    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ).Repeatedly());
-
-  povDownRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
-    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ).Repeatedly());
-
-  povUpLeftTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
-    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ).Repeatedly());
-
-  povUpRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
-    [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
-    [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
-    [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ).Repeatedly());
+  manualMoveArmTrigger.WhileTrue(armSubsystem.DrivePositionFactory([this] { return -operatorController.GetLeftX(); }, [this]{ return -operatorController.GetLeftY(); }));
 
   operatorController.LeftTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }));
   operatorController.RightTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }));
