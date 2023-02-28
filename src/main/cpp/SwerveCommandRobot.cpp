@@ -156,49 +156,49 @@ void SwerveCommandRobot::ConfigureBindings() {
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY(); },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ));
+  ).Repeatedly());
 
   povRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY(); },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ));
+  ).Repeatedly());
 
   povDownTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ));
+  ).Repeatedly());
 
   povUpTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX(); },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ));
+  ).Repeatedly());
 
   povDownLeftTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ));
+  ).Repeatedly());
 
   povDownRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() - 2_in; },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ));
+  ).Repeatedly());
 
   povUpLeftTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() - 2_in; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ));
+  ).Repeatedly());
 
   povUpRightTrigger.WhileTrue(armSubsystem.SetDesiredArmEndAffectorPositionFactory(
     [this] { return armSubsystem.GetArmEndEffectorSetpointX() + 2_in; },
     [this] { return armSubsystem.GetArmEndEffectorSetpointY() + 2_in; },
     [this] { return operatorController.GetRightTriggerAxis() < 0.1; }
-  ));
+  ).Repeatedly());
 
   operatorController.LeftTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }));
   operatorController.RightTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }));

@@ -188,11 +188,11 @@ bool ArmSubsystem::IsArmAtDesiredAngles(const frc::Vectord<2>& desiredState) con
 }
 
 void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::meter_t yPos, bool shoulderUp) {
-  currentEndEffectorSetpointX = xPos;
-  currentEndEffectorSetpointY = yPos;
   frc::Vectord<2> anglesToGoTo;
-  const auto& ikResults = armSystem.CalculateInverseKinematics(frc::Vectord<2>{currentEndEffectorSetpointX.value(), currentEndEffectorSetpointY.value()}, shoulderUp);
+  const auto& ikResults = armSystem.CalculateInverseKinematics(frc::Vectord<2>{xPos.value(), yPos.value()}, shoulderUp);
   if(ikResults.has_value()) {
+    currentEndEffectorSetpointX = xPos;
+    currentEndEffectorSetpointY = yPos;
     anglesToGoTo = ikResults.value();
     frc::Vectord<6> requestedState{anglesToGoTo(0), anglesToGoTo(1), 0, 0, 0, 0};
     armSystem.SetDesiredState(requestedState);
