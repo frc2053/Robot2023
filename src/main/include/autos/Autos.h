@@ -20,6 +20,7 @@ public:
   frc2::CommandPtr TestPath();
   frc2::CommandPtr DriveToCenter();
   frc2::CommandPtr StartOnEdgeScoreThenGoToCenter();
+  frc2::CommandPtr StartOnInnerEdgeScoreThenGoToCenter();
 private:
   DrivebaseSubsystem* m_driveSub;
   ArmSubsystem* m_armSub;

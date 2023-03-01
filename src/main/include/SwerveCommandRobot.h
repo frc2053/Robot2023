@@ -28,6 +28,7 @@ private:
   frc2::CommandPtr testPath = autos.TestPath();
   frc2::CommandPtr driveToCenter = autos.DriveToCenter();
   frc2::CommandPtr startOnEdgeScoreThenGoToCenter = autos.StartOnEdgeScoreThenGoToCenter();
+  frc2::CommandPtr startOnInnerEdgeScoreThenGoToCenter = autos.StartOnInnerEdgeScoreThenGoToCenter();
 
   frc::SendableChooser<frc2::Command *> autoChooser;
 };

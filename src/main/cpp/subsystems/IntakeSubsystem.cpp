@@ -8,6 +8,7 @@
 
 IntakeSubsystem::IntakeSubsystem() {
   intakeMotor.RestoreFactoryDefaults();
+  intakeMotor.SetSmartCurrentLimit(20);
   intakeMotor.BurnFlash();
 }
 

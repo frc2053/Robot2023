@@ -11,6 +11,7 @@
 void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.SetDefaultOption("DriveToCenter", driveToCenter.get());
   autoChooser.AddOption("StartOnEdgeScoreThenGoToCenter", startOnEdgeScoreThenGoToCenter.get());
+  autoChooser.AddOption("StartOnInnerEdgeScoreThenGoToCenter", startOnInnerEdgeScoreThenGoToCenter.get());
   autoChooser.AddOption("1 Meter Forward", oneMeterForward.get());
   autoChooser.AddOption("TestPath", testPath.get());
 
