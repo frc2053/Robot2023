@@ -45,8 +45,8 @@
     {
       "type": 9,
       "fields": [
-        "/SmartDashboard/AdvantageScope/Current Swerve Module Data",
-        "/SmartDashboard/AdvantageScope/Desired Swerve Module Data",
+        "/SmartDashboard/AdvantageScope/Swerve/measuredStates",
+        "/SmartDashboard/AdvantageScope/Swerve/desiredStates",
         "/SmartDashboard/AdvantageScope/Robot Estimator Pose/2"
       ],
       "listFields": [],

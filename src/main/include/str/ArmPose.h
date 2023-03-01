@@ -73,7 +73,7 @@ public:
 
   static constexpr ArmPose IntakeFromSubstation() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-19_in, 8_in};
+    retVal.endEffectorPosition = {-20_in, 8_in};
     retVal.fromTop = true;
     retVal.name = "IntakeFromSubstation";
     return retVal;

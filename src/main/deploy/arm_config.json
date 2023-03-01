@@ -21,8 +21,8 @@
       "length": 0.781603466,
       "moi": 0.079649927,
       "cgRadius": 0.583896,
-      "minAngle": -1.7,
-      "maxAngle": 1.7,
+      "minAngle": -2.5,
+      "maxAngle": 2.5,
       "motor": {
         "type": "falcon500",
         "count": 1,
