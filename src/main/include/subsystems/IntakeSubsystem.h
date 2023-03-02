@@ -18,5 +18,5 @@ public:
     frc2::CommandPtr IntakeCurrentLimitFactory(double speed);
     frc2::CommandPtr IntakeManualFactory(double speed);
 private:
-    rev::CANSparkMax intakeMotor{str::intake_constants::intakeMotorCanId, rev::CANSparkMaxLowLevel::MotorType::kBrushed};
+    rev::CANSparkMax intakeMotor{str::intake_constants::intakeMotorCanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
 };

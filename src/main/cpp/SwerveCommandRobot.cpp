@@ -15,6 +15,8 @@ void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.AddOption("1 Meter Forward", oneMeterForward.get());
   autoChooser.AddOption("TestPath", testPath.get());
 
+  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory(.3));
+
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 
   frc::SmartDashboard::PutData("PDP", str::PDP::GetInstance().GetPDP());
