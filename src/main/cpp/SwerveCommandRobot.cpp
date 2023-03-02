@@ -163,8 +163,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   operatorController.B().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }));
   operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }));
 
-  operatorController.Back().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::OutOfStartingConfig(); }));
-  operatorController.Start().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StowedConfig(); }));
+  operatorController.Start().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {

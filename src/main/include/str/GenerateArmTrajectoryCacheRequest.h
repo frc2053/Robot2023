@@ -9,7 +9,7 @@
 
 bool GenerateArmTrajectoryCacheFile() {
   ArmConfig config{ArmConfig::LoadJson("arm_config.json")};
-  frc::Vectord<6> initialState{0.248886761314,-1.8326,0,0,0,0};
+  frc::Vectord<6> initialState{str::arm_constants::shoulderAngleStarting.value(),str::arm_constants::elbowAngleStarting.value(),0,0,0,0};
   TwoJointArmDynamics armSystem {
     config.shoulder.mass,
     config.elbow.mass,

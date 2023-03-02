@@ -7,27 +7,12 @@
 
 struct ArmPose {
 public:
+
   static constexpr ArmPose StartingConfig() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {20.210973_in, -24.125614_in};
-    retVal.fromTop = true;
-    retVal.name = "StartingConfig";
-    return retVal;
-  };
-
-  static constexpr ArmPose OutOfStartingConfig() {
-    ArmPose retVal;
-    retVal.endEffectorPosition = {18_in, -20_in};
-    retVal.fromTop = true;
-    retVal.name = "OutOfStartingConfig";
-    return retVal;
-  };
-
-  static constexpr ArmPose StowedConfig() {
-    ArmPose retVal;
-    retVal.endEffectorPosition = {.5588_m, .2032_m};
+    retVal.endEffectorPosition = {9.347837_in, 13.241018_in};
     retVal.fromTop = false;
-    retVal.name = "StowedConfig";
+    retVal.name = "StartingConfig";
     return retVal;
   };
 
@@ -108,11 +93,9 @@ public:
 };
 
 static inline std::vector<ArmPose> AllPoses{
-  ArmPose::StartingConfig(), 
-  ArmPose::OutOfStartingConfig(), 
-  ArmPose::ScoreConeHigh(), 
-  ArmPose::StowedConfig(), 
-  ArmPose::StraightOut(), 
+  ArmPose::StartingConfig(),
+  ArmPose::ScoreConeHigh(),
+  ArmPose::StraightOut(),
   ArmPose::ScoreConeMid(),
   ArmPose::ScorePieceLow(),
   ArmPose::GroundIntakeFar(),

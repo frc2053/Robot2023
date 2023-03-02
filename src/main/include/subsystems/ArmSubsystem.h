@@ -61,7 +61,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
   ctre::phoenix::motorcontrol::TalonFXSimCollection shoulderSimCollection{shoulderMotor.GetSimCollection()};
   ctre::phoenix::motorcontrol::TalonFXSimCollection elbowSimCollection{elbowMotor.GetSimCollection()};
 
-  frc::Vectord<6> initialState{0.3338283,-1.9046246268,0,0,0,0};
+  frc::Vectord<6> initialState{str::arm_constants::shoulderAngleStarting.value(),str::arm_constants::elbowAngleStarting.value(),0,0,0,0};
 
   units::meter_t currentEndEffectorSetpointX{24_in};
   units::meter_t currentEndEffectorSetpointY{24_in};

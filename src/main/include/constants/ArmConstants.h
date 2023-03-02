@@ -38,12 +38,8 @@ namespace str {
         static constexpr auto est = 10.0;
         static constexpr auto rPos = 0.05;
 
-        #if defined(__FRC_ROBORIO__)
-            static constexpr int shoulderTicksStarting = 9789;
-        #else
-            static constexpr int shoulderTicksStarting = -9789;
-        #endif
-        static constexpr int elbowTicksStarting = -45036;
+        static constexpr units::radian_t shoulderAngleStarting = 60_deg;
+        static constexpr units::radian_t elbowAngleStarting = 151.43_deg;
     };
 
     namespace intake_constants {

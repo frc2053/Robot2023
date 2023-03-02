@@ -17,7 +17,6 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "MoveOutOfStartingConfig",
           "MoveArmToHighPosition",
           "PoopPiece"
         ],
@@ -43,7 +42,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "MoveArmToStowedPosition"
+          "MoveArmToStartingPosition"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
