@@ -11,6 +11,7 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <str/SwerveModuleSim.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
+#include <frc/filter/SlewRateLimiter.h>
 
 namespace str {
   class SwerveDrivebase {
@@ -29,7 +30,8 @@ namespace str {
       units::radians_per_second_t rotSpeed,
       bool fieldRelative,
       bool openLoopDrive,
-      bool voltageComp
+      bool voltageComp,
+      bool rateLimit
     );
     void DirectSetModuleStates(std::array<frc::SwerveModuleState, 4> states);
     frc::SwerveDriveKinematics<4>& GetKinematics();
@@ -93,6 +95,15 @@ namespace str {
         7, 8, 12, 13, 14, 15
       };
     #endif
+
+    // Slew rate filter variables for controlling lateral acceleration
+    double m_currentRotation = 0.0;
+    double m_currentTranslationDir = 0.0;
+    double m_currentTranslationMag = 0.0;
+
+    frc::SlewRateLimiter<units::scalar> m_magLimiter{str::swerve_drive_consts::magnitudeSlewRate / 1_s};
+    frc::SlewRateLimiter<units::scalar> m_rotLimiter{str::swerve_drive_consts::rotationalSlewRate / 1_s};
+    double m_prevTime{wpi::Now() * 1e-6};
 
     frc::SwerveDriveKinematics<4> kinematics{flLocation, frLocation, blLocation, brLocation};
     frc::SwerveDrivePoseEstimator<4> estimator{

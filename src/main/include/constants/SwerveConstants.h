@@ -66,6 +66,10 @@ namespace str {
     static constexpr units::radians_per_second_squared_t MAX_CHASSIS_ROT_ACCEL = 10000_deg_per_s_sq;
 
     extern const frc::TrapezoidProfile<units::radians>::Constraints GLOBAL_THETA_CONTROLLER_CONSTRAINTS;
+
+    static constexpr double directionSlewRate = 1.2;   // radians per second
+    static constexpr double magnitudeSlewRate = 1.8;   // percent per second (1 = 100%)
+    static constexpr double rotationalSlewRate = 2.0;  // percent per second (1 = 100%)
   }   
 
   namespace swerve_physical_dims {

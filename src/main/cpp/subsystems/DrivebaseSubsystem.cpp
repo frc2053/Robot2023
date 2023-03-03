@@ -104,7 +104,8 @@ frc2::CommandPtr DrivebaseSubsystem::DriveFactory(
         slowMode() ? rot() * str::swerve_drive_consts::MAX_CHASSIS_ROT_SPEED / 3 : rot() * str::swerve_drive_consts::MAX_CHASSIS_ROT_SPEED,
         true,
         true,
-        false
+        false,
+        true
       );
     },
     {this}
@@ -132,7 +133,8 @@ frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
         output * 1_rad_per_s,
         true, 
         true,
-        false);
+        false,
+        true);
     }, 
     {this}
   ).Until(wantsToOverride);
@@ -169,7 +171,7 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> wantsT
       else {
         ySpeed = 0;
       }
-      swerveDrivebase.Drive(ySpeed * 0.3_mps, 0_mps, rotCmd * 1_rad_per_s, true, false, true);
+      swerveDrivebase.Drive(ySpeed * 0.3_mps, 0_mps, rotCmd * 1_rad_per_s, true, false, true, true);
     },
     {this}
   ).BeforeStarting([this] {thetaController.SetGoal(0_rad); })
@@ -205,7 +207,7 @@ frc2::CommandPtr DrivebaseSubsystem::GoToPoseFactory(
       xController.Calculate(GetRobotPose().X().value()) * 1_mps,
       yController.Calculate(GetRobotPose().Y().value()) * 1_mps,
       thetaController.Calculate(GetRobotPose().Rotation().Radians()) * 1_rad_per_s,
-      true, false, true
+      true, false, true, false
     );
   }).Until([this, override] {
     return (xController.AtSetpoint() && yController.AtSetpoint() && thetaController.AtGoal()) || override();
