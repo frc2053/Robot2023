@@ -66,3 +66,7 @@ frc2::CommandPtr autos::Autos::StartOnEdgeScoreThenGoToCenter() {
 frc2::CommandPtr autos::Autos::StartOnInnerEdgeScoreThenGoToCenter() {
   return FollowPathplannerFactory("StartOnInnerEdgeScoreThenGoToCenter", 15_fps, 4.267_mps_sq);
 }
+
+frc2::CommandPtr autos::Autos::StartOnSlimCubeAndGoToCenter() {
+  return FollowPathplannerFactory("StartOnSlimCubeAndGoToCenter", 15_fps, 4.267_mps_sq);
+}

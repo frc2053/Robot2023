@@ -21,6 +21,7 @@ public:
   frc2::CommandPtr DriveToCenter();
   frc2::CommandPtr StartOnEdgeScoreThenGoToCenter();
   frc2::CommandPtr StartOnInnerEdgeScoreThenGoToCenter();
+  frc2::CommandPtr StartOnSlimCubeAndGoToCenter();
 private:
   DrivebaseSubsystem* m_driveSub;
   ArmSubsystem* m_armSub;

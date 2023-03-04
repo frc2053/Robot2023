@@ -105,7 +105,7 @@ frc2::CommandPtr DrivebaseSubsystem::DriveFactory(
         true,
         true,
         false,
-        true
+        false
       );
     },
     {this}

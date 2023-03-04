@@ -65,7 +65,7 @@ public:
 
   void Update() {
     for(const nt::ConnectionInfo& con : nt::NetworkTableInstance::GetDefault().GetConnections()) {
-      if(!isConnected && con.remote_id == "kairos_0") {
+      if(!isConnected && con.remote_ip == "10.20.53.11") {
         isConnected = true;
       }
     }

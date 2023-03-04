@@ -10,7 +10,7 @@ public:
 
   static constexpr ArmPose StartingConfig() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {9.347837_in, 13.241018_in};
+    retVal.endEffectorPosition = {7.0_in, 11.5_in};
     retVal.fromTop = false;
     retVal.name = "StartingConfig";
     return retVal;
@@ -18,7 +18,7 @@ public:
 
   static constexpr ArmPose ScoreConeHigh() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-45_in, 17_in};
+    retVal.endEffectorPosition = {-47_in, 18_in};
     retVal.fromTop = true;
     retVal.name = "ScoreConeHigh";
     return retVal;

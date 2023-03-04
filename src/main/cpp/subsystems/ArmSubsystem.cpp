@@ -19,6 +19,14 @@ ArmSubsystem::ArmSubsystem() {
   frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
   ConfigureMotors();
   kairos.SetConfig(config.json_string);
+
+    // ResetEncoders();
+    // armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
+    // armSystem.SetDesiredState(armSystem.GetCurrentState());
+    // const auto& fk = armSystem.CalculateForwardKinematics(armSystem.GetCurrentState());
+    // currentEndEffectorSetpointX = units::meter_t{std::get<2>(fk)(0)};
+    // currentEndEffectorSetpointY = units::meter_t{std::get<2>(fk)(1)};
+    // tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
 }
 
 void ArmSubsystem::SimulationPeriodic() {
@@ -374,18 +382,18 @@ void ArmSubsystem::ConfigureMotors() {
 
 void ArmSubsystem::ResetEncoders() {
   if(frc::RobotBase::IsReal()) {
-    shoulderSimCollection.SetIntegratedSensorRawPosition(ConvertShoulderAngleToTicks(str::arm_constants::shoulderAngleStarting));
+    shoulderSimCollection.SetIntegratedSensorRawPosition(-36579);
     shoulderSimCollection.SetIntegratedSensorVelocity(0);
-    shoulderMotor.SetSelectedSensorPosition(ConvertShoulderAngleToTicks(str::arm_constants::shoulderAngleStarting));
+    shoulderMotor.SetSelectedSensorPosition(-36579);
   }
   else {
     shoulderSimCollection.SetIntegratedSensorRawPosition(-ConvertShoulderAngleToTicks(str::arm_constants::shoulderAngleStarting));
     shoulderSimCollection.SetIntegratedSensorVelocity(0);
     shoulderMotor.SetSelectedSensorPosition(-ConvertShoulderAngleToTicks(str::arm_constants::shoulderAngleStarting));
   }
-  elbowSimCollection.SetIntegratedSensorRawPosition(ConvertElbowAngleToTicks(str::arm_constants::elbowAngleStarting));
+  elbowSimCollection.SetIntegratedSensorRawPosition(45465);
   elbowSimCollection.SetIntegratedSensorVelocity(0);
-  elbowMotor.SetSelectedSensorPosition(ConvertElbowAngleToTicks(str::arm_constants::elbowAngleStarting));
+  elbowMotor.SetSelectedSensorPosition(45465);
 }
 
 units::radian_t ArmSubsystem::GetShoulderMotorAngle() {

@@ -13,6 +13,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.AddOption("StartOnEdgeScoreThenGoToCenter", startOnEdgeScoreThenGoToCenter.get());
   autoChooser.AddOption("StartOnInnerEdgeScoreThenGoToCenter", startOnInnerEdgeScoreThenGoToCenter.get());
   autoChooser.AddOption("1 Meter Forward", oneMeterForward.get());
+  autoChooser.AddOption("StartOnSlimCubeAndGoToCenter", startOnSlimCubeAndGoToCenter.get());
   autoChooser.AddOption("TestPath", testPath.get());
 
   intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory(.3));
