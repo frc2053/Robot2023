@@ -36,6 +36,7 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
+  robot.SetIntakeAsDefault();
   autonomousCommand = robot.GetAutonomousCommand();
 
   if(autonomousCommand) {

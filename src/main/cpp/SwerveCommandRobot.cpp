@@ -16,8 +16,6 @@ void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.AddOption("StartOnSlimCubeAndGoToCenter", startOnSlimCubeAndGoToCenter.get());
   autoChooser.AddOption("TestPath", testPath.get());
 
-  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory(.3));
-
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 
   frc::SmartDashboard::PutData("PDP", str::PDP::GetInstance().GetPDP());
@@ -146,8 +144,8 @@ void SwerveCommandRobot::ConfigureBindings() {
   ));
 
 
-  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(1));
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory(-.5));
+  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
+  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.5; }));
 
   frc2::Trigger manualMoveArmTrigger{[this] {
     return std::fabs(operatorController.GetLeftX()) > .2 ||
@@ -185,6 +183,10 @@ void SwerveCommandRobot::SetDriveAsDefault() {
         return driverController.GetRightBumper();
       }   
   ));
+}
+
+void SwerveCommandRobot::SetIntakeAsDefault() {
+  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory([] { return 0.3; }));
 }
 
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {

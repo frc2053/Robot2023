@@ -65,10 +65,10 @@ frc2::CommandPtr IntakeSubsystem::IntakeCurrentLimitFactory(double speed) {
   });
 }
 
-frc2::CommandPtr IntakeSubsystem::IntakeManualFactory(double speed) {
+frc2::CommandPtr IntakeSubsystem::IntakeManualFactory(std::function<double()> speed) {
   return frc2::RunCommand(
     [this, speed]() {
-      SetIntakeSpeed(speed);
+      SetIntakeSpeed(speed());
     },
     {this}
   ).FinallyDo([this](bool interrupted) {

@@ -16,7 +16,7 @@ public:
     frc2::CommandPtr PoopGamePiece(units::second_t howLongToSpin);
     frc2::CommandPtr IntakeGamePiece(units::second_t howLongToSpin);
     frc2::CommandPtr IntakeCurrentLimitFactory(double speed);
-    frc2::CommandPtr IntakeManualFactory(double speed);
+    frc2::CommandPtr IntakeManualFactory(std::function<double()> speed);
 private:
     rev::CANSparkMax intakeMotor{str::intake_constants::intakeMotorCanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
 };
