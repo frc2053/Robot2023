@@ -12,7 +12,7 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
     {"MoveArmToHighPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).DeadlineWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
     {"MoveArmToMidPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); }).DeadlineWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
     {"MoveArmToStartingPosition", m_armSub->GoToPose([]{ return ArmPose::StartingConfig(); }).DeadlineWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
-    {"PoopPiece", m_intakeSub->PoopGamePiece(1_s).Unwrap()},
+    {"PoopPiece", m_intakeSub->PoopGamePiece(.25_s).Unwrap()},
     {"IntakeObject", m_intakeSub->IntakeGamePiece(1_s).Unwrap()},
     {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).DeadlineWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()}
   };
