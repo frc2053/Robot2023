@@ -110,7 +110,7 @@ frc2::CommandPtr DrivebaseSubsystem::DriveFactory(
     },
     {this}
   )
-    .ToPtr();
+    .ToPtr().WithName("Drive Factory");
 }
 
 frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
@@ -137,7 +137,7 @@ frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
         true);
     }, 
     {this}
-  ).Until(wantsToOverride);
+  ).Until(wantsToOverride).WithName("Turn To Angle Factory");
 }
 
 frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
@@ -181,7 +181,7 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> wantsT
       bool isTipping = swerveDrivebase.GetRobotPitchRate() > 15_deg_per_s;
       return isLevelEnough || isTipping; 
     }
-  );
+  ).WithName("Balance Factory Command");
 }
 
 void DrivebaseSubsystem::ResetOdom(

@@ -221,7 +221,7 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::func
     [](bool interrupted){
       frc::DataLogManager::Log("Finished moved to desired arm end effector setpoint!");
     }
-  );
+  ).WithName("Set Desired Arm End Effector Position Factory");
 }
 
 frc2::CommandPtr ArmSubsystem::DrivePositionFactory(std::function<double()> xJoy, std::function<double()> yJoy) {
@@ -230,7 +230,7 @@ frc2::CommandPtr ArmSubsystem::DrivePositionFactory(std::function<double()> xJoy
     units::meters_per_second_t xSpeed = -2_fps * xJoy();
     units::meters_per_second_t ySpeed = 2_fps * yJoy();
     SetDesiredArmEndAffectorPosition(currentEndEffectorSetpointX + (xSpeed * 20_ms), currentEndEffectorSetpointY + (ySpeed * 20_ms), true);
-  });
+  }).WithName("Drive Arm With Joystick Factory");
 }
 
 frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle) {
@@ -248,7 +248,7 @@ frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::r
     [](bool interrupted){
       frc::DataLogManager::Log("Finished moved to desired arm angles setpoint!");
     }
-  );
+  ).WithName("Set Desired Arm Angles Factory");
 }
 
 frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams) {
@@ -293,7 +293,7 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
     [this, trajParams] {
       return (trajParams().finalState - armSystem.GetCurrentState().head(2)).norm() < 0.5; 
     }
-  );
+  ).WithName("Follow Arm Trajectory Factory");
 }
 
 ArmPose ArmSubsystem::GetClosestPosePreset() {
@@ -334,7 +334,7 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
     [this, poseToGoTo] {
       return lastRanTrajFinalPoseName != poseToGoTo().name;
     }
-  );
+  ).WithName("Go To Arm Pose Factory");
 }
 
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo) {
@@ -346,7 +346,7 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToP
       currentEndEffectorSetpointY = poseToGoTo().endEffectorPosition.Y();
       return ArmTrajectoryParams{closesetPoseToPreset().AsJointAngles(armSystem), poseToGoTo().AsJointAngles(armSystem)}; 
     }
-  );
+  ).WithName("Go To Arm Pose 2 params Factory");
 }
 
 void ArmSubsystem::ConfigureMotors() {
