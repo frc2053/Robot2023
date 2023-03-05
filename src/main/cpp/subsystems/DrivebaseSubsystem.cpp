@@ -19,8 +19,8 @@ DrivebaseSubsystem::DrivebaseSubsystem() {
   
   fieldLayout = std::make_shared<frc::AprilTagFieldLayout>(frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp));
   frontTagCamera = std::make_shared<photonlib::PhotonCamera>("FrontCamera");
-  system = std::make_shared<photonlib::SimVisionSystem>("FrontCamera", 80_deg, str::vision::CAMERA_TO_ROBOT, 9000_m, 640, 480, 5);
-  visionPoseEstimator = std::make_shared<photonlib::PhotonPoseEstimator>(*fieldLayout.get(), photonlib::PoseStrategy::MULTI_TAG_PNP, std::move(*frontTagCamera.get()), str::vision::CAMERA_TO_ROBOT);
+  system = std::make_shared<photonlib::SimVisionSystem>("FrontCamera", 80_deg, str::vision::ROBOT_TO_CAMERA.Inverse(), 9000_m, 640, 480, 5);
+  visionPoseEstimator = std::make_shared<photonlib::PhotonPoseEstimator>(*fieldLayout.get(), photonlib::PoseStrategy::MULTI_TAG_PNP, std::move(*frontTagCamera.get()), str::vision::ROBOT_TO_CAMERA);
   
   frontTagCamera->SetVersionCheckEnabled(false);
   system->cam.SetVersionCheckEnabled(false);
@@ -47,7 +47,7 @@ void DrivebaseSubsystem::Periodic() {
   }
 
   //put camera pose on dashboard for debugging
-  frc::Pose3d cameraPose = frc::Pose3d{swerveDrivebase.GetRobotPose()}.TransformBy(str::vision::CAMERA_TO_ROBOT);
+  frc::Pose3d cameraPose = frc::Pose3d{swerveDrivebase.GetRobotPose()}.TransformBy(str::vision::ROBOT_TO_CAMERA);
 
   std::array<double, 7> cameraPoseVec{
     cameraPose.X().value(), 
@@ -80,7 +80,7 @@ void DrivebaseSubsystem::ProcessVisionData() {
       }
     }
     str::Field::GetInstance().SetObjectPosition("Robot Vision Pose Estimate", result.value().estimatedPose.ToPose2d());
-    //swerveDrivebase.AddVisionMeasurementToPoseEstimator(result.value().estimatedPose.ToPose2d(), result.value().timestamp);
+    swerveDrivebase.AddVisionMeasurementToPoseEstimator(result.value().estimatedPose.ToPose2d(), result.value().timestamp);
   }
   frc::SmartDashboard::PutNumberArray("AdvantageScope/Detected Vision Targets", detectedVisionDataForNT);
 }
