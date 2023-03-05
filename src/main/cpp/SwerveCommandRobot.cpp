@@ -25,6 +25,10 @@ void SwerveCommandRobot::ConfigureBindings() {
   frc::SmartDashboard::PutNumber("ResetPose/rot_deg", 0);
   frc::SmartDashboard::PutNumber("Wheel Speed", 0);
 
+  frc::SmartDashboard::PutData("Drive Subsystem", &driveSubsystem);
+  frc::SmartDashboard::PutData("Arm Subsystem", &armSubsystem);
+  frc::SmartDashboard::PutData("Intake Subsystem", &intakeSubsystem);
+
   frc::SmartDashboard::PutData(
     "Reset Drivetrain Pose",
     new frc2::InstantCommand(

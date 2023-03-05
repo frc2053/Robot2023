@@ -13,7 +13,7 @@ IntakeSubsystem::IntakeSubsystem() {
 }
 
 void IntakeSubsystem::Periodic() {
-
+  
 }
 
 void IntakeSubsystem::SimulationPeriodic() {
@@ -35,7 +35,7 @@ frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {
       frc::DataLogManager::Log(fmt::format("Stop ejecting game object!"));
       SetIntakeSpeed(0);
     },{this})
-  );
+  ).WithName("Poop Game Piece Time Factory");;
 }
 
 frc2::CommandPtr IntakeSubsystem::IntakeGamePiece(units::second_t howLongToSpin) {
@@ -49,7 +49,7 @@ frc2::CommandPtr IntakeSubsystem::IntakeGamePiece(units::second_t howLongToSpin)
       frc::DataLogManager::Log(fmt::format("Stop intaking game object!"));
       SetIntakeSpeed(0);
     },{this})
-  );
+  ).WithName("Intake Game Piece Time Factory");
 }
 
 frc2::CommandPtr IntakeSubsystem::IntakeCurrentLimitFactory(double speed) {
@@ -62,7 +62,7 @@ frc2::CommandPtr IntakeSubsystem::IntakeCurrentLimitFactory(double speed) {
     return intakeMotor.GetOutputCurrent() >= str::intake_constants::maxAmps;
   }).AndThen([this] {
     SetIntakeSpeed(0);
-  });
+  }).WithName("Intake Current Limit Factory");
 }
 
 frc2::CommandPtr IntakeSubsystem::IntakeManualFactory(std::function<double()> speed) {
@@ -73,5 +73,5 @@ frc2::CommandPtr IntakeSubsystem::IntakeManualFactory(std::function<double()> sp
     {this}
   ).FinallyDo([this](bool interrupted) {
     SetIntakeSpeed(0);
-  });
+  }).WithName("Intake Manual Factory");
 }

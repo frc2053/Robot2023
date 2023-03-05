@@ -24,6 +24,7 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+  frc::SmartDashboard::PutData(&frc2::CommandScheduler::GetInstance());
   units::volt_t totalVolts = str::PDP::GetInstance().GetBatteryVoltageWithLoad();
   frc::sim::RoboRioSim::SetVInVoltage(totalVolts);
   str::PDP::GetInstance().SetInputVoltage(totalVolts);
@@ -48,6 +49,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  robot.SetIntakeAsDefault();
   if(autonomousCommand) {
     autonomousCommand->Cancel();
   }
