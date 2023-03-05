@@ -332,7 +332,7 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
     ),
     frc2::cmd::Print("We are already at final pose!\n"),
     [this, poseToGoTo] {
-      return lastRanTrajFinalPoseName != poseToGoTo().name;
+      return hasManuallyMoved || (lastRanTrajFinalPoseName != poseToGoTo().name);
     }
   ).WithName("Go To Arm Pose Factory");
 }
