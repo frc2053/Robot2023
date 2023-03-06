@@ -15,6 +15,8 @@ public:
   void ConfigureBindings();
   void SetDriveAsDefault();
   void SetIntakeAsDefault();
+  void InitVisionStuff();
+  bool CheckIfVisionIsInited();
   frc2::Command *GetAutonomousCommand();
 
 private:

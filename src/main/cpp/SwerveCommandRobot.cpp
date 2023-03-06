@@ -196,3 +196,11 @@ void SwerveCommandRobot::SetIntakeAsDefault() {
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {
   return autoChooser.GetSelected();
 }
+
+void SwerveCommandRobot::InitVisionStuff() {
+  driveSubsystem.InitVisionStuff();
+}
+
+bool SwerveCommandRobot::CheckIfVisionIsInited() {
+  return driveSubsystem.CheckIfVisionIsInited();
+}

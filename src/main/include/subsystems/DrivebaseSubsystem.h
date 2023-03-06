@@ -17,6 +17,8 @@ public:
 
   void Periodic() override;
   void SimulationPeriodic() override;
+  void InitVisionStuff();
+  bool CheckIfVisionIsInited();
 
   frc::Pose2d GetRobotPose() const {
     return swerveDrivebase.GetRobotPose();
@@ -73,4 +75,6 @@ private:
     str::swerve_drive_consts::GLOBAL_POSE_ROT_KD, 
     str::swerve_drive_consts::GLOBAL_THETA_CONTROLLER_CONSTRAINTS
   };
+
+  bool isVisionInited{false};
 };

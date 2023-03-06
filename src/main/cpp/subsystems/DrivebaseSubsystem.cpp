@@ -16,8 +16,25 @@
 #include <frc2/command/InstantCommand.h>
 
 DrivebaseSubsystem::DrivebaseSubsystem() {
-  
+
+  autoTrajectoryConfig.SetKinematics(swerveDrivebase.GetKinematics());
+  thetaController.EnableContinuousInput(-180_deg, 180_deg);
+}
+
+bool DrivebaseSubsystem::CheckIfVisionIsInited() {
+  return isVisionInited;
+}
+
+void DrivebaseSubsystem::InitVisionStuff() {
   fieldLayout = std::make_shared<frc::AprilTagFieldLayout>(frc::LoadAprilTagLayoutField(frc::AprilTagField::k2023ChargedUp));
+
+  if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
+    fieldLayout->SetOrigin(frc::AprilTagFieldLayout::OriginPosition::kBlueAllianceWallRightSide);
+  }
+  else {
+    fieldLayout->SetOrigin(frc::AprilTagFieldLayout::OriginPosition::kRedAllianceWallRightSide);
+  }
+  
   frontTagCamera = std::make_shared<photonlib::PhotonCamera>("FrontCamera");
   system = std::make_shared<photonlib::SimVisionSystem>("FrontCamera", 80_deg, str::vision::ROBOT_TO_CAMERA.Inverse(), 9000_m, 640, 480, 5);
   visionPoseEstimator = std::make_shared<photonlib::PhotonPoseEstimator>(*fieldLayout.get(), photonlib::PoseStrategy::MULTI_TAG_PNP, std::move(*frontTagCamera.get()), str::vision::ROBOT_TO_CAMERA);
@@ -31,19 +48,13 @@ DrivebaseSubsystem::DrivebaseSubsystem() {
     system->AddSimVisionTarget(photonlib::SimVisionTarget{fieldLayout->GetTagPose(i).value(), 6_in, 6_in, i});
   }
 
-  autoTrajectoryConfig.SetKinematics(swerveDrivebase.GetKinematics());
-  thetaController.EnableContinuousInput(-180_deg, 180_deg);
+  isVisionInited = true;
 }
 
 void DrivebaseSubsystem::Periodic() {
   swerveDrivebase.Periodic();
-  ProcessVisionData();
-
-  if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
-    fieldLayout->SetOrigin(frc::AprilTagFieldLayout::OriginPosition::kBlueAllianceWallRightSide);
-  }
-  else {
-    fieldLayout->SetOrigin(frc::AprilTagFieldLayout::OriginPosition::kRedAllianceWallRightSide);
+  if(isVisionInited) {
+    ProcessVisionData();
   }
 
   //put camera pose on dashboard for debugging
@@ -87,7 +98,9 @@ void DrivebaseSubsystem::ProcessVisionData() {
 
 void DrivebaseSubsystem::SimulationPeriodic() {
   swerveDrivebase.SimulationPeriodic();
-  system->ProcessFrame(swerveDrivebase.GetRobotPose());
+  if(isVisionInited) {
+    system->ProcessFrame(swerveDrivebase.GetRobotPose());
+  }
 }
 
 frc2::CommandPtr DrivebaseSubsystem::DriveFactory(

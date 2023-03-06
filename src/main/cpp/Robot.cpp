@@ -37,6 +37,7 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
+  robot.InitVisionStuff();
   robot.SetIntakeAsDefault();
   autonomousCommand = robot.GetAutonomousCommand();
 
@@ -49,6 +50,9 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  if(!robot.CheckIfVisionIsInited()) {
+    robot.InitVisionStuff();
+  }
   robot.SetIntakeAsDefault();
   if(autonomousCommand) {
     autonomousCommand->Cancel();
