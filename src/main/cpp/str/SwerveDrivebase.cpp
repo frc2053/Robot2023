@@ -49,7 +49,7 @@ void str::SwerveDrivebase::Drive(
   bool rateLimit
 ) {
   auto states = kinematics.ToSwerveModuleStates(
-    fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, imu.GetYaw()) :
+    fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, imu.GetYaw() + imuDriverOffset) :
                     frc::ChassisSpeeds(xSpeed, ySpeed, rotSpeed)
   );
 
@@ -137,6 +137,8 @@ void str::SwerveDrivebase::ResetPose(const frc::Pose2d& newPose) {
   else {
     yawToResetTo = imu.GetYaw();
   }
+
+  SetDriverImuOffset(newPose.Rotation().Radians());
 
   estimator.ResetPosition(
     yawToResetTo,

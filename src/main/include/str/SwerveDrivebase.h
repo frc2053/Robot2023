@@ -36,7 +36,9 @@ namespace str {
     void DirectSetModuleStates(std::array<frc::SwerveModuleState, 4> states);
     frc::SwerveDriveKinematics<4>& GetKinematics();
     void AddVisionMeasurementToPoseEstimator(frc::Pose2d visionMeasuredRobotPose, units::second_t timeStampWhenPicWasTaken);
-
+    void SetDriverImuOffset(units::radian_t offset) {
+      imuDriverOffset = frc::Rotation2d{offset};
+    }
   private:
     void LogCurrentModuleInfo(const std::array<frc::SwerveModuleState, 4>& moduleStates);
     void LogDesiredModuleInfo(const frc::SwerveModuleState& flState, const frc::SwerveModuleState& frState, const frc::SwerveModuleState& blState, const frc::SwerveModuleState& brState);
@@ -114,6 +116,8 @@ namespace str {
       {0.1, 0.1, 0.1},
       {0.9, 0.9, 0.9}
     };
+    
+    frc::Rotation2d imuDriverOffset{0_deg};
 
     std::array<double, 8> currentModuleDataForNT{};
     std::array<double, 3> currentEstimatorPoseForNT{};
