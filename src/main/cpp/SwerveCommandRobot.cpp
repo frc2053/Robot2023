@@ -139,6 +139,15 @@ void SwerveCommandRobot::ConfigureBindings() {
     }
   ));
 
+  driverController.Start().OnTrue(driveSubsystem.SetXFactory(    
+    [this] { 
+      return std::abs(driverController.GetLeftX()) > 0.2  ||
+             std::abs(driverController.GetLeftY()) > 0.2  ||
+             std::abs(driverController.GetRightX()) > 0.2 || 
+             std::abs(driverController.GetRightY()) > 0.2; 
+    }
+  ));
+
   // driverController.LeftBumper().OnTrue(driveSubsystem.GoToPoseFactory(    
   //   [this] {
   //     return  frc::Pose2d{1.74_m, 1.64_m, frc::Rotation2d{180_deg}};

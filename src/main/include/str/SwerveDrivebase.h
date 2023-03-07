@@ -34,6 +34,7 @@ namespace str {
       bool rateLimit
     );
     void DirectSetModuleStates(std::array<frc::SwerveModuleState, 4> states);
+    void SetX();
     frc::SwerveDriveKinematics<4>& GetKinematics();
     void AddVisionMeasurementToPoseEstimator(frc::Pose2d visionMeasuredRobotPose, units::second_t timeStampWhenPicWasTaken);
     void SetDriverImuOffset(units::radian_t offset) {

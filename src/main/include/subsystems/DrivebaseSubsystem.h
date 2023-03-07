@@ -41,6 +41,9 @@ public:
     std::function<frc::Pose2d()> poseToGoTo,
     std::function<bool()> override
   );
+  frc2::CommandPtr SetXFactory(
+    std::function<bool()> override
+  );
   frc2::CommandPtr ResetOdomFactory(
     std::function<double()> x_ft,
     std::function<double()> y_ft,

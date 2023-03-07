@@ -86,6 +86,17 @@ void str::SwerveDrivebase::DirectSetModuleStates(std::array<frc::SwerveModuleSta
   brModule.SetDesiredState(br, false, true);
 }
 
+void str::SwerveDrivebase::SetX() {
+  flModule.SetDesiredState(
+      frc::SwerveModuleState{0_mps, frc::Rotation2d{45_deg}}, true, true);
+  frModule.SetDesiredState(
+      frc::SwerveModuleState{0_mps, frc::Rotation2d{-45_deg}}, true, true);
+  blModule.SetDesiredState(
+      frc::SwerveModuleState{0_mps, frc::Rotation2d{-45_deg}}, true, true);
+  brModule.SetDesiredState(
+      frc::SwerveModuleState{0_mps, frc::Rotation2d{45_deg}}, true, true);
+}
+
 void str::SwerveDrivebase::Periodic() {
   frc::Rotation2d imuYaw = imu.GetYaw();
 

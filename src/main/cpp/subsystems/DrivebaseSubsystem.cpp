@@ -14,6 +14,7 @@
 #include <frc/apriltag/AprilTagFields.h>
 #include <frc/ComputerVisionUtil.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/Commands.h>
 
 DrivebaseSubsystem::DrivebaseSubsystem() {
 
@@ -151,6 +152,14 @@ frc2::CommandPtr DrivebaseSubsystem::TurnToAngleFactory(
     }, 
     {this}
   ).Until(wantsToOverride).WithName("Turn To Angle Factory");
+}
+
+frc2::CommandPtr DrivebaseSubsystem::SetXFactory(
+  std::function<bool()> override
+) {
+  return frc2::cmd::Run([this] {
+    swerveDrivebase.SetX();
+  }).Repeatedly().Until(override);
 }
 
 frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
