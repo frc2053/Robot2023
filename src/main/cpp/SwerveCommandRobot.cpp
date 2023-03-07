@@ -133,7 +133,10 @@ void SwerveCommandRobot::ConfigureBindings() {
     }  
   )));
 
-  driverController.Back().OnTrue(driveSubsystem.BalanceFactory(    
+  driverController.Back().OnTrue(driveSubsystem.BalanceFactory(
+    [this] {
+      return true;
+    },
     [this] { 
       return std::abs(driverController.GetLeftY()) > 0.2; 
     }

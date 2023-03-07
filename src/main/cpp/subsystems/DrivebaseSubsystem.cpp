@@ -159,7 +159,7 @@ frc2::CommandPtr DrivebaseSubsystem::SetXFactory(
 ) {
   return frc2::cmd::Run([this] {
     swerveDrivebase.SetX();
-  }).Repeatedly().Until(override);
+  }).Repeatedly().Until(override).WithName("X Formation Drive");
 }
 
 frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
@@ -178,9 +178,26 @@ frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
     .ToPtr();
 }
 
-frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> wantsToOverride) {
-  return frc2::RunCommand(
-    [this]() {
+frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride) {
+  return frc2::cmd::Sequence(
+    //Set angle controller to 0
+    frc2::cmd::RunOnce([this, fromBack] {
+      if(fromBack()) {
+        thetaController.SetGoal(180_deg);
+      }
+      else {
+        thetaController.SetGoal(0_deg);
+      }
+    }),
+    //Run robot forward until tilted up
+    frc2::cmd::Run([this] {
+      double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
+      swerveDrivebase.Drive(1_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+    }).Until([this, wantsToOverride] {
+      return swerveDrivebase.GetRobotPitch() > 10_deg || wantsToOverride();
+    }).WithName("Forward Until Tilted Up"),
+    //Run robot forward until balanced
+    frc2::cmd::Run([this] {
       double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
       double pitch = swerveDrivebase.GetRobotPitch().value();
       double ySpeed = 0;
@@ -193,17 +210,16 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> wantsT
       else {
         ySpeed = 0;
       }
-      swerveDrivebase.Drive(ySpeed * 0.3_mps, 0_mps, rotCmd * 1_rad_per_s, true, false, true, true);
-    },
-    {this}
-  ).BeforeStarting([this] {thetaController.SetGoal(0_rad); })
-  .Until(
-    [this] {
+      swerveDrivebase.Drive(ySpeed * 0.3_mps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+    }).Until([this, wantsToOverride] {
+      //Stop when station is level or if we are tipping the other way
       bool isLevelEnough = std::abs(swerveDrivebase.GetRobotPitch().value()) < 3;
       bool isTipping = swerveDrivebase.GetRobotPitchRate() > 15_deg_per_s;
-      return isLevelEnough || isTipping; 
-    }
-  ).WithName("Balance Factory Command");
+      return isLevelEnough || isTipping || wantsToOverride(); 
+    }).WithName("Drive Forward Until Balanced"),
+    //Set X after to prevent sliding
+    SetXFactory(wantsToOverride)
+  );
 }
 
 void DrivebaseSubsystem::ResetOdom(

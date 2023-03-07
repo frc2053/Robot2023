@@ -14,7 +14,8 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
     {"MoveArmToStartingPosition", m_armSub->GoToPose([]{ return ArmPose::StartingConfig(); }).DeadlineWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
     {"PoopPiece", m_intakeSub->PoopGamePiece(.25_s).Unwrap()},
     {"IntakeObject", m_intakeSub->IntakeGamePiece(1_s).Unwrap()},
-    {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).DeadlineWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()}
+    {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).DeadlineWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
+    {"BalanceFromBack", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }).Unwrap()}
   };
 
   eventMap = std::make_unique<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>>(map);
