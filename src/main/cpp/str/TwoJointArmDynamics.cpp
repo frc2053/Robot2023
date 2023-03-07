@@ -78,9 +78,9 @@ void TwoJointArmDynamics::UpdateReal(units::radian_t shoulderPos, units::radian_
 }
 
 void TwoJointArmDynamics::RecreateModels() {
-  Relinearize(currentState, CalculateFeedForward(currentState));
+  //Relinearize(currentState, CalculateFeedForward(currentState));
   //frc::Matrixd<2, 4> kMatrix = DesignLQR(cSystem, {lqrQPos, lqrQPos, lqrQVel, lqrQVel}, {lqrR, lqrR}).K();
-  frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
+  //frc::Vectord<4> error = desiredState.head(4) - currentState.head(4);
   frc::Vectord<2> feedForwardResults = CalculateFeedForward(desiredState);
   ff = feedForwardResults;
   //lqrOutput = (kMatrix * error).cwiseMin(12).cwiseMax(-12);

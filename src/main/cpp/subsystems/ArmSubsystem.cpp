@@ -206,6 +206,10 @@ void ArmSubsystem::SetDesiredArmEndAffectorPosition(units::meter_t xPos, units::
   }
 }
 
+frc2::CommandPtr ArmSubsystem::PutConeOnFactory() {
+  return SetDesiredArmEndAffectorPositionFactory([this] { return GetArmEndEffectorSetpointX() >= 0_in ? GetArmEndEffectorSetpointX() - 1_in : GetArmEndEffectorSetpointX() + 1_in;}, [this] { return GetArmEndEffectorSetpointY() - 6_in; }, []{ return true; });
+}
+
 frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos, std::function<bool()> shoulderUp) {
   return frc2::WaitUntilCommand(
     [this] {

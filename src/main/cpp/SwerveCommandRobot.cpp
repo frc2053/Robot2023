@@ -7,6 +7,7 @@
 #include <str/ArmPose.h>
 #include <str/PDP.h>
 #include <frc2/command/button/Trigger.h>
+#include <frc2/command/Commands.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.SetDefaultOption("DriveToCenter", driveToCenter.get());
@@ -149,7 +150,8 @@ void SwerveCommandRobot::ConfigureBindings() {
 
 
   operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.5; }));
+  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.2; }));
+  operatorController.Start().OnTrue(armSubsystem.PutConeOnFactory());
 
   frc2::Trigger manualMoveArmTrigger{[this] {
     return std::fabs(operatorController.GetLeftX()) > .2 ||
@@ -166,7 +168,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   operatorController.B().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }));
   operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }));
 
-  operatorController.Start().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  operatorController.Back().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
