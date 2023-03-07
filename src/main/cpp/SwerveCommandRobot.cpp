@@ -170,7 +170,7 @@ void SwerveCommandRobot::ConfigureBindings() {
            std::fabs(operatorController.GetLeftY()) > .2;
   }};
 
-  manualMoveArmTrigger.WhileTrue(armSubsystem.DrivePositionFactory([this] { return -operatorController.GetLeftX(); }, [this]{ return -operatorController.GetLeftY(); }));
+  manualMoveArmTrigger.WhileTrue(armSubsystem.DrivePositionFactory([this] { return operatorController.GetLeftY(); }, [this]{ return -operatorController.GetLeftX(); }));
 
   operatorController.LeftTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }));
   operatorController.RightTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }));
