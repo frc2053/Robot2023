@@ -73,11 +73,15 @@
       "/LiveWindow/Ungrouped/class frc2::SubsystemBase": "Subsystem",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Arm Sim": "Mechanism2d",
+      "/SmartDashboard/Arm Subsystem": "Subsystem",
       "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Drive Subsystem": "Subsystem",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/FrontCamera Sim Field": "Field2d",
+      "/SmartDashboard/Intake Subsystem": "Subsystem",
       "/SmartDashboard/PPSwerveControllerCommand_field": "Field2d",
       "/SmartDashboard/Reset Drivetrain Pose": "Command",
+      "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/Set Wheel Speed": "Command",
       "/SmartDashboard/photonvision Sim Field": "Field2d"
     },
@@ -396,7 +400,7 @@
               "autoFit": true
             }
           ],
-          "height": 0,
+          "height": 212,
           "series": [
             {
               "color": [

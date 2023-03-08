@@ -77,7 +77,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   frc::TrapezoidProfile<units::radians>::Constraints arm_constraints {
     426_deg_per_s,
-    40000_deg_per_s_sq
+    20000_deg_per_s_sq
   };
 
   frc::ProfiledPIDController<units::radians> shoulderPID{1.5, 0, 0, arm_constraints};
