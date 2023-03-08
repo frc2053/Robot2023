@@ -23,6 +23,12 @@ units::degree_t str::SwerveDrivebase::GetRobotPitch() {
   return imu.GetPitch();
 }
 
+void str::SwerveDrivebase::SetRobotPitch(units::radian_t newPitch) {
+  imu.SetPitch(newPitch);
+  imu.SetPitchRate((newPitch - lastPitch) / 20_ms);
+  lastPitch = newPitch;
+}
+
 units::degrees_per_second_t str::SwerveDrivebase::GetRobotPitchRate() {
   return imu.GetPitchRate();
 }

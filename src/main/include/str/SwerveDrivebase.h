@@ -19,6 +19,7 @@ namespace str {
     SwerveDrivebase();
     frc::Rotation2d GetRobotYaw();
     units::degree_t GetRobotPitch();
+    void SetRobotPitch(units::radian_t newPitch);
     units::degrees_per_second_t GetRobotPitchRate();
     frc::Pose2d GetRobotPose() const;
     void Periodic();
@@ -103,6 +104,8 @@ namespace str {
     double m_currentRotation = 0.0;
     double m_currentTranslationDir = 0.0;
     double m_currentTranslationMag = 0.0;
+
+    units::radian_t lastPitch{0};
 
     frc::SlewRateLimiter<units::scalar> m_magLimiter{str::swerve_drive_consts::magnitudeSlewRate / 1_s};
     frc::SlewRateLimiter<units::scalar> m_rotLimiter{str::swerve_drive_consts::rotationalSlewRate / 1_s};

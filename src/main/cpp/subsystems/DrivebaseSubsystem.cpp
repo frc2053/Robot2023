@@ -20,6 +20,7 @@ DrivebaseSubsystem::DrivebaseSubsystem() {
 
   autoTrajectoryConfig.SetKinematics(swerveDrivebase.GetKinematics());
   thetaController.EnableContinuousInput(-180_deg, 180_deg);
+  frc::SmartDashboard::PutNumber("Robot Pitch", 0);
 }
 
 bool DrivebaseSubsystem::CheckIfVisionIsInited() {
@@ -98,6 +99,8 @@ void DrivebaseSubsystem::ProcessVisionData() {
 }
 
 void DrivebaseSubsystem::SimulationPeriodic() {
+  units::radian_t newPitch = units::degree_t{frc::SmartDashboard::GetNumber("Robot Pitch", 0)};
+  swerveDrivebase.SetRobotPitch(newPitch);
   swerveDrivebase.SimulationPeriodic();
   if(isVisionInited) {
     system->ProcessFrame(swerveDrivebase.GetRobotPose());
