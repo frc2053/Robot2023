@@ -180,7 +180,12 @@ void SwerveCommandRobot::ConfigureBindings() {
   operatorController.B().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }));
   operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }));
 
-  operatorController.Back().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  operatorController.Y().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  operatorController.X().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  operatorController.B().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  operatorController.A().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  operatorController.LeftTrigger().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  operatorController.RightTrigger().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
