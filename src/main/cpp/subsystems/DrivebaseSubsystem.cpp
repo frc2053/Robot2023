@@ -159,7 +159,7 @@ frc2::CommandPtr DrivebaseSubsystem::SetXFactory(
 ) {
   return frc2::cmd::Run([this] {
     swerveDrivebase.SetX();
-  }).Repeatedly().Until(override).WithName("X Formation Drive");
+  }, {this}).Repeatedly().Until(override).WithName("X Formation Drive");
 }
 
 frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
@@ -188,12 +188,12 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBa
       else {
         thetaController.SetGoal(0_deg);
       }
-    }),
+    }, {this}),
     //Run robot forward until tilted up
     frc2::cmd::Run([this] {
       double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
       swerveDrivebase.Drive(1_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
-    }).Until([this, wantsToOverride] {
+    }, {this}).Until([this, wantsToOverride] {
       return swerveDrivebase.GetRobotPitch() > 10_deg || wantsToOverride();
     }).WithName("Forward Until Tilted Up"),
     //Run robot forward until balanced
@@ -211,7 +211,7 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBa
         ySpeed = 0;
       }
       swerveDrivebase.Drive(ySpeed * 0.3_mps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
-    }).Until([this, wantsToOverride] {
+    }, {this}).Until([this, wantsToOverride] {
       //Stop when station is level or if we are tipping the other way
       bool isLevelEnough = std::abs(swerveDrivebase.GetRobotPitch().value()) < 3;
       bool isTipping = swerveDrivebase.GetRobotPitchRate() > 15_deg_per_s;
@@ -219,7 +219,7 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBa
     }).WithName("Drive Forward Until Balanced"),
     //Set X after to prevent sliding
     SetXFactory(wantsToOverride)
-  );
+  ).WithName("Balance Sequence");
 }
 
 void DrivebaseSubsystem::ResetOdom(
