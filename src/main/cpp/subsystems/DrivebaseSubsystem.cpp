@@ -195,7 +195,7 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBa
     //Run robot forward until tilted up
     frc2::cmd::Run([this] {
       double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
-      swerveDrivebase.Drive(1_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+      swerveDrivebase.Drive(2_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
     }, {this}).Until([this, wantsToOverride] {
       return swerveDrivebase.GetRobotPitch() > 10_deg || wantsToOverride();
     }).WithName("Forward Until Tilted Up"),
@@ -213,7 +213,7 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBa
       else {
         ySpeed = 0;
       }
-      swerveDrivebase.Drive(ySpeed * 0.3_mps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+      swerveDrivebase.Drive(ySpeed * .5_mps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
     }, {this}).Until([this, wantsToOverride] {
       //Stop when station is level or if we are tipping the other way
       bool isLevelEnough = std::abs(swerveDrivebase.GetRobotPitch().value()) < 3;

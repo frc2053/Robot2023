@@ -76,8 +76,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
   std::string lastRanTrajFinalPoseName{""};
 
   frc::TrapezoidProfile<units::radians>::Constraints arm_constraints {
-    426_deg_per_s,
-    20000_deg_per_s_sq
+    270_deg_per_s,
+    10000_deg_per_s_sq
   };
 
   frc::ProfiledPIDController<units::radians> shoulderPID{1.5, 0, 0, arm_constraints};
