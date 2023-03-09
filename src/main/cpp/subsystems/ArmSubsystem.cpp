@@ -151,9 +151,9 @@ void ArmSubsystem::Periodic() {
   shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
   elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
 
-  // frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
-  // shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
-  // elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
+  //frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
+  //shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
+  //elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
@@ -234,7 +234,7 @@ frc2::CommandPtr ArmSubsystem::DrivePositionFactory(std::function<double()> xJoy
     units::meters_per_second_t xSpeed = -2_fps * xJoy();
     units::meters_per_second_t ySpeed = 2_fps * yJoy();
     SetDesiredArmEndAffectorPosition(currentEndEffectorSetpointX + (xSpeed * 20_ms), currentEndEffectorSetpointY + (ySpeed * 20_ms), true);
-  }).WithName("Drive Arm With Joystick Factory");
+  }, {this}).WithName("Drive Arm With Joystick Factory");
 }
 
 frc2::CommandPtr ArmSubsystem::SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle) {
@@ -259,8 +259,9 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
   return frc2::cmd::Sequence(
     frc2::cmd::RunOnce(
       [this, trajParams] {
-        frc::DataLogManager::Log(fmt::format("Sending traj params to kairos: {}, {}", trajParams().initialState, trajParams().finalState));
-        kairos.Request(trajParams());
+        const auto& trajectoryParameters = trajParams();
+        frc::DataLogManager::Log(fmt::format("Sending traj params to kairos: {}, {}", trajectoryParameters.initialState, trajectoryParameters.finalState));
+        kairos.Request(trajectoryParameters);
       },
       {this}
     ),
@@ -271,7 +272,7 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
       }
     ),
     frc2::cmd::RunOnce(
-      [this, trajParams] {
+      [this] {
         frc::DataLogManager::Log(fmt::format("Resetting Arm Traj Timer"));
         armTrajTimer.Reset();
         armTrajTimer.Start();
@@ -283,7 +284,7 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
       frc::Vectord<6> newState = trajToFollow.Sample(timerVal);
       armSystem.SetDesiredState(frc::Vectord<6>{newState(0), newState(1), newState(2), newState(3), newState(4), newState(5)});
     },{this})
-    .Until([this, trajParams] { 
+    .Until([this] { 
       bool isTimerOver = armTrajTimer.Get() >= trajToFollow.GetTotalTime() + 0.5_s;
       return isTimerOver;
     }),
@@ -293,11 +294,11 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
       },
       {this}
     )
-  ).Unless(
+  )/*.Unless(
     [this, trajParams] {
       return (trajParams().finalState - armSystem.GetCurrentState().head(2)).norm() < 0.5; 
     }
-  ).WithName("Follow Arm Trajectory Factory");
+  )*/.WithName("Follow Arm Trajectory Factory");
 }
 
 ArmPose ArmSubsystem::GetClosestPosePreset() {
@@ -334,7 +335,7 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
       },
       poseToGoTo
     ),
-    frc2::cmd::Print("We are already at final pose!\n"),
+    frc2::cmd::None(),
     [this, poseToGoTo] {
       return hasManuallyMoved || (lastRanTrajFinalPoseName != poseToGoTo().name);
     }
@@ -344,11 +345,12 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo) {
   return FollowTrajectory(
     [this, closesetPoseToPreset, poseToGoTo] { 
-      frc::DataLogManager::Log(fmt::format("Following trajectory from {} to {}", closesetPoseToPreset().name, poseToGoTo().name));
+      const auto& closePosePreset = closesetPoseToPreset();
+      frc::DataLogManager::Log(fmt::format("Following trajectory from {} to {}", closePosePreset.name, poseToGoTo().name));
       lastRanTrajFinalPoseName = poseToGoTo().name;
       currentEndEffectorSetpointX = poseToGoTo().endEffectorPosition.X();
       currentEndEffectorSetpointY = poseToGoTo().endEffectorPosition.Y();
-      return ArmTrajectoryParams{closesetPoseToPreset().AsJointAngles(armSystem), poseToGoTo().AsJointAngles(armSystem)}; 
+      return ArmTrajectoryParams{closePosePreset.AsJointAngles(armSystem), poseToGoTo().AsJointAngles(armSystem)}; 
     }
   ).WithName("Go To Arm Pose 2 params Factory");
 }

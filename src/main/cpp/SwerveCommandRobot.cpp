@@ -165,27 +165,22 @@ void SwerveCommandRobot::ConfigureBindings() {
   operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.2; }));
   operatorController.Start().OnTrue(armSubsystem.PutConeOnFactory());
 
-  frc2::Trigger manualMoveArmTrigger{[this] {
-    return std::fabs(operatorController.GetLeftX()) > .2 ||
-           std::fabs(operatorController.GetLeftY()) > .2;
-  }};
+  // frc2::Trigger manualMoveArmTrigger{[this] {
+  //   return std::fabs(operatorController.GetLeftX()) > .2 ||
+  //          std::fabs(operatorController.GetLeftY()) > .2;
+  // }};
 
-  manualMoveArmTrigger.WhileTrue(armSubsystem.DrivePositionFactory([this] { return operatorController.GetLeftY(); }, [this]{ return -operatorController.GetLeftX(); }));
+  // manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return operatorController.GetLeftY(); }, [this]{ return -operatorController.GetLeftX(); }));
 
-  operatorController.LeftTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }));
-  operatorController.RightTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }));
+  operatorController.LeftTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
+  operatorController.RightTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
 
-  operatorController.Y().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }));
-  operatorController.X().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }));
-  operatorController.B().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }));
-  operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }));
+  operatorController.Y().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
+  operatorController.X().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
+  operatorController.B().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }).Repeatedly());
+  operatorController.A().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
 
-  operatorController.Y().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
-  operatorController.X().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
-  operatorController.B().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
-  operatorController.A().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
-  operatorController.LeftTrigger().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
-  operatorController.RightTrigger().OnFalse(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {

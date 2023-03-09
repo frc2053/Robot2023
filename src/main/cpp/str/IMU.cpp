@@ -82,7 +82,7 @@ void str::IMU::SetPitch(units::radian_t newPitch) {
 void str::IMU::SetPitchRate(units::radians_per_second_t newPitchRate) {
   if(frc::RobotBase::IsSimulation()) {
     simGyroPitchRate.Set(-units::convert<units::radians_per_second, units::degrees_per_second>(newPitchRate).to<double>());
-    frc::DataLogManager::Log("IMU rate was set to " + units::to_string(newPitchRate));
+    //frc::DataLogManager::Log("IMU rate was set to " + units::to_string(newPitchRate));
   } 
   else {
     frc::DataLogManager::Log("You tried setting the gyro rate not in simulation. This call did not do anything.");
