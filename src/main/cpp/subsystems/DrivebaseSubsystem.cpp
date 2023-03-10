@@ -186,10 +186,10 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBa
     //Set angle controller to 0
     frc2::cmd::RunOnce([this, fromBack] {
       if(fromBack()) {
-        thetaController.SetGoal(180_deg);
+        thetaController.SetGoal(180_deg + swerveDrivebase.GetDriverImuOffset());
       }
       else {
-        thetaController.SetGoal(0_deg);
+        thetaController.SetGoal(0_deg + swerveDrivebase.GetDriverImuOffset());
       }
     }, {this}),
     //Run robot forward until tilted up

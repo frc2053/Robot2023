@@ -2,6 +2,8 @@
 #include <frc/DataLogManager.h>
 #include <frc/RobotBase.h>
 #include <wpi/sendable/SendableBuilder.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 str::IMU::IMU() {
   if(frc::RobotBase::IsSimulation()) {
@@ -22,10 +24,17 @@ str::IMU::IMU() {
   }
   navxGyro.Calibrate();
   navxGyro.ZeroYaw();
+
+  
+  frc::SmartDashboard::PutData("Zero Gyro", new frc2::InstantCommand([this] {
+    ZeroYaw();
+  }));
+  
   frc::DataLogManager::Log("Finished initialization of gyro.");
 }
 
 void str::IMU::ZeroYaw() {
+  navxGyro.Calibrate();
   navxGyro.ZeroYaw();
   frc::DataLogManager::Log("Zeroed Gyro.");
 }

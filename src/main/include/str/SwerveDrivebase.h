@@ -4,7 +4,7 @@
 #include "str/IMU.h"
 #include "str/SwerveModule.h"
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
-#include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <frc/SwerveDrivePoseEstimatorFIXED.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
@@ -40,7 +40,10 @@ namespace str {
     void AddVisionMeasurementToPoseEstimator(frc::Pose2d visionMeasuredRobotPose, units::second_t timeStampWhenPicWasTaken);
     void SetDriverImuOffset(units::radian_t offset) {
       imuDriverOffset = frc::Rotation2d{offset};
-    }
+    };
+    units::radian_t GetDriverImuOffset() {
+      return imuDriverOffset.Radians();
+    };
   private:
     void LogCurrentModuleInfo(const std::array<frc::SwerveModuleState, 4>& moduleStates);
     void LogDesiredModuleInfo(const frc::SwerveModuleState& flState, const frc::SwerveModuleState& frState, const frc::SwerveModuleState& blState, const frc::SwerveModuleState& brState);
@@ -112,7 +115,7 @@ namespace str {
     double m_prevTime{wpi::Now() * 1e-6};
 
     frc::SwerveDriveKinematics<4> kinematics{flLocation, frLocation, blLocation, brLocation};
-    frc::SwerveDrivePoseEstimator<4> estimator{
+    frc::SwerveDrivePoseEstimatorFIXED<4> estimator{
       kinematics,
       imu.GetYaw(),
       {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()},

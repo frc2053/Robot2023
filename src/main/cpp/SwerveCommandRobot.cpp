@@ -79,7 +79,7 @@ void SwerveCommandRobot::ConfigureBindings() {
         double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
         return std::abs(sideCmd) * sideCmd;
     },
-    [this] { return frc::TrapezoidProfile<units::radians>::State{0_deg, 0_deg_per_s}; }, 
+    [this] { return frc::TrapezoidProfile<units::radians>::State{0_deg + driveSubsystem.swerveDrivebase.GetDriverImuOffset(), 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
     },
@@ -97,7 +97,7 @@ void SwerveCommandRobot::ConfigureBindings() {
         double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
         return std::abs(sideCmd) * sideCmd;
     },
-    [this] { return frc::TrapezoidProfile<units::radians>::State{90_deg, 0_deg_per_s}; }, 
+    [this] { return frc::TrapezoidProfile<units::radians>::State{90_deg + driveSubsystem.swerveDrivebase.GetDriverImuOffset(), 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
     },
@@ -115,7 +115,7 @@ void SwerveCommandRobot::ConfigureBindings() {
         double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
         return std::abs(sideCmd) * sideCmd;
     },
-    [this] { return frc::TrapezoidProfile<units::radians>::State{180_deg, 0_deg_per_s}; }, 
+    [this] { return frc::TrapezoidProfile<units::radians>::State{180_deg + driveSubsystem.swerveDrivebase.GetDriverImuOffset(), 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
     },
@@ -133,7 +133,7 @@ void SwerveCommandRobot::ConfigureBindings() {
         double sideCmd = frc::ApplyDeadband<double>(-driverController.GetLeftX(), 0.2);
         return std::abs(sideCmd) * sideCmd;
     },
-    [this] { return frc::TrapezoidProfile<units::radians>::State{-90_deg, 0_deg_per_s}; }, 
+    [this] { return frc::TrapezoidProfile<units::radians>::State{-90_deg + driveSubsystem.swerveDrivebase.GetDriverImuOffset(), 0_deg_per_s}; }, 
     [this] { 
       return std::abs(driverController.GetRightX()) > 0.2; 
     },
