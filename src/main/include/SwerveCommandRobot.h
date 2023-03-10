@@ -32,7 +32,7 @@ private:
   frc2::CommandPtr driveToCenter = autos.DriveToCenter();
   frc2::CommandPtr startOnEdgeScoreThenGoToCenter = autos.StartOnEdgeScoreThenGoToCenter();
   frc2::CommandPtr startOnInnerEdgeScoreThenGoToCenter = autos.StartOnInnerEdgeScoreThenGoToCenter();
-  frc2::CommandPtr startOnSlimCubeAndGoToCenter = autos.StartOnSlimCubeAndGoToCenter();
+  frc2::CommandPtr farFromLoadingZonePlaceHighGrabObjectBalance = autos.FarFromLoadingZonePlaceHighGrabObjectBalance();
 
   frc::SendableChooser<frc2::Command *> autoChooser;
 };

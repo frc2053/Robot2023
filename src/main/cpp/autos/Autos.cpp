@@ -68,6 +68,6 @@ frc2::CommandPtr autos::Autos::StartOnInnerEdgeScoreThenGoToCenter() {
   return FollowPathplannerFactory("StartOnInnerEdgeScoreThenGoToCenter", 15_fps, 4.267_mps_sq);
 }
 
-frc2::CommandPtr autos::Autos::StartOnSlimCubeAndGoToCenter() {
-  return FollowPathplannerFactory("StartOnSlimCubeAndGoToCenter", 15_fps, 4.267_mps_sq);
+frc2::CommandPtr autos::Autos::FarFromLoadingZonePlaceHighGrabObjectBalance() {
+  return FollowPathplannerFactory("FarFromLoadingZonePlaceHighGrabObjectBalance", 15_fps, 4.267_mps_sq);
 }
