@@ -210,6 +210,20 @@ frc2::CommandPtr ArmSubsystem::PutConeOnFactory() {
   return SetDesiredArmEndAffectorPositionFactory([this] { return GetArmEndEffectorSetpointX() >= 0_in ? GetArmEndEffectorSetpointX() - 1_in : GetArmEndEffectorSetpointX() + 1_in;}, [this] { return GetArmEndEffectorSetpointY() - 6_in; }, []{ return true; });
 }
 
+void ArmSubsystem::EnableTestMode() {
+  shoulderMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  elbowMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  shoulderMotor.Set(0);
+  elbowMotor.Set(0);
+}
+
+void ArmSubsystem::DisableTestMode() {
+  shoulderMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  elbowMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  shoulderMotor.Set(0);
+  elbowMotor.Set(0);
+}
+
 frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos, std::function<bool()> shoulderUp) {
   return frc2::WaitUntilCommand(
     [this] {
@@ -483,3 +497,4 @@ void ArmSubsystem::LogStateToAdvantageScope() const {
   frc::SmartDashboard::PutNumberArray("AdvantageScope/ShoulderState", shoulderState);
   frc::SmartDashboard::PutNumberArray("AdvantageScope/ElbowState", elbowState);
 }
+

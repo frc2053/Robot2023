@@ -42,6 +42,10 @@ class ArmSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams);
   frc2::CommandPtr PutConeOnFactory();
 
+  void EnableTestMode();
+  void DisableTestMode();
+
+
   const TwoJointArmDynamics& GetArmSystem() const { return armSystem; };
  private:
   void ConfigureMotors();

@@ -4,6 +4,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RepeatCommand.h>
+#include <frc2/command/RunCommand.h>
 #include <str/ArmPose.h>
 #include <str/PDP.h>
 #include <frc2/command/button/Trigger.h>
@@ -49,6 +50,14 @@ void SwerveCommandRobot::ConfigureBindings() {
       {&driveSubsystem}
     )
   );
+
+  frc::SmartDashboard::PutData("Test Mode Enable", new frc2::RunCommand([this] {
+    armSubsystem.EnableTestMode();
+  }));
+
+  frc::SmartDashboard::PutData("Test Mode Disable", new frc2::InstantCommand([this] {
+    armSubsystem.DisableTestMode();
+  }));
 
   frc::SmartDashboard::PutData(
     "Set Wheel Speed",
@@ -162,7 +171,7 @@ void SwerveCommandRobot::ConfigureBindings() {
 
 
   operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.2; }));
+  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.1; }));
   operatorController.Start().OnTrue(armSubsystem.PutConeOnFactory());
 
   // frc2::Trigger manualMoveArmTrigger{[this] {
@@ -182,7 +191,7 @@ void SwerveCommandRobot::ConfigureBindings() {
 
   armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 
-  frc2::CommandScheduler::GetInstance().Schedule(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).IgnoringDisable(true));
+  //frc2::CommandScheduler::GetInstance().Schedule(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).IgnoringDisable(true));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
