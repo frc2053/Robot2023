@@ -42,7 +42,7 @@ public:
 
   static constexpr ArmPose GroundIntakeFar() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {41.75_in, -20.0_in};
+    retVal.endEffectorPosition = {41.75_in, -22.0_in};
     retVal.fromTop = false;
     retVal.name = "GroundIntakeFar";
     return retVal;
