@@ -26,7 +26,7 @@ public:
 
   static constexpr ArmPose ScoreConeMid() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-26_in, 7.25_in};
+    retVal.endEffectorPosition = {-28.5_in, 9.25_in};
     retVal.fromTop = false;
     retVal.name = "ScoreConeMid";
     return retVal;

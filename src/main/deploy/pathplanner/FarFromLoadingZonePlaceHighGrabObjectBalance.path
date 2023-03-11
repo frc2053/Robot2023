@@ -18,7 +18,8 @@
       "stopEvent": {
         "names": [
           "MoveArmToHighPosition",
-          "PoopPiece"
+          "PoopPiece",
+          "MoveArmToGroundIntake"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -27,16 +28,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.477712704978184,
-        "y": 0.9464631451624268
+        "x": 6.6526905910954675,
+        "y": 0.9018288036576078
       },
       "prevControl": {
-        "x": 5.370890032438851,
-        "y": 1.0486745932658073
+        "x": 5.545867918556135,
+        "y": 1.0040402517609883
       },
       "nextControl": {
-        "x": 7.584535377517517,
-        "y": 0.8442516970590463
+        "x": 7.7595132636348,
+        "y": 0.7996173555542273
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -79,16 +80,9 @@
   ],
   "markers": [
     {
-      "position": 0.10909090909090909,
+      "position": 1.0000000000000013,
       "names": [
-        "MoveArmToGroundIntake"
-      ]
-    },
-    {
-      "position": 0.981818181818182,
-      "names": [
-        "IntakeObject",
-        "MoveArmToStartingPosition"
+        "IntakeObject"
       ]
     }
   ]

@@ -9,12 +9,12 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
   m_driveSub{driveSub}, m_armSub{armSub}, m_intakeSub{intakeSub} {
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> map{
-    {"MoveArmToHighPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
-    {"MoveArmToMidPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
-    {"MoveArmToStartingPosition", m_armSub->GoToPose([]{ return ArmPose::StartingConfig(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
+    {"MoveArmToHighPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
+    {"MoveArmToMidPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
+    {"MoveArmToStartingPosition", m_armSub->GoToPose([]{ return ArmPose::StartingConfig(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
     {"PoopPiece", m_intakeSub->PoopGamePiece(.25_s).Unwrap()},
-    {"IntakeObject", m_intakeSub->IntakeGamePiece(1_s).Unwrap()},
-    {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return -0.3; })).Unwrap()},
+    {"IntakeObject", m_intakeSub->IntakeGamePiece(2_s).Unwrap()},
+    {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
     {"BalanceFromBack", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }).Unwrap()}
   };
 

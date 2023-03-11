@@ -213,12 +213,18 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBa
       else {
         ySpeed = 0;
       }
-      swerveDrivebase.Drive(ySpeed * .5_mps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+      swerveDrivebase.Drive(ySpeed * 2_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
     }, {this}).Until([this, wantsToOverride] {
       //Stop when station is level or if we are tipping the other way
       bool isLevelEnough = std::abs(swerveDrivebase.GetRobotPitch().value()) < 3;
-      bool isTipping = swerveDrivebase.GetRobotPitchRate() > 15_deg_per_s;
-      return isLevelEnough || isTipping || wantsToOverride(); 
+      //bool isTipping = swerveDrivebase.GetRobotPitchRate() < -15_deg_per_s;
+      // if(isTipping) {
+      //   fmt::print("isTipping = true\n");
+      // }
+      if(isLevelEnough) {
+        fmt::print("isLevelEnough = true\n");
+      }
+      return isLevelEnough /*|| isTipping */|| wantsToOverride(); 
     }).WithName("Drive Forward Until Balanced"),
     //Set X after to prevent sliding
     SetXFactory(wantsToOverride)

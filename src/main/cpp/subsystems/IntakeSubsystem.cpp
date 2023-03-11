@@ -28,7 +28,7 @@ frc2::CommandPtr IntakeSubsystem::PoopGamePiece(units::second_t howLongToSpin) {
   return frc2::cmd::Sequence(
     frc2::cmd::RunOnce([this] {
       frc::DataLogManager::Log(fmt::format("Ejecting game object!"));
-      SetIntakeSpeed(-1);
+      SetIntakeSpeed(-.1);
     },{this}),
     frc2::cmd::Wait(howLongToSpin),
     frc2::cmd::RunOnce([this] {
