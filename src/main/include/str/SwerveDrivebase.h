@@ -19,12 +19,17 @@ namespace str {
     SwerveDrivebase();
     frc::Rotation2d GetRobotYaw();
     units::degree_t GetRobotPitch();
+    units::degree_t GetRobotRoll();
+    units::degrees_per_second_t GetRobotRollRate();
     void SetRobotPitch(units::radian_t newPitch);
     units::degrees_per_second_t GetRobotPitchRate();
     frc::Pose2d GetRobotPose() const;
     void Periodic();
     void SimulationPeriodic();
     void ResetPose(const frc::Pose2d& newPose = frc::Pose2d());
+    void ZeroYaw() {
+      imu.ZeroYaw();
+    };
     void Drive(
       units::meters_per_second_t xSpeed,
       units::meters_per_second_t ySpeed,

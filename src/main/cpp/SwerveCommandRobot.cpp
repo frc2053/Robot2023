@@ -9,6 +9,7 @@
 #include <str/PDP.h>
 #include <frc2/command/button/Trigger.h>
 #include <frc2/command/Commands.h>
+#include <str/ZeroYawCmd.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.SetDefaultOption("DriveToCenter", driveToCenter.get());
@@ -30,6 +31,8 @@ void SwerveCommandRobot::ConfigureBindings() {
   frc::SmartDashboard::PutData("Drive Subsystem", &driveSubsystem);
   frc::SmartDashboard::PutData("Arm Subsystem", &armSubsystem);
   frc::SmartDashboard::PutData("Intake Subsystem", &intakeSubsystem);
+
+  frc::SmartDashboard::PutData("Zero Yaw", new ZeroYawCmd(&driveSubsystem));
 
   frc::SmartDashboard::PutData(
     "Reset Drivetrain Pose",
@@ -170,9 +173,9 @@ void SwerveCommandRobot::ConfigureBindings() {
   // ));
 
 
-  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.1; }));
-  operatorController.Start().OnTrue(armSubsystem.PutConeOnFactory());
+  operatorController.L1().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
+  operatorController.R1().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.1; }));
+  operatorController.Options().OnTrue(armSubsystem.PutConeOnFactory());
 
   // frc2::Trigger manualMoveArmTrigger{[this] {
   //   return std::fabs(operatorController.GetLeftX()) > .2 ||
@@ -181,13 +184,13 @@ void SwerveCommandRobot::ConfigureBindings() {
 
   // manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return operatorController.GetLeftY(); }, [this]{ return -operatorController.GetLeftX(); }));
 
-  operatorController.LeftTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
-  operatorController.RightTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
+  operatorController.L2().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
+  operatorController.R2().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
 
-  operatorController.Y().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
-  operatorController.X().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
-  operatorController.B().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }).Repeatedly());
-  operatorController.A().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
+  operatorController.Triangle().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
+  operatorController.Square().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
+  operatorController.Circle().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }).Repeatedly());
+  operatorController.Cross().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
 
   armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 

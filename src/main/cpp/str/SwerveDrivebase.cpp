@@ -33,6 +33,14 @@ units::degrees_per_second_t str::SwerveDrivebase::GetRobotPitchRate() {
   return imu.GetPitchRate();
 }
 
+units::degree_t str::SwerveDrivebase::GetRobotRoll() {
+  return imu.GetRoll();
+}
+
+units::degrees_per_second_t str::SwerveDrivebase::GetRobotRollRate() {
+  return imu.GetRollRate();
+}
+
 frc::Pose2d str::SwerveDrivebase::GetRobotPose() const {
   return estimator.GetEstimatedPosition();
 }

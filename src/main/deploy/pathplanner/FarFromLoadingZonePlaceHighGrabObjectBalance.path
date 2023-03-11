@@ -28,16 +28,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.6526905910954675,
-        "y": 0.9018288036576078
+        "x": 6.709949562756269,
+        "y": 0.7873108603360066
       },
       "prevControl": {
-        "x": 5.545867918556135,
-        "y": 1.0040402517609883
+        "x": 5.603126890216936,
+        "y": 0.8895223084393872
       },
       "nextControl": {
-        "x": 7.7595132636348,
-        "y": 0.7996173555542273
+        "x": 7.816772235295602,
+        "y": 0.6850994122326262
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -70,6 +70,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
+          "MoveArmToStartingPosition",
           "BalanceFromBack"
         ],
         "executionBehavior": "sequential",

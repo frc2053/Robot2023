@@ -58,6 +58,14 @@ public:
     std::function<double()> rot_deg
   );
 
+  
+  frc::ProfiledPIDController<units::radians> thetaController{
+    str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 
+    0, 
+    str::swerve_drive_consts::GLOBAL_POSE_ROT_KD, 
+    str::swerve_drive_consts::GLOBAL_THETA_CONTROLLER_CONSTRAINTS
+  };
+
   str::SwerveDrivebase swerveDrivebase{};
   frc::TrajectoryConfig autoTrajectoryConfig{str::swerve_drive_consts::MAX_CHASSIS_SPEED_10_V, str::swerve_drive_consts::MAX_CHASSIS_ACCEL};
 private:
@@ -71,13 +79,6 @@ private:
   //Subtracting magic numbers for now because we want the controller to be more aggresive in teleop
   frc::PIDController xController{str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP + .5, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD - .1};
   frc::PIDController yController{str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP + .5, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD - .1};
-
-  frc::ProfiledPIDController<units::radians> thetaController{
-    str::swerve_drive_consts::GLOBAL_POSE_ROT_KP, 
-    0, 
-    str::swerve_drive_consts::GLOBAL_POSE_ROT_KD, 
-    str::swerve_drive_consts::GLOBAL_THETA_CONTROLLER_CONSTRAINTS
-  };
 
   bool isVisionInited{false};
 };

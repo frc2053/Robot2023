@@ -24,11 +24,6 @@ str::IMU::IMU() {
   }
   navxGyro.Calibrate();
   navxGyro.ZeroYaw();
-
-  
-  frc::SmartDashboard::PutData("Zero Gyro", new frc2::InstantCommand([this] {
-    ZeroYaw();
-  }));
   
   frc::DataLogManager::Log("Finished initialization of gyro.");
 }
@@ -47,8 +42,16 @@ units::degree_t str::IMU::GetPitch() {
   return units::degree_t{-navxGyro.GetRoll()};
 }
 
+units::degree_t str::IMU::GetRoll() {
+  return units::degree_t{-navxGyro.GetPitch()};
+}
+
 units::degrees_per_second_t str::IMU::GetPitchRate() {
   return units::degrees_per_second_t{-navxGyro.GetRawGyroY()};
+}
+
+units::degrees_per_second_t str::IMU::GetRollRate() {
+  return units::degrees_per_second_t{-navxGyro.GetRawGyroX()};
 }
 
 units::radians_per_second_t str::IMU::GetYawRate() {

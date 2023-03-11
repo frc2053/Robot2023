@@ -281,7 +281,7 @@ frc2::CommandPtr ArmSubsystem::FollowTrajectory(std::function<ArmTrajectoryParam
     ),
     frc2::cmd::WaitUntil(
       [this] {
-        frc::DataLogManager::Log(fmt::format("Waiting for traj to be generated"));
+        //frc::DataLogManager::Log(fmt::format("Waiting for traj to be generated"));
         return trajToFollow.IsGenerated();
       }
     ),

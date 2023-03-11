@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "subsystems/DrivebaseSubsystem.h"
 #include <frc2/command/button/CommandXboxController.h>
+#include <frc2/command/button/CommandPS4Controller.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandPtr.h>
@@ -21,7 +22,7 @@ public:
 
 private:
   frc2::CommandXboxController driverController{str::oi::DRIVER_CONTROLLER};
-  frc2::CommandXboxController operatorController{str::oi::OPERATOR_CONTROLLER};
+  frc2::CommandPS4Controller operatorController{str::oi::OPERATOR_CONTROLLER};
   DrivebaseSubsystem driveSubsystem;
   IntakeSubsystem intakeSubsystem;
   ArmSubsystem armSubsystem;
