@@ -10,6 +10,7 @@
 #include <memory>
 #include <photonlib/PhotonPoseEstimator.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
+#include <wpi/json.h>
 
 class DrivebaseSubsystem : public frc2::SubsystemBase {
 public:
@@ -50,6 +51,7 @@ public:
     std::function<double()> rot_deg
   );
   frc2::CommandPtr BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride);
+  frc2::CommandPtr CharacterizeDT(std::function<bool()> nextStepButton);
   void SetWheelSpeeds(units::meters_per_second_t speed);
   void ProcessVisionData();
   void ResetOdom(
@@ -81,4 +83,12 @@ private:
   frc::PIDController yController{str::swerve_drive_consts::GLOBAL_POSE_TRANS_KP + .5, 0, str::swerve_drive_consts::GLOBAL_POSE_TRANS_KD - .1};
 
   bool isVisionInited{false};
+
+  frc::Timer charTimer{};
+  units::volt_t quasistaticVolts = 0_V;
+  static constexpr auto quasistaticStep{0.25_V / 1_s};
+  units::volt_t dynamicStepVolts = 7_V;
+
+
+  wpi::json charData;
 };

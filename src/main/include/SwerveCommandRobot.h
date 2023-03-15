@@ -34,6 +34,7 @@ private:
   frc2::CommandPtr startOnEdgeScoreThenGoToCenter = autos.StartOnEdgeScoreThenGoToCenter();
   frc2::CommandPtr startOnInnerEdgeScoreThenGoToCenter = autos.StartOnInnerEdgeScoreThenGoToCenter();
   frc2::CommandPtr farFromLoadingZonePlaceHighGrabObjectBalance = autos.FarFromLoadingZonePlaceHighGrabObjectBalance();
+  frc2::CommandPtr characterizer = driveSubsystem.CharacterizeDT([this] { return driverController.GetStartButtonPressed(); });
 
   frc::SendableChooser<frc2::Command *> autoChooser;
 };

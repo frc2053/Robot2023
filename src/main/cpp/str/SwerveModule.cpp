@@ -86,6 +86,22 @@ void str::SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceS
   steerMotor.SetReference(state.angle.Radians().to<double>(), rev::CANSparkMax::ControlType::kPosition, 0);
 }
 
+void str::SwerveModule::Characterize(units::volt_t driveVoltage) {
+  frc::SwerveModuleState referenceState = frc::SwerveModuleState{1_mps, frc::Rotation2d{0_deg}};
+  frc::SwerveModuleState correctedState = referenceState;
+  correctedState.angle = referenceState.angle + frc::Rotation2d(moduleAngleOffset);
+  const frc::SwerveModuleState state = frc::SwerveModuleState::Optimize(correctedState, units::radian_t(steerMotor.GetEncoderPosition()));
+
+  if(state.speed <= 0_mps) { 
+    driveMotor.SetReference(-driveVoltage.value(), rev::CANSparkMax::ControlType::kVoltage, 0);
+  }
+  else {
+    driveMotor.SetReference(driveVoltage.value(), rev::CANSparkMax::ControlType::kVoltage, 0);
+  }
+
+  steerMotor.SetReference(state.angle.Radians().to<double>(), rev::CANSparkMax::ControlType::kPosition, 0);
+}
+
 void str::SwerveModule::ResetEncoders() {
   driveMotor.ResetDriveEncoder();
   frc::DataLogManager::Log("Reset Swerve Encoders!");

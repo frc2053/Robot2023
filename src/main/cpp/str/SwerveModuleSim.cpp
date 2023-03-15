@@ -37,6 +37,23 @@ void str::SwerveModuleSim::SimulationPeriodic(units::second_t dt) {
   turnEncoderSim.SetDistance(turnEncoderSim.GetDistance() + rotVel.value() * dt.value());
 }
 
+void str::SwerveModuleSim::Characterize(units::volt_t driveVoltage) {
+  frc::SwerveModuleState referenceState = frc::SwerveModuleState{1_mps, frc::Rotation2d{0_deg}};
+  frc::SwerveModuleState state = frc::SwerveModuleState::Optimize(referenceState, frc::Rotation2d{units::radian_t{turnEncoder.GetDistance()}});
+
+  double rotOutput = turningPIDController.Calculate(units::radian_t{turnEncoder.GetDistance()}, state.angle.Radians());
+  units::volt_t rotFeedForward = turnFF.Calculate(turningPIDController.GetSetpoint().velocity);
+
+  if(state.speed <= 0_mps) { 
+    driveMotor.SetVoltage(-driveVoltage);
+  }
+  else {
+    driveMotor.SetVoltage(driveVoltage);
+  }
+
+  turningMotor.Set(rotOutput + rotFeedForward.value());
+}
+
 frc::SwerveModuleState str::SwerveModuleSim::GetState() {
   return frc::SwerveModuleState{units::meters_per_second_t{driveEncoder.GetRate()}, frc::Rotation2d{units::radian_t{turnEncoder.GetDistance()}}};
 }

@@ -16,6 +16,7 @@
 #include <frc2/command/InstantCommand.h>
 #include <str/BalanceCommand.h>
 #include <frc2/command/Commands.h>
+#include <fstream>
 
 DrivebaseSubsystem::DrivebaseSubsystem() {
 
@@ -206,6 +207,129 @@ frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBa
     //Set X after to prevent sliding
     SetXFactory(wantsToOverride)
   ).WithName("Balance Sequence");
+}
+
+frc2::CommandPtr DrivebaseSubsystem::CharacterizeDT(std::function<bool()> nextStepButton) {
+  return frc2::cmd::Sequence(
+    //quasistatic forward
+    frc2::cmd::RunOnce([this] {
+      charTimer.Reset();
+      charTimer.Start();
+      charData["slow-forward"] = wpi::json::array();
+    }),
+    frc2::cmd::RunEnd([this] {
+      quasistaticVolts = quasistaticVolts + (quasistaticStep * 20_ms);
+      swerveDrivebase.Characterize(quasistaticVolts);
+
+      const auto& currentData = swerveDrivebase.GetCharData();
+      wpi::json dataToAdd = {
+        charTimer.Get().value(),
+        (currentData[0].driveVoltage + currentData[2].driveVoltage / 2).value(),
+        (currentData[1].driveVoltage + currentData[3].driveVoltage / 2).value(),
+        (currentData[0].drivePosition + currentData[2].drivePosition / 2).value(),
+        (currentData[1].drivePosition + currentData[3].drivePosition / 2).value(),
+        (currentData[0].driveVelocity + currentData[2].driveVelocity / 2).value(),
+        (currentData[1].driveVelocity + currentData[3].driveVelocity / 2).value(),
+        (swerveDrivebase.GetRobotYaw().Radians()).value(),
+        (swerveDrivebase.GetYawRate()).value()
+      };
+
+      charData["slow-forward"].push_back(dataToAdd);
+    }, [this] {
+      swerveDrivebase.Characterize(0_V);
+    }, {this}).Until(nextStepButton),
+    frc2::cmd::Wait(3_s),
+    //quasistatic backwards
+    frc2::cmd::RunOnce([this] {
+      charTimer.Reset();
+      charTimer.Start();
+      charData["slow-backward"] = wpi::json::array();
+      quasistaticVolts = 0_V;
+    }),
+    frc2::cmd::RunEnd([this] {
+      quasistaticVolts = quasistaticVolts + (quasistaticStep * 20_ms);
+      swerveDrivebase.Characterize(-quasistaticVolts);
+
+      const auto& currentData = swerveDrivebase.GetCharData();
+      wpi::json dataToAdd = {
+        charTimer.Get().value(),
+        (currentData[0].driveVoltage + currentData[2].driveVoltage / 2).value(),
+        (currentData[1].driveVoltage + currentData[3].driveVoltage / 2).value(),
+        (currentData[0].drivePosition + currentData[2].drivePosition / 2).value(),
+        (currentData[1].drivePosition + currentData[3].drivePosition / 2).value(),
+        (currentData[0].driveVelocity + currentData[2].driveVelocity / 2).value(),
+        (currentData[1].driveVelocity + currentData[3].driveVelocity / 2).value(),
+        (swerveDrivebase.GetRobotYaw().Radians()).value(),
+        (swerveDrivebase.GetYawRate()).value()
+      };
+
+      charData["slow-backward"].push_back(dataToAdd);
+    }, [this] {
+      swerveDrivebase.Characterize(0_V);
+    }, {this}).Until(nextStepButton),
+    frc2::cmd::Wait(3_s),
+    //dynamic forward
+    frc2::cmd::RunOnce([this] {
+      charTimer.Reset();
+      charTimer.Start();
+      charData["fast-forward"] = wpi::json::array();
+    }),
+    frc2::cmd::RunEnd([this] {
+      swerveDrivebase.Characterize(dynamicStepVolts);
+
+      const auto& currentData = swerveDrivebase.GetCharData();
+      wpi::json dataToAdd = {
+        charTimer.Get().value(),
+        (currentData[0].driveVoltage + currentData[2].driveVoltage / 2).value(),
+        (currentData[1].driveVoltage + currentData[3].driveVoltage / 2).value(),
+        (currentData[0].drivePosition + currentData[2].drivePosition / 2).value(),
+        (currentData[1].drivePosition + currentData[3].drivePosition / 2).value(),
+        (currentData[0].driveVelocity + currentData[2].driveVelocity / 2).value(),
+        (currentData[1].driveVelocity + currentData[3].driveVelocity / 2).value(),
+        (swerveDrivebase.GetRobotYaw().Radians()).value(),
+        (swerveDrivebase.GetYawRate()).value()
+      };
+
+      charData["fast-forward"].push_back(dataToAdd);
+    }, [this] {
+      swerveDrivebase.Characterize(0_V);
+    }, {this}).Until(nextStepButton),
+    frc2::cmd::Wait(3_s),
+    //dynamic backward
+    frc2::cmd::RunOnce([this] {
+      charTimer.Reset();
+      charTimer.Start();
+      charData["fast-backward"] = wpi::json::array();
+    }),
+    frc2::cmd::RunEnd([this] {
+      swerveDrivebase.Characterize(-dynamicStepVolts);
+
+      const auto& currentData = swerveDrivebase.GetCharData();
+      wpi::json dataToAdd = {
+        charTimer.Get().value(),
+        (currentData[0].driveVoltage + currentData[2].driveVoltage / 2).value(),
+        (currentData[1].driveVoltage + currentData[3].driveVoltage / 2).value(),
+        (currentData[0].drivePosition + currentData[2].drivePosition / 2).value(),
+        (currentData[1].drivePosition + currentData[3].drivePosition / 2).value(),
+        (currentData[0].driveVelocity + currentData[2].driveVelocity / 2).value(),
+        (currentData[1].driveVelocity + currentData[3].driveVelocity / 2).value(),
+        (swerveDrivebase.GetRobotYaw().Radians()).value(),
+        (swerveDrivebase.GetYawRate()).value()
+      };
+
+      charData["fast-backward"].push_back(dataToAdd);
+    }, [this] {
+      swerveDrivebase.Characterize(0_V);
+    }, {this}).Until(nextStepButton),
+    frc2::cmd::RunOnce([this] {
+      charData["sysid"] = "true";
+      charData["test"] = "Drivetrain";
+      charData["units"] = "Meters";
+      charData["unitsPerRotation"] = (str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER * std::numbers::pi).value();
+      std::ofstream outFile("charData.json");
+      outFile << charData.dump() << std::endl;
+    })
+  );
 }
 
 void DrivebaseSubsystem::ResetOdom(

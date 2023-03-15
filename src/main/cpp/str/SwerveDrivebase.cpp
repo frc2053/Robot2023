@@ -19,6 +19,10 @@ frc::Rotation2d str::SwerveDrivebase::GetRobotYaw() {
   return imu.GetYaw();
 }
 
+units::radians_per_second_t str::SwerveDrivebase::GetYawRate() {
+  return imu.GetYawRate();
+}
+
 units::degree_t str::SwerveDrivebase::GetRobotPitch() {
   return imu.GetPitch();
 }
@@ -133,6 +137,13 @@ void str::SwerveDrivebase::Periodic() {
   LogCurrentModuleInfo(moduleStates);
 }
 
+void str::SwerveDrivebase::Characterize(units::volt_t driveVoltage) {
+  flModule.Characterize(driveVoltage);
+  frModule.Characterize(driveVoltage);
+  blModule.Characterize(driveVoltage);
+  brModule.Characterize(driveVoltage);
+}
+
 void str::SwerveDrivebase::SimulationPeriodic() {
   flModule.SimulationPeriodic();
   frModule.SimulationPeriodic();
@@ -177,6 +188,39 @@ void str::SwerveDrivebase::ResetPose(const frc::Pose2d& newPose) {
   );
 
   frc::DataLogManager::Log("Reset Drivebase pose!");
+}
+
+std::vector<str::CharData> str::SwerveDrivebase::GetCharData() {
+  std::vector<str::CharData> retVal{};
+  str::CharData flData{
+    flModule.GetDriveAppliedVoltage(),
+    flModule.GetPosition().distance,
+    flModule.GetState().speed
+  };
+  retVal.push_back(flData);
+    
+  str::CharData frData{
+    frModule.GetDriveAppliedVoltage(),
+    frModule.GetPosition().distance,
+    frModule.GetState().speed
+  };
+  retVal.push_back(frData);
+    
+  str::CharData blData{
+    blModule.GetDriveAppliedVoltage(),
+    blModule.GetPosition().distance,
+    blModule.GetState().speed
+  };
+  retVal.push_back(blData);
+    
+  str::CharData brData{
+    brModule.GetDriveAppliedVoltage(),
+    brModule.GetPosition().distance,
+    brModule.GetState().speed
+  };
+  retVal.push_back(brData);
+
+  return retVal;
 }
 
 void str::SwerveDrivebase::LogCurrentModuleInfo(const std::array<frc::SwerveModuleState, 4>& moduleStates) {

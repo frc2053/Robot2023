@@ -54,6 +54,11 @@ void SwerveCommandRobot::ConfigureBindings() {
     )
   );
 
+  frc::SmartDashboard::PutData(
+    "Run Characterizer",
+    characterizer.get()
+  );
+
   frc::SmartDashboard::PutData("Test Mode Enable", new frc2::RunCommand([this] {
     armSubsystem.EnableTestMode();
   }));
@@ -154,14 +159,14 @@ void SwerveCommandRobot::ConfigureBindings() {
     }
   ));
 
-  driverController.Start().OnTrue(driveSubsystem.SetXFactory(    
-    [this] { 
-      return std::abs(driverController.GetLeftX()) > 0.2  ||
-             std::abs(driverController.GetLeftY()) > 0.2  ||
-             std::abs(driverController.GetRightX()) > 0.2 || 
-             std::abs(driverController.GetRightY()) > 0.2; 
-    }
-  ));
+  // driverController.Start().OnTrue(driveSubsystem.SetXFactory(    
+  //   [this] { 
+  //     return std::abs(driverController.GetLeftX()) > 0.2  ||
+  //            std::abs(driverController.GetLeftY()) > 0.2  ||
+  //            std::abs(driverController.GetRightX()) > 0.2 || 
+  //            std::abs(driverController.GetRightY()) > 0.2; 
+  //   }
+  // ));
 
   // driverController.LeftBumper().OnTrue(driveSubsystem.GoToPoseFactory(    
   //   [this] {

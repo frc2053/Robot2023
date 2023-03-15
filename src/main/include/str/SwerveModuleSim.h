@@ -29,6 +29,7 @@ namespace str {
     void SimulationPeriodic();
     units::ampere_t GetDriveMotorCurrent();
     units::ampere_t GetSteerMotorCurrent();
+    void Characterize(units::volt_t driveVoltage);
 
   private:
     double SimulatedVelocity(double output, double ks, double kv);

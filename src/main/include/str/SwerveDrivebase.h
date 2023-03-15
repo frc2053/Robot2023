@@ -14,10 +14,18 @@
 #include <frc/filter/SlewRateLimiter.h>
 
 namespace str {
+
+  struct CharData {
+    units::volt_t driveVoltage{0};
+    units::meter_t drivePosition{0};
+    units::meters_per_second_t driveVelocity{0};
+  };
+
   class SwerveDrivebase {
   public:
     SwerveDrivebase();
     frc::Rotation2d GetRobotYaw();
+    units::radians_per_second_t GetYawRate();
     units::degree_t GetRobotPitch();
     units::degree_t GetRobotRoll();
     units::degrees_per_second_t GetRobotRollRate();
@@ -40,6 +48,8 @@ namespace str {
       bool rateLimit
     );
     void DirectSetModuleStates(std::array<frc::SwerveModuleState, 4> states);
+    void Characterize(units::volt_t driveVoltage);
+    std::vector<CharData> GetCharData();
     void SetX();
     frc::SwerveDriveKinematics<4>& GetKinematics();
     void AddVisionMeasurementToPoseEstimator(frc::Pose2d visionMeasuredRobotPose, units::second_t timeStampWhenPicWasTaken);
