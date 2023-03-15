@@ -33,6 +33,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
   bool IsArmAtEndEffectorSetpoint() const;
   bool IsArmAtDesiredAngles() const;
   bool IsArmAtDesiredAngles(const frc::Vectord<2>& desiredState) const;
+  void SetArmChainSkipOffset(units::degree_t offset);
+  units::degree_t GetArmChainSkipOffset();
 
   frc2::CommandPtr SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos, std::function<bool()> shoulderUp);
   frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
@@ -41,6 +43,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr DrivePositionFactory(std::function<double()> xJoy, std::function<double()> yJoy);
   frc2::CommandPtr FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams);
   frc2::CommandPtr PutConeOnFactory();
+  frc2::CommandPtr ChainSkipFactory(std::function<units::degree_t()> incrementAmount);
 
   void EnableTestMode();
   void DisableTestMode();
@@ -78,6 +81,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
 
   bool hasManuallyMoved{false};
   std::string lastRanTrajFinalPoseName{""};
+
+  int chainSkipOffset{0};
 
   frc::TrapezoidProfile<units::radians>::Constraints arm_constraints {
     270_deg_per_s,

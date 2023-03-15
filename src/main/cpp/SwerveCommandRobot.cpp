@@ -189,6 +189,17 @@ void SwerveCommandRobot::ConfigureBindings() {
 
   // manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return operatorController.GetLeftY(); }, [this]{ return -operatorController.GetLeftX(); }));
 
+  frc2::Trigger offsetChainSkipDown{[this] {
+    return operatorController.POVDown(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()).GetAsBoolean();
+  }};
+
+  frc2::Trigger offsetChainSkipUp{[this] {
+    return operatorController.POVUp(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()).GetAsBoolean();
+  }};
+
+  offsetChainSkipDown.WhileTrue(armSubsystem.ChainSkipFactory([]{ return -1_deg; }));
+  offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 1_deg; }));
+
   operatorController.LeftTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
   operatorController.RightTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
 

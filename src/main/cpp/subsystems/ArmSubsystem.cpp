@@ -224,6 +224,19 @@ void ArmSubsystem::DisableTestMode() {
   elbowMotor.Set(0);
 }
 
+units::degree_t ArmSubsystem::GetArmChainSkipOffset() {
+  return str::Units::ConvertTicksToAngle(
+          chainSkipOffset, 
+          str::encoder_cprs::FALCON_CPR, 
+          str::arm_constants::elbowGearing, 
+          false
+  );
+}
+
+void ArmSubsystem::SetArmChainSkipOffset(units::degree_t offset) {
+  chainSkipOffset = ConvertElbowAngleToTicks(offset);
+}
+
 frc2::CommandPtr ArmSubsystem::SetDesiredArmEndAffectorPositionFactory(std::function<units::meter_t()> xPos, std::function<units::meter_t()> yPos, std::function<bool()> shoulderUp) {
   return frc2::WaitUntilCommand(
     [this] {
@@ -369,6 +382,12 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToP
   ).WithName("Go To Arm Pose 2 params Factory");
 }
 
+frc2::CommandPtr ArmSubsystem::ChainSkipFactory(std::function<units::degree_t()> incrementAmount) {
+  return frc2::cmd::RunOnce([this, incrementAmount] {
+    SetArmChainSkipOffset(GetArmChainSkipOffset() + incrementAmount());
+  }).WithName("ChainSkipFactory");
+}
+
 void ArmSubsystem::ConfigureMotors() {
   ctre::phoenix::motorcontrol::can::TalonFXConfiguration baseConfig;
   baseConfig.primaryPID.selectedFeedbackSensor = ctre::phoenix::motorcontrol::FeedbackDevice::IntegratedSensor;
@@ -423,7 +442,7 @@ units::radian_t ArmSubsystem::GetShoulderMotorAngle() {
 units::radian_t ArmSubsystem::GetElbowMotorAngle() {
   if(frc::RobotBase::IsReal()) {
     return str::Units::ConvertTicksToAngle(
-            elbowMotor.GetSelectedSensorPosition(), 
+            elbowMotor.GetSelectedSensorPosition() + chainSkipOffset, 
             str::encoder_cprs::FALCON_CPR, 
             str::arm_constants::elbowGearing, 
             false
