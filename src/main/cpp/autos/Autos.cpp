@@ -48,6 +48,15 @@ frc2::CommandPtr autos::Autos::FollowPathplannerFactory(
   return autoBuilder->fullAuto(autoPath);
 }
 
+frc2::CommandPtr autos::Autos::FollowPathGroup(
+  std::string pathName,
+  units::meters_per_second_t maxSpeed,
+  units::meters_per_second_squared_t maxAccel
+) {
+  std::vector<pathplanner::PathPlannerTrajectory> autoPaths = pathplanner::PathPlanner::loadPathGroup(pathName, {pathplanner::PathConstraints(maxSpeed, maxAccel)});
+  return autoBuilder->fullAuto(autoPaths);
+}
+
 frc2::CommandPtr autos::Autos::OneMForward() {
   return FollowPathplannerFactory("1MForward", 15_fps, 4.267_mps_sq);
 }
@@ -70,4 +79,16 @@ frc2::CommandPtr autos::Autos::StartOnInnerEdgeScoreThenGoToCenter() {
 
 frc2::CommandPtr autos::Autos::FarFromLoadingZonePlaceHighGrabObjectBalance() {
   return FollowPathplannerFactory("FarFromLoadingZonePlaceHighGrabObjectBalance", 15_fps, 4.267_mps_sq);
+}
+
+frc2::CommandPtr autos::Autos::ThreePiece() {
+  return FollowPathGroup("ThreePiece", 15_fps, 4.267_mps_sq);
+}
+
+frc2::CommandPtr autos::Autos::PlaceHighGoAroundBalance() {
+  return FollowPathplannerFactory("PlaceHighGoAroundBalance", 15_fps, 4.267_mps_sq);
+}
+
+frc2::CommandPtr autos::Autos::CenterCubeOverRampBalance() {
+  return FollowPathplannerFactory("CenterCubeOverRampBalance", 10_fps, 4.267_mps_sq);
 }

@@ -17,6 +17,9 @@ void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.AddOption("StartOnInnerEdgeScoreThenGoToCenter", startOnInnerEdgeScoreThenGoToCenter.get());
   autoChooser.AddOption("1 Meter Forward", oneMeterForward.get());
   autoChooser.AddOption("FarFromLoadingZonePlaceHighGrabObjectBalance", farFromLoadingZonePlaceHighGrabObjectBalance.get());
+  autoChooser.AddOption("ThreePiece", threePiece.get());
+  autoChooser.AddOption("PlaceHighGoAroundBalance", placeHighGoAroundBalance.get());
+  autoChooser.AddOption("CenterCubeOverRampBalance", centerCubeOverRampBalance.get());
   autoChooser.AddOption("TestPath", testPath.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);

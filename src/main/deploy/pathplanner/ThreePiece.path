@@ -1,0 +1,158 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.8853463793884109,
+        "y": 4.979956046868616
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.420834667756292,
+        "y": 4.73699903921547
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "MoveArmToHighPosition",
+          "PoopPiece"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.754204812757452,
+        "y": 4.581506554317457
+      },
+      "prevControl": {
+        "x": 5.549138054797849,
+        "y": 4.50376031186845
+      },
+      "nextControl": {
+        "x": 5.549138054797849,
+        "y": 4.50376031186845
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.8853463793884109,
+        "y": 4.406577508807192
+      },
+      "prevControl": {
+        "x": 2.3794179371513753,
+        "y": 4.879624744963222
+      },
+      "nextControl": {
+        "x": 1.4285872050004969,
+        "y": 3.9692548950315296
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "MoveArmToHighPosition",
+          "PoopPiece"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.831951055206458,
+        "y": 3.590241963092622
+      },
+      "prevControl": {
+        "x": 4.888294993981292,
+        "y": 5.78657331227706
+      },
+      "nextControl": {
+        "x": 6.900414171678914,
+        "y": 3.5128786414787467
+      },
+      "holonomicAngle": 137.41950921665634,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.8950646596945369,
+        "y": 3.872072091970271
+      },
+      "prevControl": {
+        "x": 4.3246347362259945,
+        "y": 6.291923888195605
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "MoveArmToHighPosition",
+          "PoopPiece"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 0.07272727272727272,
+      "names": [
+        "MoveArmToGroundIntake"
+      ]
+    },
+    {
+      "position": 0.8363636363636365,
+      "names": [
+        "IntakeObject"
+      ]
+    },
+    {
+      "position": 2.9454545454545444,
+      "names": [
+        "IntakeObject"
+      ]
+    },
+    {
+      "position": 2.327272727272726,
+      "names": [
+        "MoveArmToGroundIntake"
+      ]
+    }
+  ]
+}

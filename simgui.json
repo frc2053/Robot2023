@@ -81,8 +81,12 @@
       "/SmartDashboard/Intake Subsystem": "Subsystem",
       "/SmartDashboard/PPSwerveControllerCommand_field": "Field2d",
       "/SmartDashboard/Reset Drivetrain Pose": "Command",
+      "/SmartDashboard/Run Characterizer": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/Set Wheel Speed": "Command",
+      "/SmartDashboard/Test Mode Disable": "Command",
+      "/SmartDashboard/Test Mode Enable": "Command",
+      "/SmartDashboard/Zero Yaw": "Command",
       "/SmartDashboard/photonvision Sim Field": "Field2d"
     },
     "windows": {
@@ -359,7 +363,7 @@
               "autoFit": true
             }
           ],
-          "height": 0,
+          "height": 139,
           "series": [
             {
               "color": [
@@ -390,7 +394,10 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     },
     "Plot <1>": {
       "plots": [
