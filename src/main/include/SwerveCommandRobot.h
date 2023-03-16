@@ -18,6 +18,9 @@ public:
   void SetIntakeAsDefault();
   void InitVisionStuff();
   bool CheckIfVisionIsInited();
+  void SetArmMovedInAuto() {
+    armSubsystem.SetArmMovedInAuto();
+  }
   frc2::Command *GetAutonomousCommand();
 
 private:

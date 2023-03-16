@@ -41,6 +41,8 @@ void Robot::AutonomousInit() {
   robot.SetIntakeAsDefault();
   autonomousCommand = robot.GetAutonomousCommand();
 
+  robot.SetArmMovedInAuto();
+
   if(autonomousCommand) {
     autonomousCommand->Schedule();
   }

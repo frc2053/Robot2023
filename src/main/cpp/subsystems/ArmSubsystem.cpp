@@ -42,13 +42,15 @@ void ArmSubsystem::SimulationPeriodic() {
 void ArmSubsystem::Periodic() {
 
   if(frc::DriverStation::IsDisabled()) {
-    ResetEncoders();
-    armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
-    armSystem.SetDesiredState(armSystem.GetCurrentState());
-    const auto& fk = armSystem.CalculateForwardKinematics(armSystem.GetCurrentState());
-    currentEndEffectorSetpointX = units::meter_t{std::get<2>(fk)(0)};
-    currentEndEffectorSetpointY = units::meter_t{std::get<2>(fk)(1)};
-    tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
+    if(!armHasMovedInAuto) {
+      ResetEncoders();
+      armSystem.OverrideCurrentState(frc::Vectord<6>{GetShoulderMotorAngle().value(), GetElbowMotorAngle().value(), 0, 0, 0, 0});
+      armSystem.SetDesiredState(armSystem.GetCurrentState());
+      const auto& fk = armSystem.CalculateForwardKinematics(armSystem.GetCurrentState());
+      currentEndEffectorSetpointX = units::meter_t{std::get<2>(fk)(0)};
+      currentEndEffectorSetpointY = units::meter_t{std::get<2>(fk)(1)};
+      tester->SetPosition(currentEndEffectorSetpointX.convert<units::inch>().value() + 150, currentEndEffectorSetpointY.convert<units::inch>().value() + 150 + 31);
+    }
   }
 
   kairos.Update();

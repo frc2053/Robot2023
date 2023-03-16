@@ -48,6 +48,11 @@ class ArmSubsystem : public frc2::SubsystemBase {
   void EnableTestMode();
   void DisableTestMode();
 
+  bool armHasMovedInAuto{false};
+  void SetArmMovedInAuto() {
+    armHasMovedInAuto = true;
+  }
+
 
   const TwoJointArmDynamics& GetArmSystem() const { return armSystem; };
  private:
