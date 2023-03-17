@@ -50,7 +50,7 @@ public:
     std::function<double()> y_ft,
     std::function<double()> rot_deg
   );
-  frc2::CommandPtr BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride);
+  frc2::CommandPtr BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride, std::function<bool()> skipBalance);
   frc2::CommandPtr CharacterizeDT(std::function<bool()> nextStepButton);
   void SetWheelSpeeds(units::meters_per_second_t speed);
   void ProcessVisionData();

@@ -183,30 +183,34 @@ frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
     .ToPtr();
 }
 
-frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride) {
-  return frc2::cmd::Sequence(
-    //Set angle controller to 0
-    frc2::cmd::RunOnce([this, fromBack] {
-      if(fromBack()) {
-        thetaController.SetGoal(180_deg + swerveDrivebase.GetDriverImuOffset());
-      }
-      else {
-        thetaController.SetGoal(0_deg + swerveDrivebase.GetDriverImuOffset());
-      }
-    }, {this}),
-    //Run robot forward until tilted up
-    frc2::cmd::Run([this] {
-      double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
-      swerveDrivebase.Drive(2_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
-    }, {this}).Until([this, wantsToOverride] {
-      return swerveDrivebase.GetRobotPitch() > 10_deg || wantsToOverride();
-    }).WithName("Forward Until Tilted Up"),
-    //Run robot forward until balanced
-    BalanceCommand(this, wantsToOverride)
-    .WithName("Drive Forward Until Balanced"),
-    //Set X after to prevent sliding
-    SetXFactory(wantsToOverride)
-  ).WithName("Balance Sequence");
+frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride, std::function<bool()> skipBalance) {
+  return frc2::cmd::Either(
+    frc2::cmd::None(),
+    frc2::cmd::Sequence(
+      //Set angle controller to 0
+      frc2::cmd::RunOnce([this, fromBack] {
+        if(fromBack()) {
+          thetaController.SetGoal(180_deg + swerveDrivebase.GetDriverImuOffset());
+        }
+        else {
+          thetaController.SetGoal(0_deg + swerveDrivebase.GetDriverImuOffset());
+        }
+      }, {this}),
+      //Run robot forward until tilted up
+      frc2::cmd::Run([this] {
+        double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
+        swerveDrivebase.Drive(2_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+      }, {this}).Until([this, wantsToOverride] {
+        return swerveDrivebase.GetRobotPitch() > 10_deg || wantsToOverride();
+      }).WithName("Forward Until Tilted Up"),
+      //Run robot forward until balanced
+      BalanceCommand(this, wantsToOverride)
+      .WithName("Drive Forward Until Balanced"),
+      //Set X after to prevent sliding
+      SetXFactory(wantsToOverride)
+    ).WithName("Balance Sequence"),
+    skipBalance
+  );
 }
 
 frc2::CommandPtr DrivebaseSubsystem::CharacterizeDT(std::function<bool()> nextStepButton) {

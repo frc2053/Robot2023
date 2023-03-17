@@ -12,6 +12,9 @@
 #include <str/ZeroYawCmd.h>
 
 void SwerveCommandRobot::ConfigureBindings() {
+
+  frc::SmartDashboard::PutBoolean("Skip Balance", false);
+
   autoChooser.SetDefaultOption("DriveToCenter", driveToCenter.get());
   autoChooser.AddOption("StartOnEdgeScoreThenGoToCenter", startOnEdgeScoreThenGoToCenter.get());
   autoChooser.AddOption("StartOnInnerEdgeScoreThenGoToCenter", startOnInnerEdgeScoreThenGoToCenter.get());
@@ -159,6 +162,9 @@ void SwerveCommandRobot::ConfigureBindings() {
     },
     [this] { 
       return std::abs(driverController.GetLeftY()) > 0.2; 
+    },
+    [this] {
+      return false;
     }
   ));
 
