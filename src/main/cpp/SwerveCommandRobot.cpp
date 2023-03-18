@@ -24,6 +24,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.AddOption("PlaceHighGoAroundBalance", placeHighGoAroundBalance.get());
   autoChooser.AddOption("CenterCubeOverRampBalance", centerCubeOverRampBalance.get());
   autoChooser.AddOption("TestPath", testPath.get());
+  autoChooser.AddOption("TwoPieceOverCable", twoPieceOverCable.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 
@@ -243,7 +244,7 @@ void SwerveCommandRobot::SetDriveAsDefault() {
 }
 
 void SwerveCommandRobot::SetIntakeAsDefault() {
-  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory([] { return 0.3; }));
+  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory([] { return 0.4; }));
 }
 
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {

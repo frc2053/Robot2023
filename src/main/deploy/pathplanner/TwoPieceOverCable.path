@@ -1,0 +1,92 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.857251714503429,
+        "y": 0.501016002032004
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.8572517145034313,
+        "y": 0.501016002032004
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "MoveArmToHighPosition",
+          "PoopPiece",
+          "MoveArmToGroundIntake"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.99624442106027,
+        "y": 0.9447730324032081
+      },
+      "prevControl": {
+        "x": 5.57908487245546,
+        "y": 0.8875140607424081
+      },
+      "nextControl": {
+        "x": 5.57908487245546,
+        "y": 0.8875140607424081
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "MoveArmToStartingPosition",
+          "HoldPiece"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.857251714503429,
+        "y": 1.0306614898944086
+      },
+      "prevControl": {
+        "x": 2.7590805181610363,
+        "y": 0.501016002032004
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "MoveArmToHighPosition",
+          "PoopPiece",
+          "MoveArmToStartingPosition"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 0.8727272727272727,
+      "names": [
+        "IntakeObject"
+      ]
+    }
+  ]
+}

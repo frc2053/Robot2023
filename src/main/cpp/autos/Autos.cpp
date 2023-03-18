@@ -92,3 +92,7 @@ frc2::CommandPtr autos::Autos::PlaceHighGoAroundBalance() {
 frc2::CommandPtr autos::Autos::CenterCubeOverRampBalance() {
   return FollowPathplannerFactory("CenterCubeOverRampBalance", 10_fps, 4.267_mps_sq);
 }
+
+frc2::CommandPtr autos::Autos::TwoPieceOverCable() {
+  return FollowPathGroup("TwoPieceOverCable", 15_fps, 4.267_mps_sq);
+}
