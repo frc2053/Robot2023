@@ -13,7 +13,7 @@ IntakeSubsystem::IntakeSubsystem() {
 }
 
 void IntakeSubsystem::Periodic() {
-  
+  fmt::print("Intake Speed: {}\n", intakeMotor.Get());
 }
 
 void IntakeSubsystem::SimulationPeriodic() {
