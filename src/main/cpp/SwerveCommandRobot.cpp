@@ -207,18 +207,16 @@ void SwerveCommandRobot::ConfigureBindings() {
     return operatorController.POVUp(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()).GetAsBoolean();
   }};
 
-  offsetChainSkipDown.WhileTrue(armSubsystem.ChainSkipFactory([]{ return -1_deg; }));
-  offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 1_deg; }));
+  offsetChainSkipDown.WhileTrue(armSubsystem.ChainSkipFactory([]{ return -5_deg; }));
+  offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 5_deg; }));
 
-  operatorController.LeftTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
-  operatorController.RightTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
+  operatorController.LeftTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
+  operatorController.RightTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
 
-  operatorController.Y().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
-  operatorController.X().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
-  operatorController.B().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }).Repeatedly());
-  operatorController.A().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
-
-  armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
+  operatorController.Y().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
+  operatorController.X().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
+  operatorController.B().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }).Repeatedly());
+  operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
 
   //frc2::CommandScheduler::GetInstance().Schedule(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).IgnoringDisable(true));
 }
