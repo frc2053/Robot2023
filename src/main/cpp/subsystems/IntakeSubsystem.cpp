@@ -10,22 +10,16 @@ IntakeSubsystem::IntakeSubsystem() {
   intakeMotor.RestoreFactoryDefaults();
   intakeMotor.SetSmartCurrentLimit(20);
   intakeMotor.BurnFlash();
-  colorSensor.SetTimeout(1_s);
-  colorSensor.EnableTermination('\n');
 }
 
 void IntakeSubsystem::Periodic() {
-  char colorData[18];
-  int bytesRead = colorSensor.Read(colorData, 18);
-  fmt::print("Bytes Recieved: {}\n", bytesRead);
-  int r = 0;
-  int g = 0;
-  int b = 0;
-  sscanf(colorData + 2, "%3d", &r);
-  sscanf(colorData + 8, "%3d", &g);
-  sscanf(colorData + 14, "%3d", &b);
-  fmt::print("R: {}, G: {}, B: {}\n", r, g, b);
-  //fmt::print("Intake Speed: {}\n", intakeMotor.Get());
+  ColorSensor::RawColor color = colorSensor.GetRawColor0();
+  if(color.blue > color.red) {
+    fmt::print("We want to intake a cube!\n");
+  }
+  else {
+    fmt::print("We want to intake a cone!\n");
+  }
 }
 
 void IntakeSubsystem::SimulationPeriodic() {
