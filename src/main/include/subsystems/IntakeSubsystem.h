@@ -3,6 +3,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <str/SparkMaxWrapper.h>
 #include <frc2/command/CommandPtr.h>
+#include <frc/SerialPort.h>
 #include <constants/ArmConstants.h>
 
 class IntakeSubsystem : public frc2::SubsystemBase {
@@ -19,4 +20,5 @@ public:
     frc2::CommandPtr IntakeManualFactory(std::function<double()> speed);
 private:
     rev::CANSparkMax intakeMotor{str::intake_constants::intakeMotorCanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+    frc::SerialPort colorSensor{115200, frc::SerialPort::kMXP};
 };
