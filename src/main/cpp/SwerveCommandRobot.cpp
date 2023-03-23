@@ -39,6 +39,10 @@ void SwerveCommandRobot::ConfigureBindings() {
   frc::SmartDashboard::PutData("Arm Subsystem", &armSubsystem);
   frc::SmartDashboard::PutData("Intake Subsystem", &intakeSubsystem);
 
+  frc::SmartDashboard::PutNumber("AutoBalance/DriveSpeedFps", 1.2);
+  frc::SmartDashboard::PutNumber("AutoBalance/PitchThresholdDeg", 3);
+  frc::SmartDashboard::PutNumber("AutoBalance/PitchVelThresholdDeg", 8.0);
+
   frc::SmartDashboard::PutData("Zero Yaw", new ZeroYawCmd(&driveSubsystem));
 
   frc::SmartDashboard::PutData(
@@ -169,14 +173,13 @@ void SwerveCommandRobot::ConfigureBindings() {
     }
   ));
 
-  // driverController.Start().OnTrue(driveSubsystem.SetXFactory(    
-  //   [this] { 
-  //     return std::abs(driverController.GetLeftX()) > 0.2  ||
-  //            std::abs(driverController.GetLeftY()) > 0.2  ||
-  //            std::abs(driverController.GetRightX()) > 0.2 || 
-  //            std::abs(driverController.GetRightY()) > 0.2; 
-  //   }
-  // ));
+  driverController.Start().OnTrue(driveSubsystem.BalanceFactory(    
+    [] { return false; },
+    [this] { 
+      return std::abs(driverController.GetLeftX()) > 0.2 || std::abs(driverController.GetLeftY()) > 0.2; 
+    },
+    [] { return false; }
+  ));
 
   // driverController.LeftBumper().OnTrue(driveSubsystem.GoToPoseFactory(    
   //   [this] {

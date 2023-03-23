@@ -15,6 +15,11 @@ void BalanceCommand::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void BalanceCommand::Execute() {
+
+  driveSpeed = units::feet_per_second_t{frc::SmartDashboard::GetNumber("AutoBalance/DriveSpeedFps", 1.2)};
+  pitchThreshhold = units::degree_t{frc::SmartDashboard::GetNumber("AutoBalance/PitchThresholdDeg", 3)};
+  pitchVelThreshold = units::degrees_per_second_t{frc::SmartDashboard::GetNumber("AutoBalance/PitchVelThresholdDeg", 8.0)};
+
   double rotCmd = m_drivebaseSubsystem->thetaController.Calculate(m_drivebaseSubsystem->swerveDrivebase.GetRobotYaw().Radians());
   pitch = m_drivebaseSubsystem->swerveDrivebase.GetRobotPitch();
   pitchRate = m_drivebaseSubsystem->swerveDrivebase.GetRobotPitchRate();
@@ -30,7 +35,7 @@ void BalanceCommand::Execute() {
 
   fmt::print("Angle Degrees: {}, Angle Vel: {}\n", angleDegrees.value(), angleVel.value());
 
-  bool shouldStop = (angleDegrees < 0.0_deg && angleVel > 8_deg_per_s) || (angleDegrees > 0.0_deg && angleVel < -8_deg_per_s);
+  bool shouldStop = (angleDegrees < 0.0_deg && angleVel > pitchVelThreshold) || (angleDegrees > 0.0_deg && angleVel < -pitchVelThreshold);
 
   fmt::print("Should Stop: {}\n", shouldStop);
 
@@ -38,7 +43,7 @@ void BalanceCommand::Execute() {
     m_drivebaseSubsystem->swerveDrivebase.Drive(0_mps, 0_mps, 0_deg_per_s, false, false, true, true);
   }
   else {
-    m_drivebaseSubsystem->swerveDrivebase.Drive(2_fps * (angleDegrees > 0.0_deg ? -1.0 : 1.0), 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+    m_drivebaseSubsystem->swerveDrivebase.Drive(driveSpeed * (angleDegrees > 0.0_deg ? -1.0 : 1.0), 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
   }
 }
 
@@ -47,7 +52,7 @@ void BalanceCommand::End(bool interrupted) {}
 
 // Returns true when the command should end.
 bool BalanceCommand::IsFinished() {
-  bool angleIsInBalanceZone = units::math::abs(angleDegrees) < 3_deg;
+  bool angleIsInBalanceZone = units::math::abs(angleDegrees) < pitchThreshhold;
   fmt::print("Angle in balance zone: {}\n", angleIsInBalanceZone);
   return angleIsInBalanceZone || overrideDrive();
 }
