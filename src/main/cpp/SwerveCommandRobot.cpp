@@ -191,8 +191,8 @@ void SwerveCommandRobot::ConfigureBindings() {
   // ));
 
 
-  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.1; }));
+  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 1.0; }));
+  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return -1.0; }));
   operatorController.Back().OnTrue(armSubsystem.PutConeOnFactory());
 
   // frc2::Trigger manualMoveArmTrigger{[this] {
@@ -245,7 +245,8 @@ void SwerveCommandRobot::SetDriveAsDefault() {
 }
 
 void SwerveCommandRobot::SetIntakeAsDefault() {
-  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory([] { return 0.4; }));
+  //TODO: Not sure if needed with new intake
+  //intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory([] { return 0.4; }));
 }
 
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {

@@ -9,14 +9,17 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
   m_driveSub{driveSub}, m_armSub{armSub}, m_intakeSub{intakeSub} {
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> map{
-    {"MoveArmToHighPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
-    {"MoveArmToMidPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
-    {"MoveArmToStartingPosition", m_armSub->GoToPose([]{ return ArmPose::StartingConfig(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
-    {"PoopPiece", m_intakeSub->PoopGamePiece(.25_s).Unwrap()},
-    {"IntakeObject", m_intakeSub->IntakeGamePiece(2_s).Unwrap()},
-    {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
+    {"MoveArmToHighPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
+    {"MoveArmToMidPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
+    {"MoveArmToStartingPosition", m_armSub->GoToPose([]{ return ArmPose::StartingConfig(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
+    {"PoopCone", m_intakeSub->PoopCone(.25_s).Unwrap()},
+    {"PoopCube", m_intakeSub->PoopCube(.25_s).Unwrap()},
+    {"IntakeCone", m_intakeSub->IntakeCone(2_s).Unwrap()},
+    {"IntakeCube", m_intakeSub->IntakeCube(2_s).Unwrap()},
+    {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
     {"BalanceFromBack", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }, [this] { return frc::SmartDashboard::GetBoolean("Skip Balance", false); }).Unwrap()},
-    {"HoldPiece", frc2::cmd::RunOnce([this] { m_intakeSub->SetIntakeSpeed(0.4); }, {m_intakeSub}).Unwrap()}
+    {"HoldCone", frc2::cmd::RunOnce([this] { m_intakeSub->SpinIntakeForCone(0.4); }, {m_intakeSub}).Unwrap()},
+    {"HoldCube", frc2::cmd::RunOnce([this] { m_intakeSub->SpinIntakeForCube(0.4); }, {m_intakeSub}).Unwrap()},
   };
 
   eventMap = std::make_unique<std::unordered_map<std::string, std::shared_ptr<frc2::Command>>>(map);

@@ -18,7 +18,7 @@
       "stopEvent": {
         "names": [
           "MoveArmToHighPosition",
-          "PoopPiece"
+          "PoopCone"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -71,7 +71,7 @@
       "stopEvent": {
         "names": [
           "MoveArmToHighPosition",
-          "PoopPiece"
+          "PoopCube"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -147,8 +147,11 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "MoveArmToHighPosition",
+          "PoopCone"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -164,13 +167,13 @@
     {
       "position": 0.8727272727272728,
       "names": [
-        "IntakeObject"
+        "IntakeCube"
       ]
     },
     {
       "position": 2.9454545454545444,
       "names": [
-        "IntakeObject"
+        "IntakeCone"
       ]
     },
     {
@@ -182,13 +185,13 @@
     {
       "position": 1.0545454545454547,
       "names": [
-        "HoldPiece"
+        "HoldCube"
       ]
     },
     {
       "position": 3.127272727272722,
       "names": [
-        "HoldPiece"
+        "HoldCone"
       ]
     }
   ]

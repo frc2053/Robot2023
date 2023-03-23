@@ -12,13 +12,21 @@ public:
 
     void Periodic() override;
     void SimulationPeriodic() override;
-    void SetIntakeSpeed(double speed);
+    void SpinIntakeForCone(double speed);
+    void SpinIntakeForCube(double speed);
 
-    frc2::CommandPtr PoopGamePiece(units::second_t howLongToSpin);
-    frc2::CommandPtr IntakeGamePiece(units::second_t howLongToSpin);
-    frc2::CommandPtr IntakeCurrentLimitFactory(double speed);
-    frc2::CommandPtr IntakeManualFactory(std::function<double()> speed);
+    frc2::CommandPtr PoopCone(units::second_t howLongToSpin);
+    frc2::CommandPtr PoopCube(units::second_t howLongToSpin);
+    frc2::CommandPtr IntakeCone(units::second_t howLongToSpin);
+    frc2::CommandPtr IntakeCube(units::second_t howLongToSpin);
+    frc2::CommandPtr IntakeCurrentLimitCubeFactory();
+    frc2::CommandPtr IntakeCurrentLimitConeFactory();
+    frc2::CommandPtr IntakeManualCubeFactory(std::function<double()> speed);
+    frc2::CommandPtr IntakeManualConeFactory(std::function<double()> speed);
+    frc2::CommandPtr IntakeManualBasedOnColorFactory(std::function<double()> speed);
 private:
-    rev::CANSparkMax intakeMotor{str::intake_constants::intakeMotorCanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+    rev::CANSparkMax intakeMotor1{str::intake_constants::intakeMotor1CanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+    rev::CANSparkMax intakeMotor2{str::intake_constants::intakeMotor2CanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     ColorSensor colorSensor;
+    bool colorSensorSeesCone{false};
 };
