@@ -21,11 +21,10 @@ public:
 
   void ThreadMain() {
     frc::SerialPort colorSensor{115200, frc::SerialPort::kMXP};
-    colorSensor.SetTimeout(1_s);
-    colorSensor.EnableTermination('\n');  char colorData[18];
+    colorSensor.EnableTermination('\n');  
+    char colorData[18];
     while(threadRunning.load()) {
       int bytesRead = colorSensor.Read(colorData, 18);
-
       if(bytesRead <= 0) {
         std::scoped_lock lock{mutex};
         continue;
