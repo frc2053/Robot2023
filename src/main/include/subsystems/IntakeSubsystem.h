@@ -30,6 +30,4 @@ private:
     rev::CANSparkMax intakeMotor2{str::intake_constants::intakeMotor2CanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     ColorSensor colorSensor;
     bool colorSensorSeesCone{false};
-    frc::AddressableLED leds{9};
-    std::array<frc::AddressableLED::LEDData, 96> ledBuffer;
 };

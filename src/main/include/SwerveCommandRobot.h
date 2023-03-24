@@ -10,6 +10,7 @@
 #include <autos/Autos.h>
 #include "subsystems/ArmSubsystem.h"
 #include "subsystems/IntakeSubsystem.h"
+#include "subsystems/LedSubsystem.h"
 
 class SwerveCommandRobot {
 public:
@@ -29,6 +30,7 @@ private:
   DrivebaseSubsystem driveSubsystem;
   IntakeSubsystem intakeSubsystem;
   ArmSubsystem armSubsystem;
+  LedSubsystem ledSubsystem;
   autos::Autos autos{&driveSubsystem, &armSubsystem, &intakeSubsystem};
 
   frc2::CommandPtr oneMeterForward = autos.OneMForward();

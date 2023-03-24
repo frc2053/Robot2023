@@ -13,12 +13,6 @@ IntakeSubsystem::IntakeSubsystem() {
   intakeMotor2.SetSmartCurrentLimit(20);
   intakeMotor1.BurnFlash();
   intakeMotor2.BurnFlash();
-  leds.SetLength(96);
-  for(int i = 0; i < 96; i++) {
-    ledBuffer[i].SetRGB(255, 0, 0);
-  }
-  leds.SetData(ledBuffer);
-  leds.Start();
 }
 
 void IntakeSubsystem::Periodic() {

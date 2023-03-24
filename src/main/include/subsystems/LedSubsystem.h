@@ -1,0 +1,27 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+#pragma once
+
+#include <frc2/command/SubsystemBase.h>
+#include "str/LedStrip.h"
+
+class LedSubsystem : public frc2::SubsystemBase {
+ public:
+  LedSubsystem();
+
+  /**
+   * Will be called periodically whenever the CommandScheduler runs.
+   */
+  void Periodic() override;
+	frc2::CommandPtr SetSectionToColor(std::function<int()> section, std::function<double()> r, std::function<double()> g, std::function<double()> b);
+	frc2::CommandPtr SetSectionToRainbow(std::function<int()> section);
+	frc2::CommandPtr SetSectionToFade(std::function<int()> section, std::function<double()> r, std::function<double()> g, std::function<double()> b);
+	frc2::CommandPtr SetSectionToTachometer(std::function<int()> section, std::function<double()> speed, std::function<double()> maxSpeed);
+	frc2::CommandPtr SetSectionToKnightRider(std::function<int()> section, std::function<double()> r, std::function<double()> g, std::function<double()> b);
+	frc2::CommandPtr SetSectionToChase(std::function<int()> section, std::function<double()> r, std::function<double()> g, std::function<double()> b);
+  frc2::CommandPtr SetSectionToBlink(std::function<int()> section, std::function<double()> r, std::function<double()> g, std::function<double()> b, std::function<units::second_t()> onTime, std::function<units::second_t()> offTime);
+ private:
+  LedStrip ledStrip{};
+};
