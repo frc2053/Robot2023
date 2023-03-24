@@ -19,16 +19,20 @@ void IntakeSubsystem::Periodic() {
   ColorSensor::RawColor color = colorSensor.GetRawColor0();
   if(color.blue > color.red) {
     colorSensorSeesCone = false;
-    fmt::print("We want to intake a cube!\n");
+    //fmt::print("We want to intake a cube!\n");
   }
   else {
     colorSensorSeesCone = true;
-    fmt::print("We want to intake a cone!\n");
+    //fmt::print("We want to intake a cone!\n");
   }
 }
 
 void IntakeSubsystem::SimulationPeriodic() {
 
+}
+
+bool IntakeSubsystem::DoesColorSensorSeeCone() {
+  return colorSensorSeesCone;
 }
 
 void IntakeSubsystem::SpinIntakeForCube(double speed) {

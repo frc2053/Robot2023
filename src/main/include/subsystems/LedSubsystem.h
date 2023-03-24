@@ -22,6 +22,9 @@ class LedSubsystem : public frc2::SubsystemBase {
 	frc2::CommandPtr SetSectionToKnightRider(std::function<int()> section, std::function<double()> r, std::function<double()> g, std::function<double()> b);
 	frc2::CommandPtr SetSectionToChase(std::function<int()> section, std::function<double()> r, std::function<double()> g, std::function<double()> b);
   frc2::CommandPtr SetSectionToBlink(std::function<int()> section, std::function<double()> r, std::function<double()> g, std::function<double()> b, std::function<units::second_t()> onTime, std::function<units::second_t()> offTime);
+  frc2::CommandPtr SetBothToBlinkYellow();
+  frc2::CommandPtr SetBothToBlinkPurple();
+  frc2::CommandPtr SetBothToSolidGreen();
  private:
   LedStrip ledStrip{};
 };

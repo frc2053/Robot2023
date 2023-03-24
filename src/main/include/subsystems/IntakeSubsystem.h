@@ -15,6 +15,7 @@ public:
     void SimulationPeriodic() override;
     void SpinIntakeForCone(double speed);
     void SpinIntakeForCube(double speed);
+    bool DoesColorSensorSeeCone();
 
     frc2::CommandPtr PoopCone(units::second_t howLongToSpin);
     frc2::CommandPtr PoopCube(units::second_t howLongToSpin);

@@ -191,7 +191,12 @@ void SwerveCommandRobot::ConfigureBindings() {
   // ));
 
 
-  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 1.0; }));
+  operatorController.LeftBumper().WhileTrue(
+    intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 1.0; })
+    .AlongWith(
+      frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
+    )
+  );
   operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return -1.0; }));
   operatorController.Back().OnTrue(armSubsystem.PutConeOnFactory());
 
@@ -220,6 +225,8 @@ void SwerveCommandRobot::ConfigureBindings() {
   operatorController.X().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
   operatorController.B().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }).Repeatedly());
   operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
+
+  ledSubsystem.SetDefaultCommand(ledSubsystem.SetBothToSolidGreen());
 
   //frc2::CommandScheduler::GetInstance().Schedule(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).IgnoringDisable(true));
 }
