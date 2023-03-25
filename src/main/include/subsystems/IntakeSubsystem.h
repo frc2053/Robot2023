@@ -3,7 +3,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <str/SparkMaxWrapper.h>
 #include <frc2/command/CommandPtr.h>
-#include <str/ColorSensor.h>
+#include <str/PicoColorSensor.h>
 #include <constants/ArmConstants.h>
 #include <frc/AddressableLED.h>
 
@@ -29,6 +29,6 @@ public:
 private:
     rev::CANSparkMax intakeMotor1{str::intake_constants::intakeMotor1CanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     rev::CANSparkMax intakeMotor2{str::intake_constants::intakeMotor2CanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-    ColorSensor colorSensor;
+    pico::ColorSensor colorSensor;
     bool colorSensorSeesCone{false};
 };

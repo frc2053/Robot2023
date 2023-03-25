@@ -192,13 +192,20 @@ void SwerveCommandRobot::ConfigureBindings() {
 
 
   operatorController.LeftBumper().WhileTrue(
-    intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 1.0; })
+    intakeSubsystem.IntakeCurrentLimitCubeFactory()
     .AlongWith(
       frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
     )
   );
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return -1.0; }));
-  operatorController.Back().OnTrue(armSubsystem.PutConeOnFactory());
+  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualCubeFactory([] { return -1; }));
+  operatorController.Back().WhileTrue(
+    intakeSubsystem.IntakeCurrentLimitConeFactory()
+    .AlongWith(
+      frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
+    )
+  );
+
+  operatorController.Start().WhileTrue(intakeSubsystem.IntakeManualConeFactory([] { return -1; }));
 
   // frc2::Trigger manualMoveArmTrigger{[this] {
   //   return std::fabs(operatorController.GetLeftX()) > .2 ||

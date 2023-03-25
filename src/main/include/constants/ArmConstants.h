@@ -45,7 +45,7 @@ namespace str {
     namespace intake_constants {
         static constexpr int intakeMotor1CanId = 12;
         static constexpr int intakeMotor2CanId = 13;
-        static constexpr double maxAmpsCube = 5.0;
-        static constexpr double maxAmpsCone = 5.0;
+        static constexpr double maxAmpsCube = 35.0;
+        static constexpr double maxAmpsCone = 35.0;
     }
 }

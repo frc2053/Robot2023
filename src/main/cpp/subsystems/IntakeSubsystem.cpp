@@ -5,26 +5,43 @@
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/Commands.h>
 #include <constants/ArmConstants.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 IntakeSubsystem::IntakeSubsystem() {
   intakeMotor1.RestoreFactoryDefaults();
   intakeMotor2.RestoreFactoryDefaults();
-  intakeMotor1.SetSmartCurrentLimit(20);
-  intakeMotor2.SetSmartCurrentLimit(20);
+  intakeMotor1.SetSmartCurrentLimit(30);
+  intakeMotor2.SetSmartCurrentLimit(30);
+  intakeMotor1.SetOpenLoopRampRate(.25);
+  intakeMotor2.SetOpenLoopRampRate(.25);
+  intakeMotor1.SetInverted(false);
+  intakeMotor2.SetInverted(false);
   intakeMotor1.BurnFlash();
   intakeMotor2.BurnFlash();
 }
 
 void IntakeSubsystem::Periodic() {
-  ColorSensor::RawColor color = colorSensor.GetRawColor0();
-  if(color.blue > color.red) {
-    colorSensorSeesCone = false;
-    //fmt::print("We want to intake a cube!\n");
-  }
-  else {
-    colorSensorSeesCone = true;
-    //fmt::print("We want to intake a cone!\n");
-  }
+  auto color0 = colorSensor.GetRawColor0();
+  auto color1 = colorSensor.GetRawColor1();
+  // fmt::print("Is color0 connected: {}\n", colorSensor.IsSensor0Connected());
+  // fmt::print("Is color1 connected: {}\n", colorSensor.IsSensor1Connected());
+  // fmt::print("color0: {} {} {}\n", color0.red, color0.green, color0.blue);
+  // fmt::print("color1: {} {} {}\n", color1.red, color1.green, color1.blue);
+  // fmt::print("prox0: {}\n", colorSensor.GetProximity0());
+  // fmt::print("prox1: {}\n", colorSensor.GetProximity1());
+  // fmt::print("timestamp: {}\n", colorSensor.GetLastReadTimestamp().value());
+  // pico::ColorSensor::RawColor color = colorSensor.GetRawColor0();
+  // if(color.blue > color.red) {
+  //   colorSensorSeesCone = false;
+  //   //fmt::print("We want to intake a cube!\n");
+  // }
+  // else {
+  //   colorSensorSeesCone = true;
+  //   //fmt::print("We want to intake a cone!\n");
+  // }
+
+  frc::SmartDashboard::PutNumber("Intake 1 Current", intakeMotor1.GetOutputCurrent());
+  frc::SmartDashboard::PutNumber("Intake 2 Current", intakeMotor2.GetOutputCurrent());
 }
 
 void IntakeSubsystem::SimulationPeriodic() {
@@ -37,12 +54,12 @@ bool IntakeSubsystem::DoesColorSensorSeeCone() {
 
 void IntakeSubsystem::SpinIntakeForCube(double speed) {
   intakeMotor1.Set(speed);
-  intakeMotor2.Set(speed * -1);
+  intakeMotor2.Set(speed);
 }
 
 void IntakeSubsystem::SpinIntakeForCone(double speed) {
-  intakeMotor1.Set(speed);
-  intakeMotor2.Set(speed);
+  intakeMotor1.Set(-speed);
+  intakeMotor2.Set(-speed);
 }
 
 frc2::CommandPtr IntakeSubsystem::PoopCone(units::second_t howLongToSpin) {
@@ -104,7 +121,7 @@ frc2::CommandPtr IntakeSubsystem::IntakeCube(units::second_t howLongToSpin) {
 frc2::CommandPtr IntakeSubsystem::IntakeCurrentLimitCubeFactory() {
    return frc2::RunCommand(
     [this]() {
-      SpinIntakeForCube(1);
+      SpinIntakeForCube(.3);
     },
     {this}
   ).Until([this] {
