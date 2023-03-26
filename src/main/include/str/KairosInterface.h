@@ -69,7 +69,7 @@ public:
         isConnected = true;
       }
     }
-    frc::SmartDashboard::PutBoolean("Kairos Connected", isConnected);
+    frc::SmartDashboard::PutBoolean("Superstructure/Kairos Connected", isConnected);
 
     if(resultRecieved) {
       return;

@@ -11,8 +11,8 @@
 
 str::SwerveDrivebase::SwerveDrivebase() {
   ResetPose(frc::Pose2d{1.73_m,.39_m,frc::Rotation2d{0_deg}});
-  frc::SmartDashboard::PutData("IMU", &imu);
-  frc::SmartDashboard::PutData("Field", str::Field::GetInstance().GetField());
+  frc::SmartDashboard::PutData("Drivetrain/IMU", &imu);
+  frc::SmartDashboard::PutData("Drivetrain/Field", str::Field::GetInstance().GetField());
 }
 
 frc::Rotation2d str::SwerveDrivebase::GetRobotYaw() {

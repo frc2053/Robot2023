@@ -22,15 +22,11 @@ IntakeSubsystem::IntakeSubsystem() {
 
 void IntakeSubsystem::Periodic() {
   auto color0 = colorSensor.GetRawColor0();
-  auto color1 = colorSensor.GetRawColor1();
-  // fmt::print("Is color0 connected: {}\n", colorSensor.IsSensor0Connected());
-  // fmt::print("Is color1 connected: {}\n", colorSensor.IsSensor1Connected());
-  // fmt::print("color0: {} {} {}\n", color0.red, color0.green, color0.blue);
-  // fmt::print("color1: {} {} {}\n", color1.red, color1.green, color1.blue);
-  // fmt::print("prox0: {}\n", colorSensor.GetProximity0());
-  // fmt::print("prox1: {}\n", colorSensor.GetProximity1());
-  // fmt::print("timestamp: {}\n", colorSensor.GetLastReadTimestamp().value());
-  // pico::ColorSensor::RawColor color = colorSensor.GetRawColor0();
+  frc::SmartDashboard::PutNumber("Intake/ColorSensor/Connected", colorSensor.IsSensor0Connected());
+  frc::SmartDashboard::PutNumber("Intake/ColorSensor/R", color0.red);
+  frc::SmartDashboard::PutNumber("Intake/ColorSensor/G", color0.green);
+  frc::SmartDashboard::PutNumber("Intake/ColorSensor/B", color0.blue);
+  frc::SmartDashboard::PutNumber("Intake/ColorSensor/Prox", colorSensor.GetProximity0());
   // if(color.blue > color.red) {
   //   colorSensorSeesCone = false;
   //   //fmt::print("We want to intake a cube!\n");
@@ -40,8 +36,8 @@ void IntakeSubsystem::Periodic() {
   //   //fmt::print("We want to intake a cone!\n");
   // }
 
-  frc::SmartDashboard::PutNumber("Intake 1 Current", intakeMotor1.GetOutputCurrent());
-  frc::SmartDashboard::PutNumber("Intake 2 Current", intakeMotor2.GetOutputCurrent());
+  frc::SmartDashboard::PutNumber("Intake/Motor1Current", intakeMotor1.GetOutputCurrent());
+  frc::SmartDashboard::PutNumber("Intake/Motor2Current", intakeMotor2.GetOutputCurrent());
 }
 
 void IntakeSubsystem::SimulationPeriodic() {
