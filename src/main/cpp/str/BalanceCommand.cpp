@@ -27,13 +27,19 @@ void BalanceCommand::Execute() {
   roll = m_drivebaseSubsystem->swerveDrivebase.GetRobotRoll();
   rollRate = m_drivebaseSubsystem->swerveDrivebase.GetRobotRollRate();
 
-  fmt::print("Roll: {}, Pitch: {}, Yaw: {}\n", roll.value(), pitch.value(), robotYaw.Degrees().value());
-  fmt::print("Roll Rate: {}, Pitch Rate: {}\n", rollRate.value(), pitchRate.value());
+
+  frc::SmartDashboard::PutNumber("AutoBalance/CurrentRoll", roll.value());
+  frc::SmartDashboard::PutNumber("AutoBalance/CurrentPitch", pitch.value());
+  frc::SmartDashboard::PutNumber("AutoBalance/CurrentYaw", robotYaw.Degrees().value());
+
+  frc::SmartDashboard::PutNumber("AutoBalance/CurrentRollRate", rollRate.value());
+  frc::SmartDashboard::PutNumber("AutoBalance/CurrentRollRate", pitchRate.value());
 
   angleDegrees = robotYaw.Cos() * pitch + robotYaw.Sin() * roll;
   units::degrees_per_second_t angleVel = robotYaw.Cos() * pitchRate + robotYaw.Sin() * rollRate;
 
-  fmt::print("Angle Degrees: {}, Angle Vel: {}\n", angleDegrees.value(), angleVel.value());
+  frc::SmartDashboard::PutNumber("AutoBalance/CurrentAngleDegrees", angleDegrees.value());
+  frc::SmartDashboard::PutNumber("AutoBalance/CurrentAngleRate", angleVel.value());
 
   bool shouldStop = (angleDegrees < 0.0_deg && angleVel > pitchVelThreshold) || (angleDegrees > 0.0_deg && angleVel < -pitchVelThreshold);
 
