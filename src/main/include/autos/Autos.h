@@ -27,6 +27,7 @@ public:
   frc2::CommandPtr PlaceHighGoAroundBalance();
   frc2::CommandPtr CenterCubeOverRampBalance();
   frc2::CommandPtr TwoPieceOverCable();
+  frc2::CommandPtr TwoPieceBalanceSmoothSide();
 private:
   DrivebaseSubsystem* m_driveSub;
   ArmSubsystem* m_armSub;

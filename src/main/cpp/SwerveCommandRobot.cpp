@@ -25,6 +25,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.AddOption("CenterCubeOverRampBalance", centerCubeOverRampBalance.get());
   autoChooser.AddOption("TestPath", testPath.get());
   autoChooser.AddOption("TwoPieceOverCable", twoPieceOverCable.get());
+  autoChooser.AddOption("TwoPieceBalanceSmoothSide", twoPieceBalanceSmoothSide.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 
@@ -162,23 +163,18 @@ void SwerveCommandRobot::ConfigureBindings() {
   )));
 
   driverController.Back().OnTrue(driveSubsystem.BalanceFactory(
-    [this] {
-      return true;
+    [] {
+      return false;
     },
     [this] { 
       return std::abs(driverController.GetLeftY()) > 0.2; 
     },
-    [this] {
+    [] {
       return false;
-    }
-  ));
-
-  driverController.Start().OnTrue(driveSubsystem.BalanceFactory(    
-    [] { return false; },
-    [this] { 
-      return std::abs(driverController.GetLeftX()) > 0.2 || std::abs(driverController.GetLeftY()) > 0.2; 
     },
-    [] { return false; }
+    [] {
+      return 0_deg;
+    }
   ));
 
   // driverController.LeftBumper().OnTrue(driveSubsystem.GoToPoseFactory(    

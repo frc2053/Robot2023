@@ -14,10 +14,11 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
     {"MoveArmToStartingPosition", m_armSub->GoToPose([]{ return ArmPose::StartingConfig(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
     {"PoopCone", m_intakeSub->PoopCone(.25_s).Unwrap()},
     {"PoopCube", m_intakeSub->PoopCube(.25_s).Unwrap()},
-    {"IntakeCone", m_intakeSub->IntakeCone(2_s).Unwrap()},
-    {"IntakeCube", m_intakeSub->IntakeCube(2_s).Unwrap()},
+    {"IntakeCone", m_intakeSub->IntakeCurrentLimitConeFactory().Unwrap()},
+    {"IntakeCube", m_intakeSub->IntakeCurrentLimitCubeFactory().Unwrap()},
     {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
-    {"BalanceFromBack", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }, [this] { return frc::SmartDashboard::GetBoolean("Skip Balance", false); }).Unwrap()},
+    {"BalanceFromBack", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }, [this] { return frc::SmartDashboard::GetBoolean("Skip Balance", false); }, [] { return 0_deg; }).Unwrap()},
+    {"BalanceFromFrontReverse", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }, [this] { return frc::SmartDashboard::GetBoolean("Skip Balance", false); }, [] { return 180_deg; }).Unwrap()},
     {"HoldCone", frc2::cmd::RunOnce([this] { m_intakeSub->SpinIntakeForCone(0.4); }, {m_intakeSub}).Unwrap()},
     {"HoldCube", frc2::cmd::RunOnce([this] { m_intakeSub->SpinIntakeForCube(0.4); }, {m_intakeSub}).Unwrap()},
   };
@@ -99,4 +100,8 @@ frc2::CommandPtr autos::Autos::CenterCubeOverRampBalance() {
 
 frc2::CommandPtr autos::Autos::TwoPieceOverCable() {
   return FollowPathGroup("TwoPieceOverCable", 15_fps, 4.267_mps_sq);
+}
+
+frc2::CommandPtr autos::Autos::TwoPieceBalanceSmoothSide() {
+  return FollowPathGroup("TwoPieceBalanceSmoothSide", 15_fps, 4.267_mps_sq);
 }

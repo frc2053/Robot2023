@@ -1,0 +1,120 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.8457794339560063,
+        "y": 4.990442038129157
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.8457794339560065,
+        "y": 4.990442038129157
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "MoveArmToHighPosition",
+          "PoopCone"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.477712704978184,
+        "y": 4.60325256965362
+      },
+      "prevControl": {
+        "x": 5.416526754341523,
+        "y": 4.6175929203378985
+      },
+      "nextControl": {
+        "x": 5.416526754341523,
+        "y": 4.6175929203378985
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.8457794339560063,
+        "y": 4.402487660073711
+      },
+      "prevControl": {
+        "x": 1.798179735677043,
+        "y": 5.021283737700224
+      },
+      "nextControl": {
+        "x": 1.8601197846402857,
+        "y": 4.216063101178081
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "PoopCube"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.8065829298027114,
+        "y": 3.0688350464357463
+      },
+      "prevControl": {
+        "x": 1.7310566284817728,
+        "y": 2.939771890277234
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "BalanceFromFrontReverse"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 0.05454545454545454,
+      "names": [
+        "MoveArmToGroundIntake",
+        "IntakeCube"
+      ]
+    },
+    {
+      "position": 1.5818181818181813,
+      "names": [
+        "MoveArmToHighPosition"
+      ]
+    }
+  ]
+}

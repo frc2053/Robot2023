@@ -33,7 +33,7 @@ void BalanceCommand::Execute() {
   frc::SmartDashboard::PutNumber("AutoBalance/CurrentYaw", robotYaw.Degrees().value());
 
   frc::SmartDashboard::PutNumber("AutoBalance/CurrentRollRate", rollRate.value());
-  frc::SmartDashboard::PutNumber("AutoBalance/CurrentRollRate", pitchRate.value());
+  frc::SmartDashboard::PutNumber("AutoBalance/CurrentPitchRate", pitchRate.value());
 
   angleDegrees = robotYaw.Cos() * pitch + robotYaw.Sin() * roll;
   units::degrees_per_second_t angleVel = robotYaw.Cos() * pitchRate + robotYaw.Sin() * rollRate;

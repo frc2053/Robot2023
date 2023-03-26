@@ -44,6 +44,7 @@ private:
   frc2::CommandPtr placeHighGoAroundBalance = autos.PlaceHighGoAroundBalance();
   frc2::CommandPtr centerCubeOverRampBalance = autos.CenterCubeOverRampBalance();
   frc2::CommandPtr twoPieceOverCable = autos.TwoPieceOverCable();
+  frc2::CommandPtr twoPieceBalanceSmoothSide = autos.TwoPieceBalanceSmoothSide();
 
   frc::SendableChooser<frc2::Command *> autoChooser;
 };
