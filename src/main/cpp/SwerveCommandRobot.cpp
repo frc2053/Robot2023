@@ -75,11 +75,11 @@ void SwerveCommandRobot::ConfigureBindings() {
 
   frc::SmartDashboard::PutData("Arm/Test Mode Enable", new frc2::RunCommand([this] {
     armSubsystem.EnableTestMode();
-  }));
+  }, {&armSubsystem}));
 
   frc::SmartDashboard::PutData("Arm/Test Mode Disable", new frc2::InstantCommand([this] {
     armSubsystem.DisableTestMode();
-  }));
+  }, {&armSubsystem}));
 
   frc::SmartDashboard::PutData(
     "Drivetrain/Set Wheel Speed",
