@@ -6,10 +6,10 @@
 class TachometerPattern : public LedPattern
 {
 public:
-	TachometerPattern(double speed, double maxSpeed, int sectionLength) : speedMulti(speed), maxSpeedScale(maxSpeed), LedPattern(sectionLength) {
+	TachometerPattern(double speed, double maxSpeed, int sectionLength) : LedPattern(sectionLength), speedMulti(speed), maxSpeedScale(maxSpeed) {
 		int idx = sectionLength + ((0.0 - sectionLength) / (maxSpeedScale - 0)) * (speedMulti - 0);
 		std::vector<frc::AddressableLED::LEDData> gradient;
-		for (int i = 0; i < buffer.size(); i++) {
+		for (std::size_t i = 0; i < buffer.size(); i++) {
 			int hue = 80 + ((0 - 80) / (sectionLength - 0)) * (i - 0);
 			frc::AddressableLED::LEDData rgb;
 			rgb.SetHSV(hue, 255, 255);

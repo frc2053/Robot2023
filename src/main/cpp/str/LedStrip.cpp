@@ -19,7 +19,7 @@ void LedStrip::AddSection(int subsectionLength) {
 }
 
 void LedStrip::FillBufferFromSections() {
-	for (int i = 0; i < sections.size(); i++) {
+	for (std::size_t i = 0; i < sections.size(); i++) {
 		std::copy(sections[i].GetCurrentBuffer().begin(), sections[i].GetCurrentBuffer().end(), ledBuffer.begin() + sections[i].GetStartLedIndex());
 	}
 }
@@ -29,7 +29,7 @@ LedSection& LedStrip::GetSection(int idx) {
 }
 
 void LedStrip::Periodic() {
-	for (int i = 0; i < sections.size(); i++) {
+	for (std::size_t i = 0; i < sections.size(); i++) {
 		sections[i].Periodic();
 	}
 	FillBufferFromSections();

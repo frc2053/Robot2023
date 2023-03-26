@@ -6,7 +6,7 @@
 class FadePattern : public LedPattern
 {
 public:
-	FadePattern(frc::Color8Bit color, int sectionLength) : fadeColor(color), LedPattern(sectionLength) {
+	FadePattern(frc::Color8Bit color, int sectionLength) : LedPattern(sectionLength), fadeColor(color) {
 		std::fill(buffer.begin(), buffer.end(), frc::AddressableLED::LEDData(1.0, 0, 1.0));
 	}
 	~FadePattern() { }
@@ -17,7 +17,7 @@ public:
 		r = (kup / 256.0) * fadeColor.red;
 		g = (kup / 256.0) * fadeColor.green;
 		b = (kup / 256.0) * fadeColor.blue;
-		for (int i = 0; i < buffer.size(); i++) {
+		for (std::size_t i = 0; i < buffer.size(); i++) {
 			buffer[i].SetRGB(r, g, b);
 		}
 		if (kup == 255) {

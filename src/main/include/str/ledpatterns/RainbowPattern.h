@@ -6,7 +6,7 @@
 class RainbowPattern : public LedPattern
 {
 public:
-	RainbowPattern(int sectionLength) : sectionSize(sectionLength), LedPattern(sectionLength) {
+	RainbowPattern(int sectionLength) : LedPattern(sectionLength), sectionSize(sectionLength) {
 		std::fill(buffer.begin(), buffer.end(), frc::AddressableLED::LEDData(1.0, 0, 1.0));
 	}
 	~RainbowPattern() { }
@@ -14,7 +14,7 @@ public:
 		return LedPattern::buffer;
 	}
 	void Periodic() override {
-		for (int i = 0; i < buffer.size(); i++) {
+		for (std::size_t i = 0; i < buffer.size(); i++) {
 			int hue = (firstPixelHue + (i * 180 / sectionSize)) % 180;
 			buffer[i].SetHSV(hue, 255, 255);
 		}
@@ -22,6 +22,6 @@ public:
 		firstPixelHue = firstPixelHue % 180;
 	}
 private:
-	int firstPixelHue = 0;
 	int sectionSize = 0;
+	int firstPixelHue = 0;
 };

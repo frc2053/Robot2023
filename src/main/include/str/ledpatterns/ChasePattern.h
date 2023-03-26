@@ -8,7 +8,7 @@
 class ChasePattern : public LedPattern
 {
 public:
-	ChasePattern(frc::Color8Bit color, int sectionLength) : chaseColor(color), numOfLeds(sectionLength), LedPattern(sectionLength) {
+	ChasePattern(frc::Color8Bit color, int sectionLength) : LedPattern(sectionLength), chaseColor(color), numOfLeds(sectionLength) {
 		std::fill(buffer.begin(), buffer.end(), frc::AddressableLED::LEDData(1.0, 0, 1.0));
 	}
 	~ChasePattern() { }

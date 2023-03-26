@@ -7,7 +7,7 @@
 class KnightRiderPattern : public LedPattern
 {
 public:
-	KnightRiderPattern(frc::Color8Bit color, int sectionLength) : eyeColor(color), sectionSizePixels(sectionLength) ,LedPattern(sectionLength) {
+	KnightRiderPattern(frc::Color8Bit color, int sectionLength) : LedPattern{sectionLength}, eyeColor{color}, sectionSizePixels{sectionLength}, counterTwo{sectionSizePixels - numOfPixelsForEye - 2} {
 		std::fill(buffer.begin(), buffer.end(), frc::AddressableLED::LEDData(0.0, 0, 0.0));
 	}
 	~KnightRiderPattern() { }
@@ -57,12 +57,12 @@ public:
 		}
 	}
 private:
-	std::chrono::high_resolution_clock::time_point start_time = std::chrono::high_resolution_clock::now();
-	int speed = 100;
-	bool otherWay = false;
-	int counterOne = 0;
-	int counterTwo = sectionSizePixels - numOfPixelsForEye - 2;
-	int sectionSizePixels = 0;
-	int numOfPixelsForEye = 1;
 	frc::Color8Bit eyeColor;
+	std::chrono::high_resolution_clock::time_point start_time = std::chrono::high_resolution_clock::now();
+	int speed{100};
+	bool otherWay{false};
+	int counterOne{0};
+	int sectionSizePixels{0};
+	int numOfPixelsForEye{1};
+	int counterTwo;
 };

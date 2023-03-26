@@ -8,7 +8,7 @@
 class BlinkPattern : public LedPattern
 {
 public:
-	BlinkPattern(frc::Color8Bit color, int sectionLength, units::second_t timeOn, units::second_t timeOff) : blinkColor(color), numOfLeds(sectionLength), LedPattern(sectionLength), ledOnTime(timeOn), ledOffTime(timeOff) {
+	BlinkPattern(frc::Color8Bit color, int sectionLength, units::second_t timeOn, units::second_t timeOff) :  LedPattern(sectionLength), blinkColor(color), numOfLeds(sectionLength), ledOnTime(timeOn), ledOffTime(timeOff) {
 		std::fill(buffer.begin(), buffer.end(), frc::AddressableLED::LEDData(blinkColor.red * 255, blinkColor.green * 255, blinkColor.blue * 255));
 	}
 	~BlinkPattern() { }
@@ -34,10 +34,10 @@ public:
 		}
 	}
 private:
+	frc::Color8Bit blinkColor;
+	int numOfLeds = 0;
 	std::chrono::high_resolution_clock::time_point start_time = std::chrono::high_resolution_clock::now();
 	units::second_t ledOnTime;
 	units::second_t ledOffTime;
-	frc::Color8Bit blinkColor;
-	int numOfLeds = 0;
 	bool isOn = true;
 };
