@@ -1,0 +1,419 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Arm": {
+          "open": true
+        },
+        "open": true
+      },
+      "photonvision": {
+        "FrontCamera": {
+          "open": false
+        }
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Arm/Arm Display": "Mechanism2d",
+      "/SmartDashboard/Arm/Test Mode Disable": "Command",
+      "/SmartDashboard/Arm/Test Mode Enable": "Command",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Drivetrain/Field": "Field2d",
+      "/SmartDashboard/Drivetrain/Reset Drivetrain Pose": "Command",
+      "/SmartDashboard/Drivetrain/Run Characterizer": "Command",
+      "/SmartDashboard/Drivetrain/Set Wheel Speed": "Command",
+      "/SmartDashboard/Drivetrain/Zero Yaw": "Command",
+      "/SmartDashboard/FrontCamera Sim Field": "Field2d",
+      "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/Superstructure/Arm Subsystem": "Subsystem",
+      "/SmartDashboard/Superstructure/Drive Subsystem": "Subsystem",
+      "/SmartDashboard/Superstructure/Intake Subsystem": "Subsystem"
+    },
+    "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Arm/Arm Display": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Arm/Test Mode Disable": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Arm/Test Mode Enable": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Drivetrain/Field": {
+        "BL Module Pose": {
+          "image": "C:\\Users\\willi\\dev\\Robot2023\\images\\swerve_module.png",
+          "length": 0.25,
+          "width": 0.25
+        },
+        "BR Module Pose": {
+          "image": "C:\\Users\\willi\\dev\\Robot2023\\images\\swerve_module.png",
+          "length": 0.25,
+          "width": 0.25
+        },
+        "FL Module Pose": {
+          "image": "C:\\Users\\willi\\dev\\Robot2023\\images\\swerve_module.png",
+          "length": 0.25,
+          "width": 0.25
+        },
+        "FR Module Pose": {
+          "image": "C:\\Users\\willi\\dev\\Robot2023\\images\\swerve_module.png",
+          "length": 0.25,
+          "width": 0.25
+        },
+        "Robot": {
+          "length": 0.8999999761581421,
+          "width": 0.8999999761581421
+        },
+        "Swerve Position": {
+          "color": [
+            0.0,
+            29.999967575073242,
+            255.0,
+            255.0
+          ],
+          "length": 0.7300000190734863,
+          "width": 0.7300000190734863
+        },
+        "image": "C:\\Users\\willi\\dev\\Robot2023\\images\\2023-field.png",
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Drivetrain/Reset Drivetrain Pose": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Drivetrain/Run Characterizer": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Drivetrain/Set Wheel Speed": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Drivetrain/Zero Yaw": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Scheduler": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Superstructure/Arm Subsystem": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Superstructure/Drive Subsystem": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Superstructure/Intake Subsystem": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "Plots": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 229,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Intake/Motor1Current"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Intake/Motor2Current"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "Intake Current"
+      }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 349,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Current End Effector X"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Desired End Effector X"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Current End Effector Y"
+            },
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Desired End Effector Y"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "Arm State"
+      }
+    },
+    "Plot <2>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 354,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Shoulder Angle"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Shoulder Vel"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Shoulder Accel"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "Shoulder State"
+      }
+    },
+    "Plot <3>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 351,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Elbow Angle"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Elbow Vel"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Elbow Accel"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "Elbow State"
+      }
+    },
+    "Plot <4>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 392,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/LQR Output Shoulder"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/LQR Output Elbow"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "LQR Outputs"
+      }
+    },
+    "Plot <5>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 329,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Feed Forward Elbow"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/Feed Forward Shoulder"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "Feed Forward Arm"
+      }
+    },
+    "Plot <6>": {
+      "plots": [
+        {
+          "height": 344,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/PID Output Shoulder"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm/PID Output Elbow"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "PID Output Arm"
+      }
+    }
+  }
+}
