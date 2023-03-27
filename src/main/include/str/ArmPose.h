@@ -18,7 +18,7 @@ public:
 
   static constexpr ArmPose ScoreConeHigh() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-45_in, 22_in};
+    retVal.endEffectorPosition = {-43.4304_in, 20.2_in};
     retVal.fromTop = true;
     retVal.name = "ScoreConeHigh";
     return retVal;
@@ -26,15 +26,15 @@ public:
 
   static constexpr ArmPose ScoreConeMid() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-28.5_in, 9.25_in};
-    retVal.fromTop = false;
+    retVal.endEffectorPosition = {-30.5_in, 10.5_in};
+    retVal.fromTop = true;
     retVal.name = "ScoreConeMid";
     return retVal;
   }
 
   static constexpr ArmPose ScorePieceLow() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-19.296905_in, -23.598059_in};
+    retVal.endEffectorPosition = {-16.610274_in, -28.431469_in};
     retVal.fromTop = true;
     retVal.name = "ScorePieceLow";
     return retVal;
@@ -42,23 +42,15 @@ public:
 
   static constexpr ArmPose GroundIntakeFar() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {41.75_in, -22.0_in};
+    retVal.endEffectorPosition = {38.5799_in, -21.6341_in};
     retVal.fromTop = false;
     retVal.name = "GroundIntakeFar";
     return retVal;
   }
 
-  static constexpr ArmPose PlacePieceFromBack() {
-    ArmPose retVal;
-    retVal.endEffectorPosition = {49_in, 10_in};
-    retVal.fromTop = true;
-    retVal.name = "PlacePieceFromBack";
-    return retVal;
-  }
-
   static constexpr ArmPose IntakeFromSubstation() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-22.1_in, 14.76_in};
+    retVal.endEffectorPosition = {-17.340059_in, 15.500553_in};
     retVal.fromTop = true;
     retVal.name = "IntakeFromSubstation";
     return retVal;
@@ -99,6 +91,5 @@ static inline std::vector<ArmPose> AllPoses{
   ArmPose::ScoreConeMid(),
   ArmPose::ScorePieceLow(),
   ArmPose::GroundIntakeFar(),
-  ArmPose::PlacePieceFromBack(),
   ArmPose::IntakeFromSubstation()
 };
