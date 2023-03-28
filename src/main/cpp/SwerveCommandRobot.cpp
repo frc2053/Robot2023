@@ -179,21 +179,32 @@ void SwerveCommandRobot::ConfigureBindings() {
     }
   ));
 
-  operatorController.LeftBumper().WhileTrue(
+  operatorController.Back().WhileTrue(
     intakeSubsystem.IntakeCurrentLimitCubeFactory()
     .AlongWith(
-      frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
+     ledSubsystem.SetBothToBlinkPurple()
     )
   );
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualCubeFactory([] { return -1; }));
-  operatorController.Back().WhileTrue(
+  operatorController.Start().WhileTrue(
     intakeSubsystem.IntakeCurrentLimitConeFactory()
     .AlongWith(
-      frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
+      ledSubsystem.SetBothToBlinkYellow()
     )
   );
 
-  operatorController.Start().WhileTrue(intakeSubsystem.IntakeManualConeFactory([] { return -1; }));
+  // operatorController.LeftBumper().WhileTrue(
+  //   intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 1; })
+  //   .AlongWith(
+  //     frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
+  //   )
+  // );
+
+  operatorController.RightBumper().WhileTrue(
+    intakeSubsystem.IntakeManualBasedOnColorFactory([] { return -1; })
+    .AlongWith(
+      frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
+    )
+  );
 
   frc2::Trigger manualMoveArmTrigger{[this] {
     return std::fabs(operatorController.GetLeftX()) > .2 ||

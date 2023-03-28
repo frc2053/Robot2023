@@ -1,11 +1,29 @@
 {
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "SmartDashboard": {
+      "Test Mode": {
+        "open": false
+      },
+      "open": false
+    },
     "transitory": {
       "SmartDashboard": {
         "Arm": {
           "open": true
         },
         "open": true
+      },
+      "kairos": {
+        "open": false,
+        "result": {
+          "hash": {
+            "open": false
+          },
+          "open": false
+        }
       },
       "photonvision": {
         "FrontCamera": {
@@ -147,7 +165,7 @@
               "autoFit": true
             }
           ],
-          "height": 229,
+          "height": 338,
           "series": [
             {
               "color": [
@@ -182,7 +200,7 @@
               "autoFit": true
             }
           ],
-          "height": 349,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -235,7 +253,7 @@
               "autoFit": true
             }
           ],
-          "height": 354,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -279,7 +297,7 @@
               "autoFit": true
             }
           ],
-          "height": 351,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -323,7 +341,7 @@
               "autoFit": true
             }
           ],
-          "height": 392,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -358,7 +376,7 @@
               "autoFit": true
             }
           ],
-          "height": 329,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -388,7 +406,7 @@
     "Plot <6>": {
       "plots": [
         {
-          "height": 344,
+          "height": 0,
           "series": [
             {
               "color": [
