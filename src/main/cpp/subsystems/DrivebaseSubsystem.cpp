@@ -56,6 +56,12 @@ void DrivebaseSubsystem::InitVisionStuff() {
 }
 
 void DrivebaseSubsystem::Periodic() {
+
+  frc::SmartDashboard::PutNumber("Robot Pitch", swerveDrivebase.GetRobotPitch().value());
+  frc::SmartDashboard::PutNumber("Robot Pitch Rate", swerveDrivebase.GetRobotPitchRate().value());
+  frc::SmartDashboard::PutNumber("Robot Roll", swerveDrivebase.GetRobotRoll().value());
+  frc::SmartDashboard::PutNumber("Robot Roll Rate", swerveDrivebase.GetRobotRollRate().value());
+
   swerveDrivebase.Periodic();
   if(isVisionInited) {
     ProcessVisionData();
@@ -321,12 +327,15 @@ frc2::CommandPtr DrivebaseSubsystem::CharacterizeDT(std::function<bool()> nextSt
       swerveDrivebase.Characterize(0_V);
     }, {this}).Until(nextStepButton),
     frc2::cmd::RunOnce([this] {
+      fmt::print("Char finished!\n\n\n\n\\n\n");
       charData["sysid"] = "true";
       charData["test"] = "Drivetrain";
       charData["units"] = "Meters";
       charData["unitsPerRotation"] = (str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER * std::numbers::pi).value();
-      std::ofstream outFile("charData.json");
+      std::ofstream outFile;
+      outFile.open("/home/lvuser/deploy/charData.json");
       outFile << charData.dump() << std::endl;
+      outFile.close();
     })
   );
 }

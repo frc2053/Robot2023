@@ -14,10 +14,15 @@
         "Arm": {
           "open": true
         },
+        "Intake": {
+          "ColorSensor": {
+            "open": true
+          },
+          "open": true
+        },
         "open": true
       },
       "kairos": {
-        "open": false,
         "result": {
           "hash": {
             "open": false
@@ -33,20 +38,31 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Arm Sim": "Mechanism2d",
+      "/SmartDashboard/Arm Subsystem": "Subsystem",
       "/SmartDashboard/Arm/Arm Display": "Mechanism2d",
       "/SmartDashboard/Arm/Test Mode Disable": "Command",
       "/SmartDashboard/Arm/Test Mode Enable": "Command",
       "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Drive Subsystem": "Subsystem",
       "/SmartDashboard/Drivetrain/Field": "Field2d",
       "/SmartDashboard/Drivetrain/Reset Drivetrain Pose": "Command",
       "/SmartDashboard/Drivetrain/Run Characterizer": "Command",
       "/SmartDashboard/Drivetrain/Set Wheel Speed": "Command",
       "/SmartDashboard/Drivetrain/Zero Yaw": "Command",
+      "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/FrontCamera Sim Field": "Field2d",
+      "/SmartDashboard/Intake Subsystem": "Subsystem",
+      "/SmartDashboard/Reset Drivetrain Pose": "Command",
+      "/SmartDashboard/Run Characterizer": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/Set Wheel Speed": "Command",
       "/SmartDashboard/Superstructure/Arm Subsystem": "Subsystem",
       "/SmartDashboard/Superstructure/Drive Subsystem": "Subsystem",
-      "/SmartDashboard/Superstructure/Intake Subsystem": "Subsystem"
+      "/SmartDashboard/Superstructure/Intake Subsystem": "Subsystem",
+      "/SmartDashboard/Test Mode Disable": "Command",
+      "/SmartDashboard/Test Mode Enable": "Command",
+      "/SmartDashboard/Zero Yaw": "Command"
     },
     "windows": {
       "/FMSInfo": {

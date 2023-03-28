@@ -22,7 +22,7 @@ void BalanceCommand::Execute() {
 
   double rotCmd = m_drivebaseSubsystem->thetaController.Calculate(m_drivebaseSubsystem->swerveDrivebase.GetRobotYaw().Radians());
   pitch = m_drivebaseSubsystem->swerveDrivebase.GetRobotPitch();
-  pitchRate = m_drivebaseSubsystem->swerveDrivebase.GetRobotPitchRate();
+  pitchRate = -m_drivebaseSubsystem->swerveDrivebase.GetRobotPitchRate();
   robotYaw = m_drivebaseSubsystem->swerveDrivebase.GetRobotYaw();
   roll = m_drivebaseSubsystem->swerveDrivebase.GetRobotRoll();
   rollRate = m_drivebaseSubsystem->swerveDrivebase.GetRobotRollRate();
