@@ -144,6 +144,26 @@ class ArmSubsystem : public frc2::SubsystemBase {
       frc::Color8Bit{frc::Color::kBlue}
     );
 
+  frc::MechanismRoot2d* mediumConeBase = armDisplay.GetRoot("MediumConeBase", 150 - 29.27500, 150);
+  frc::MechanismLigament2d* mediumConePole =
+  mediumConeBase->Append<frc::MechanismLigament2d>(
+    "MediumConePole",
+    34.092500, 
+    90_deg, 
+    6, 
+    frc::Color8Bit{frc::Color::kPurple}
+  );
+
+  frc::MechanismRoot2d* tallConeBase = armDisplay.GetRoot("TallConeBase", 150 - 46.161430, 150);
+  frc::MechanismLigament2d* tallConePole =
+  tallConeBase->Append<frc::MechanismLigament2d>(
+    "TallConePole",
+    46.062500, 
+    90_deg, 
+    6, 
+    frc::Color8Bit{frc::Color::kPurple}
+  );
+
   frc::MechanismRoot2d* tester = armDisplay.GetRoot("TESTER", 150, 150);
   frc::MechanismLigament2d* testerDot =
     tester->Append<frc::MechanismLigament2d>(
