@@ -26,7 +26,7 @@ public:
 
   static constexpr ArmPose ScoreConeMid() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-33_in, 15_in};
+    retVal.endEffectorPosition = {-33_in, 10_in};
     retVal.fromTop = true;
     retVal.name = "ScoreConeMid";
     return retVal;
@@ -50,7 +50,7 @@ public:
 
   static constexpr ArmPose IntakeFromSubstation() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-16.5_in, 20_in};
+    retVal.endEffectorPosition = {-31.7_in, 23.47_in};
     retVal.fromTop = true;
     retVal.name = "IntakeFromSubstation";
     return retVal;

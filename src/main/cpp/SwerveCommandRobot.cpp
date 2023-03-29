@@ -211,7 +211,7 @@ void SwerveCommandRobot::ConfigureBindings() {
            std::fabs(operatorController.GetLeftY()) > .2;
   }};
 
-  manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return -operatorController.GetLeftX(); }, [this]{ return -operatorController.GetLeftY(); }));
+  manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return frc::ApplyDeadband<double>(-operatorController.GetLeftX(), .20); }, [this]{ return frc::ApplyDeadband<double>(-operatorController.GetLeftY(), .20); }));
 
   frc2::Trigger offsetChainSkipDown{[this] {
     return operatorController.POVDown(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()).GetAsBoolean();

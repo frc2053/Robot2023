@@ -49,7 +49,7 @@ void BalanceCommand::Execute() {
     m_drivebaseSubsystem->swerveDrivebase.Drive(0_mps, 0_mps, 0_deg_per_s, false, false, true, true);
   }
   else {
-    m_drivebaseSubsystem->swerveDrivebase.Drive(driveSpeed * (angleDegrees > 0.0_deg ? -1.0 : 1.0), 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+    m_drivebaseSubsystem->swerveDrivebase.Drive(driveSpeed * (angleDegrees > 0.0_deg ? 1.0 : -1.0), 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
   }
 }
 

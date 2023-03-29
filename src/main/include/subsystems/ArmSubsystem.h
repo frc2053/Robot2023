@@ -94,8 +94,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
     10000_deg_per_s_sq
   };
 
-  frc::ProfiledPIDController<units::radians> shoulderPID{1.5, 0, 0, arm_constraints};
-  frc::ProfiledPIDController<units::radians> elbowPID{1.5, 0, 0, arm_constraints};
+  frc::ProfiledPIDController<units::radians> shoulderPID{1.8, 0, 0, arm_constraints};
+  frc::ProfiledPIDController<units::radians> elbowPID{1.8, 0, 0, arm_constraints};
   
   TwoJointArmDynamics armSystem {
     config.shoulder.mass,
