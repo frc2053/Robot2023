@@ -57,10 +57,10 @@ void DrivebaseSubsystem::InitVisionStuff() {
 
 void DrivebaseSubsystem::Periodic() {
 
-  frc::SmartDashboard::PutNumber("Robot Pitch", swerveDrivebase.GetRobotPitch().value());
-  frc::SmartDashboard::PutNumber("Robot Pitch Rate", swerveDrivebase.GetRobotPitchRate().value());
-  frc::SmartDashboard::PutNumber("Robot Roll", swerveDrivebase.GetRobotRoll().value());
-  frc::SmartDashboard::PutNumber("Robot Roll Rate", swerveDrivebase.GetRobotRollRate().value());
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch", swerveDrivebase.GetRobotPitch().value());
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch Rate", swerveDrivebase.GetRobotPitchRate().value());
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Roll", swerveDrivebase.GetRobotRoll().value());
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Roll Rate", swerveDrivebase.GetRobotRollRate().value());
 
   swerveDrivebase.Periodic();
   if(isVisionInited) {
