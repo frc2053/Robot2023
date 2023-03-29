@@ -57,10 +57,23 @@ void DrivebaseSubsystem::InitVisionStuff() {
 
 void DrivebaseSubsystem::Periodic() {
 
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch", swerveDrivebase.GetRobotPitch().value());
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch Rate", swerveDrivebase.GetRobotPitchRate().value());
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Roll", swerveDrivebase.GetRobotRoll().value());
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Roll Rate", swerveDrivebase.GetRobotRollRate().value());
+  frc::Rotation2d robotYaw = swerveDrivebase.GetRobotYaw();
+  units::degree_t robotPitch = swerveDrivebase.GetRobotPitch();
+  units::degrees_per_second_t robotPitchRate = swerveDrivebase.GetRobotPitchRate();
+  units::degree_t robotRoll = swerveDrivebase.GetRobotRoll();
+  units::degrees_per_second_t robotRollRate = swerveDrivebase.GetRobotRollRate();
+
+
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch", robotPitch.value());
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch Rate", robotPitchRate.value());
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Roll", robotRoll.value());
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Roll Rate", robotRollRate.value());
+
+  units::degree_t angleDegrees = robotYaw.Cos() * robotPitch + robotYaw.Sin() * robotRoll;
+  units::degrees_per_second_t angleVel = robotYaw.Cos() * robotPitchRate + robotYaw.Sin() * robotRollRate;
+
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Total Tilt", angleDegrees.value());
+  frc::SmartDashboard::PutNumber("Drivetrain/Robot Total Tilt Rate", angleVel.value());
 
   swerveDrivebase.Periodic();
   if(isVisionInited) {
