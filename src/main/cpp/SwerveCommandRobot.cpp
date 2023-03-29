@@ -257,7 +257,7 @@ void SwerveCommandRobot::SetDriveAsDefault() {
 
 void SwerveCommandRobot::SetIntakeAsDefault() {
   //TODO: Not sure if needed with new intake
-  //intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory([] { return 0.4; }));
+  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 0.4; }));
 }
 
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {

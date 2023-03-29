@@ -10,8 +10,8 @@
 IntakeSubsystem::IntakeSubsystem() {
   intakeMotor1.RestoreFactoryDefaults();
   intakeMotor2.RestoreFactoryDefaults();
-  intakeMotor1.SetSmartCurrentLimit(30);
-  intakeMotor2.SetSmartCurrentLimit(30);
+  intakeMotor1.SetSmartCurrentLimit(20);
+  intakeMotor2.SetSmartCurrentLimit(20);
   intakeMotor1.SetOpenLoopRampRate(.25);
   intakeMotor2.SetOpenLoopRampRate(.25);
   intakeMotor1.SetInverted(false);
