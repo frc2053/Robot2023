@@ -18,7 +18,7 @@ public:
 
   static constexpr ArmPose ScoreConeHigh() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-43.4304_in, 20.2_in};
+    retVal.endEffectorPosition = {-41.3_in, 24.0_in};
     retVal.fromTop = true;
     retVal.name = "ScoreConeHigh";
     return retVal;
@@ -26,7 +26,7 @@ public:
 
   static constexpr ArmPose ScoreConeMid() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-30.5_in, 10.5_in};
+    retVal.endEffectorPosition = {-33_in, 15_in};
     retVal.fromTop = true;
     retVal.name = "ScoreConeMid";
     return retVal;
@@ -34,7 +34,7 @@ public:
 
   static constexpr ArmPose ScorePieceLow() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-16.610274_in, -28.431469_in};
+    retVal.endEffectorPosition = {-24.5_in, -19_in};
     retVal.fromTop = true;
     retVal.name = "ScorePieceLow";
     return retVal;
@@ -50,7 +50,7 @@ public:
 
   static constexpr ArmPose IntakeFromSubstation() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-17.340059_in, 15.500553_in};
+    retVal.endEffectorPosition = {-16.5_in, 20_in};
     retVal.fromTop = true;
     retVal.name = "IntakeFromSubstation";
     return retVal;
@@ -58,7 +58,7 @@ public:
 
   static constexpr ArmPose StraightOut() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {51_in, 0_in};
+    retVal.endEffectorPosition = {47_in, 0_in};
     retVal.fromTop = true;
     retVal.name = "StraightOut";
     return retVal;
