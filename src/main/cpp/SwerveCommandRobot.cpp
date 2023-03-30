@@ -179,39 +179,39 @@ void SwerveCommandRobot::ConfigureBindings() {
     }
   ));
 
-  operatorController.Back().WhileTrue(
+  operatorController.R3().WhileTrue(
     intakeSubsystem.IntakeCurrentLimitCubeFactory()
     .AlongWith(
-     ledSubsystem.SetBothToBlinkPurple()
+      frc2::cmd::Parallel(
+        ledSubsystem.SetBothToBlinkPurple(),
+        armSubsystem.GoToPose([this]{ return ArmPose::IntakeCubeFromSubstation(); })
+      )
     )
   );
-  operatorController.Start().WhileTrue(
+
+  operatorController.L3().WhileTrue(
     intakeSubsystem.IntakeCurrentLimitConeFactory()
     .AlongWith(
-      ledSubsystem.SetBothToBlinkYellow()
+      frc2::cmd::Parallel(
+        ledSubsystem.SetBothToBlinkYellow(),
+        armSubsystem.GoToPose([this]{ return ArmPose::IntakeConeFromSubstation(); })
+      )
     )
   );
 
-  // operatorController.LeftBumper().WhileTrue(
-  //   intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 1; })
-  //   .AlongWith(
-  //     frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
-  //   )
-  // );
-
-  operatorController.RightBumper().WhileTrue(
+  operatorController.R1().WhileTrue(
     intakeSubsystem.IntakeManualBasedOnColorFactory([] { return -1; })
     .AlongWith(
       frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
     )
   );
 
-  frc2::Trigger manualMoveArmTrigger{[this] {
-    return std::fabs(operatorController.GetLeftX()) > .2 ||
-           std::fabs(operatorController.GetLeftY()) > .2;
-  }};
+  // frc2::Trigger manualMoveArmTrigger{[this] {
+  //   return std::fabs(operatorController.GetLeftX()) > .2 ||
+  //          std::fabs(operatorController.GetLeftY()) > .2;
+  // }};
 
-  manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return frc::ApplyDeadband<double>(-operatorController.GetLeftX(), .20); }, [this]{ return frc::ApplyDeadband<double>(-operatorController.GetLeftY(), .20); }));
+  //manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return frc::ApplyDeadband<double>(-operatorController.GetLeftX(), .20); }, [this]{ return frc::ApplyDeadband<double>(-operatorController.GetLeftY(), .20); }));
 
   frc2::Trigger offsetChainSkipDown{[this] {
     return operatorController.POVDown(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()).GetAsBoolean();
@@ -224,13 +224,17 @@ void SwerveCommandRobot::ConfigureBindings() {
   offsetChainSkipDown.WhileTrue(armSubsystem.ChainSkipFactory([]{ return -5_deg; }));
   offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 5_deg; }));
 
-  operatorController.LeftTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
-  operatorController.RightTrigger().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
+  operatorController.Triangle().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
+  operatorController.Square().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
+  operatorController.Cross().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
+  operatorController.Circle().WhileTrue(
+    intakeSubsystem.IntakeCurrentLimitCubeFactory()
+    .AlongWith(
+      ledSubsystem.SetBothToBlinkPurple()
+    )
+  );
 
-  operatorController.Y().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
-  operatorController.X().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
-  operatorController.B().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }).Repeatedly());
-  operatorController.A().OnTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
+  armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 
   ledSubsystem.SetDefaultCommand(ledSubsystem.SetBothToSolidGreen());
 }

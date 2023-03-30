@@ -26,7 +26,7 @@ public:
 
 private:
   frc2::CommandXboxController driverController{str::oi::DRIVER_CONTROLLER};
-  frc2::CommandXboxController operatorController{str::oi::OPERATOR_CONTROLLER};
+  frc2::CommandPS4Controller operatorController{str::oi::OPERATOR_CONTROLLER};
   DrivebaseSubsystem driveSubsystem;
   IntakeSubsystem intakeSubsystem;
   ArmSubsystem armSubsystem;

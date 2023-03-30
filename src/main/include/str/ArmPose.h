@@ -48,11 +48,19 @@ public:
     return retVal;
   }
 
-  static constexpr ArmPose IntakeFromSubstation() {
+  static constexpr ArmPose IntakeConeFromSubstation() {
     ArmPose retVal;
     retVal.endEffectorPosition = {-7.7_in, 21.86_in};
     retVal.fromTop = true;
-    retVal.name = "IntakeFromSubstation";
+    retVal.name = "IntakeConeFromSubstation";
+    return retVal;
+  }
+
+  static constexpr ArmPose IntakeCubeFromSubstation() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {-27.5_in, 11.2_in};
+    retVal.fromTop = true;
+    retVal.name = "IntakeCubeFromSubstation";
     return retVal;
   }
 
@@ -91,5 +99,6 @@ static inline std::vector<ArmPose> AllPoses{
   ArmPose::ScoreConeMid(),
   ArmPose::ScorePieceLow(),
   ArmPose::GroundIntakeFar(),
-  ArmPose::IntakeFromSubstation()
+  ArmPose::IntakeConeFromSubstation(),
+  ArmPose::IntakeCubeFromSubstation()
 };
