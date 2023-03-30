@@ -50,7 +50,7 @@ public:
 
   static constexpr ArmPose IntakeConeFromSubstation() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-7.7_in, 21.86_in};
+    retVal.endEffectorPosition = {-20.7_in, 25.5_in};
     retVal.fromTop = true;
     retVal.name = "IntakeConeFromSubstation";
     return retVal;
@@ -58,7 +58,7 @@ public:
 
   static constexpr ArmPose IntakeCubeFromSubstation() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-27.5_in, 11.2_in};
+    retVal.endEffectorPosition = {-27.5_in, 13.2_in};
     retVal.fromTop = true;
     retVal.name = "IntakeCubeFromSubstation";
     return retVal;

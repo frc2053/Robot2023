@@ -31,4 +31,5 @@ private:
     rev::CANSparkMax intakeMotor2{str::intake_constants::intakeMotor2CanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     pico::ColorSensor colorSensor;
     bool colorSensorSeesCone{false};
+    bool colorCache{false};
 };

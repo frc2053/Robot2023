@@ -164,18 +164,20 @@ frc2::CommandPtr IntakeSubsystem::IntakeManualConeFactory(std::function<double()
 
 frc2::CommandPtr IntakeSubsystem::IntakeManualBasedOnColorFactory(std::function<double()> speed) {
   return frc2::cmd::Run([this, speed] {
-    if(colorSensorSeesCone) { 
+    if(colorCache) { 
       SpinIntakeForCone(speed());
     }
     else {
       SpinIntakeForCube(speed());
     }
   }, {this}).FinallyDo([this](bool interrupted) {
-    if(colorSensorSeesCone) { 
+    if(colorCache) { 
       SpinIntakeForCone(0);
     }
     else {
       SpinIntakeForCube(0);
     }
-  }).WithName("Intake Based on Sensor Factory");
+  }).BeforeStarting([this] {     
+    colorCache = colorSensorSeesCone;
+  }, {this}).WithName("Intake Based on Sensor Factory");
 }

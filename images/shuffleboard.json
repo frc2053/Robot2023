@@ -163,8 +163,7 @@
               "Colors/BR Module Pose": "#FFFFFFFF",
               "Colors/FL Module Pose": "#FFFFFFFF",
               "Colors/FR Module Pose": "#FFFFFFFF",
-              "Colors/BL Module Pose": "#FFFFFFFF",
-              "Colors/Robot Vision Pose Estimate": "#FFFFFFFF"
+              "Colors/BL Module Pose": "#FFFFFFFF"
             }
           },
           "0,0": {
@@ -704,7 +703,7 @@
   "windowGeometry": {
     "x": -2568.0,
     "y": -60.0,
-    "width": 2576.0,
-    "height": 1408.0
+    "width": 1940.0,
+    "height": 1100.0
   }
 }
