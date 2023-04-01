@@ -39,8 +39,8 @@ void DrivebaseSubsystem::InitVisionStuff() {
     fieldLayout->SetOrigin(frc::AprilTagFieldLayout::OriginPosition::kRedAllianceWallRightSide);
   }
   
-  frontTagCamera = std::make_shared<photonlib::PhotonCamera>("FrontCamera");
-  system = std::make_shared<photonlib::SimVisionSystem>("FrontCamera", 80_deg, str::vision::ROBOT_TO_CAMERA.Inverse(), 9000_m, 640, 480, 5);
+  frontTagCamera = std::make_shared<photonlib::PhotonCamera>("BetterCamera");
+  system = std::make_shared<photonlib::SimVisionSystem>("BetterCamera", 80_deg, str::vision::ROBOT_TO_CAMERA.Inverse(), 9000_m, 640, 480, 5);
   visionPoseEstimator = std::make_shared<photonlib::PhotonPoseEstimator>(*fieldLayout.get(), photonlib::PoseStrategy::MULTI_TAG_PNP, std::move(*frontTagCamera.get()), str::vision::ROBOT_TO_CAMERA);
   
   frontTagCamera->SetVersionCheckEnabled(false);
