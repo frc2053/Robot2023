@@ -10,7 +10,7 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> map{
     {"MoveArmToHighPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeHigh(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
-    {"MoveArmToMidPosition", m_armSub->GoToPose([]{ return ArmPose::ScoreConeMid(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
+    {"MoveArmToMidPosition", m_armSub->GoToMidBasedOnColor([this]{ return m_intakeSub->DoesColorSensorSeeCone(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
     {"MoveArmToStartingPosition", m_armSub->GoToPose([]{ return ArmPose::StartingConfig(); })/*.RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; }))*/.Unwrap()},
     {"PoopCone", m_intakeSub->PoopCone(.25_s).Unwrap()},
     {"PoopCube", m_intakeSub->PoopCube(.25_s).Unwrap()},

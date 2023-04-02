@@ -150,12 +150,12 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Arm/PID Output Shoulder", shoulderOutput);
   frc::SmartDashboard::PutNumber("Arm/PID Output Elbow", elbowOutput);
   
-  shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
-  elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
+  //shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
+  //elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
 
-  //frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
-  //shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
-  //elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
+  frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
+  shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
+  elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
@@ -369,6 +369,19 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
       return hasManuallyMoved || (lastRanTrajFinalPoseName != poseToGoTo().name);
     }
   ).WithName("Go To Arm Pose Factory");
+}
+
+frc2::CommandPtr ArmSubsystem::GoToMidBasedOnColor(std::function<bool()> seesCone) {
+  return GoToPose(
+    [this, seesCone]() {
+      if(seesCone()) {
+        return ArmPose::ScoreConeMid();
+      }
+      else {
+        return ArmPose::ScoreCubeMid();
+      }
+    }
+  ).WithName("Go To Mid Based On Color");
 }
 
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo) {

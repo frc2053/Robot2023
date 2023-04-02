@@ -40,6 +40,7 @@ class ArmSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
   frc2::CommandPtr GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo);
   frc2::CommandPtr GoToPose(std::function<ArmPose()> poseToGoTo);
+  frc2::CommandPtr GoToMidBasedOnColor(std::function<bool()> seesCone);
   frc2::CommandPtr DrivePositionFactory(std::function<double()> xJoy, std::function<double()> yJoy);
   frc2::CommandPtr FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams);
   frc2::CommandPtr PutConeOnFactory();

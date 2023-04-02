@@ -32,6 +32,14 @@ public:
     return retVal;
   }
 
+  static constexpr ArmPose ScoreCubeMid() {
+    ArmPose retVal;
+    retVal.endEffectorPosition = {-17_in, 0_in};
+    retVal.fromTop = true;
+    retVal.name = "ScoreCubeMid";
+    return retVal;
+  }
+
   static constexpr ArmPose ScorePieceLow() {
     ArmPose retVal;
     retVal.endEffectorPosition = {-24.5_in, -19_in};
@@ -97,6 +105,7 @@ static inline std::vector<ArmPose> AllPoses{
   ArmPose::ScoreConeHigh(),
   ArmPose::StraightOut(),
   ArmPose::ScoreConeMid(),
+  ArmPose::ScoreCubeMid(),
   ArmPose::ScorePieceLow(),
   ArmPose::GroundIntakeFar(),
   ArmPose::IntakeConeFromSubstation(),

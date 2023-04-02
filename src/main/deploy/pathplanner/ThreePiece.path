@@ -133,12 +133,40 @@
     },
     {
       "anchorPoint": {
-        "x": 1.9001959432490299,
-        "y": 3.879295330019232
+        "x": 1.8888004860088439,
+        "y": 4.41682801075799
       },
       "prevControl": {
-        "x": 1.9574549149098301,
-        "y": 5.253510649878443
+        "x": 1.8888004860088439,
+        "y": 4.81553102484151
+      },
+      "nextControl": {
+        "x": 1.8888004860088439,
+        "y": 3.5707473203855176
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "MoveArmToMidPosition",
+          "PoopCube"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.892625033908387,
+        "y": 3.3699824108056093
+      },
+      "prevControl": {
+        "x": 2.0035232914830776,
+        "y": 3.484705216279843
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -148,8 +176,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "MoveArmToHighPosition",
-          "PoopCone"
+          "BalanceFromFrontReverse"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -159,7 +186,7 @@
   ],
   "markers": [
     {
-      "position": 0.07272727272727272,
+      "position": 0.01,
       "names": [
         "MoveArmToGroundIntake"
       ]
@@ -173,11 +200,11 @@
     {
       "position": 2.9454545454545444,
       "names": [
-        "IntakeCone"
+        "IntakeCube"
       ]
     },
     {
-      "position": 2.327272727272726,
+      "position": 2.1272727272727265,
       "names": [
         "MoveArmToGroundIntake"
       ]
@@ -191,7 +218,25 @@
     {
       "position": 3.127272727272722,
       "names": [
-        "HoldCone"
+        "HoldCube"
+      ]
+    },
+    {
+      "position": 0.9818181818181818,
+      "names": [
+        "MoveArmToStartingPosition"
+      ]
+    },
+    {
+      "position": 3.3272727272727263,
+      "names": [
+        "MoveArmToStartingPosition"
+      ]
+    },
+    {
+      "position": 5.072727272727271,
+      "names": [
+        "MoveArmToStartingPosition"
       ]
     }
   ]

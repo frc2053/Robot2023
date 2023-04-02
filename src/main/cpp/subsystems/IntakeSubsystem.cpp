@@ -27,13 +27,18 @@ void IntakeSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Intake/ColorSensor/G", color0.green);
   frc::SmartDashboard::PutNumber("Intake/ColorSensor/B", color0.blue);
   frc::SmartDashboard::PutNumber("Intake/ColorSensor/Prox", colorSensor.GetProximity0());
-  if(color0.green > color0.red) {
-    colorSensorSeesCone = false;
-    //fmt::print("We want to intake a cube!\n");
+  if(frc::RobotBase::IsSimulation()) {
+    colorSensorSeesCone = frc::SmartDashboard::GetBoolean("Intake/Sim/DoesColorSensorSeeCone", true);
   }
   else {
-    colorSensorSeesCone = true;
-    //fmt::print("We want to intake a cone!\n");
+    if(color0.green > color0.red) {
+      colorSensorSeesCone = false;
+      //fmt::print("We want to intake a cube!\n");
+    }
+    else {
+      colorSensorSeesCone = true;
+      //fmt::print("We want to intake a cone!\n");
+    }
   }
 
   frc::SmartDashboard::PutNumber("Intake/Motor1Current", intakeMotor1.GetOutputCurrent());

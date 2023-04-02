@@ -14,6 +14,7 @@
 void SwerveCommandRobot::ConfigureBindings() {
 
   frc::SmartDashboard::PutBoolean("Skip Balance", false);
+  frc::SmartDashboard::PutBoolean("Intake/Sim/DoesColorSensorSeeCone", true);
 
   autoChooser.SetDefaultOption("DriveToCenter", driveToCenter.get());
   autoChooser.AddOption("StartOnEdgeScoreThenGoToCenter", startOnEdgeScoreThenGoToCenter.get());
@@ -225,7 +226,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 5_deg; }));
 
   operatorController.Triangle().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
-  operatorController.Square().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
+  operatorController.Square().WhileTrue(armSubsystem.GoToMidBasedOnColor([this]{ return intakeSubsystem.DoesColorSensorSeeCone(); }).Repeatedly());
   operatorController.L2().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
   operatorController.L1().WhileTrue(
     intakeSubsystem.IntakeCurrentLimitCubeFactory()
