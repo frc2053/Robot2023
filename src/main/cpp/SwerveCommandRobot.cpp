@@ -166,6 +166,9 @@ void SwerveCommandRobot::ConfigureBindings() {
     },
     [this] {
       return false;
+    },
+    [this] {
+      return 0_deg;
     }
   ));
 
@@ -188,9 +191,9 @@ void SwerveCommandRobot::ConfigureBindings() {
   // ));
 
 
-  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
-  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.1; }));
-  operatorController.Back().OnTrue(armSubsystem.PutConeOnFactory());
+  operatorController.L1().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
+  operatorController.R1().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.1; }));
+  //operatorController.Share().OnTrue(armSubsystem.PutConeOnFactory());
 
   // frc2::Trigger manualMoveArmTrigger{[this] {
   //   return std::fabs(operatorController.GetLeftX()) > .2 ||
@@ -210,13 +213,13 @@ void SwerveCommandRobot::ConfigureBindings() {
   offsetChainSkipDown.WhileTrue(armSubsystem.ChainSkipFactory([]{ return -1_deg; }));
   offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 1_deg; }));
 
-  operatorController.LeftTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
-  operatorController.RightTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
+  operatorController.L2().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
+  operatorController.R2().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
 
-  operatorController.Y().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
-  operatorController.X().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
-  operatorController.B().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }).Repeatedly());
-  operatorController.A().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
+  operatorController.Triangle().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
+  operatorController.Square().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
+  operatorController.Circle().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }).Repeatedly());
+  operatorController.Cross().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
 
   armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 

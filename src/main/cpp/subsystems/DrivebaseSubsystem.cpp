@@ -183,23 +183,18 @@ frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
     .ToPtr();
 }
 
-frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride, std::function<bool()> skipBalance) {
+frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride, std::function<bool()> skipBalance, std::function<units::radian_t()> angleGoal) {
   return frc2::cmd::Either(
     frc2::cmd::None(),
     frc2::cmd::Sequence(
-      //Set angle controller to 0
-      frc2::cmd::RunOnce([this, fromBack] {
-        if(fromBack()) {
-          thetaController.SetGoal(180_deg + swerveDrivebase.GetDriverImuOffset());
-        }
-        else {
-          thetaController.SetGoal(0_deg + swerveDrivebase.GetDriverImuOffset());
-        }
+      //Set angle controller to desired angle
+      frc2::cmd::RunOnce([this, fromBack, angleGoal] {
+        thetaController.SetGoal(angleGoal() + swerveDrivebase.GetDriverImuOffset());
       }, {this}),
       //Run robot forward until tilted up
       frc2::cmd::Run([this] {
         double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
-        swerveDrivebase.Drive(2_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
+        swerveDrivebase.Drive(2_fps, 0_mps, rotCmd * 1_rad_per_s, true, false, true, true);
       }, {this}).Until([this, wantsToOverride] {
         return swerveDrivebase.GetRobotPitch() > 10_deg || wantsToOverride();
       }).WithName("Forward Until Tilted Up"),

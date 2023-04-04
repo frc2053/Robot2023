@@ -10,6 +10,7 @@
 #include <autos/Autos.h>
 #include "subsystems/ArmSubsystem.h"
 #include "subsystems/IntakeSubsystem.h"
+#include "subsystems/LedSubsystem.h"
 
 class SwerveCommandRobot {
 public:
@@ -25,10 +26,11 @@ public:
 
 private:
   frc2::CommandXboxController driverController{str::oi::DRIVER_CONTROLLER};
-  frc2::CommandXboxController operatorController{str::oi::OPERATOR_CONTROLLER};
+  frc2::CommandPS4Controller operatorController{str::oi::OPERATOR_CONTROLLER};
   DrivebaseSubsystem driveSubsystem;
   IntakeSubsystem intakeSubsystem;
   ArmSubsystem armSubsystem;
+  LedSubsystem ledSubsystem;
   autos::Autos autos{&driveSubsystem, &armSubsystem, &intakeSubsystem};
 
   frc2::CommandPtr oneMeterForward = autos.OneMForward();

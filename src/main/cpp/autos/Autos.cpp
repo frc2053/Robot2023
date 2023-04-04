@@ -15,7 +15,8 @@ autos::Autos::Autos(DrivebaseSubsystem* driveSub, ArmSubsystem* armSub, IntakeSu
     {"PoopPiece", m_intakeSub->PoopGamePiece(.25_s).Unwrap()},
     {"IntakeObject", m_intakeSub->IntakeGamePiece(2_s).Unwrap()},
     {"MoveArmToGroundIntake", m_armSub->GoToPose([]{ return ArmPose::GroundIntakeFar(); }).RaceWith(m_intakeSub->IntakeManualFactory([] { return 0.3; })).Unwrap()},
-    {"BalanceFromBack", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }, [this] { return frc::SmartDashboard::GetBoolean("Skip Balance", false); }).Unwrap()},
+    {"BalanceFromBack", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }, [this] { return frc::SmartDashboard::GetBoolean("Skip Balance", false); }, [] { return 0_deg; }).Unwrap()},
+    {"BalanceFromFrontReverse", m_driveSub->BalanceFactory([] { return true; }, [this] { return false; }, [this] { return frc::SmartDashboard::GetBoolean("Skip Balance", false); }, [] { return 180_deg; }).Unwrap()},
     {"HoldPiece", frc2::cmd::RunOnce([this] { m_intakeSub->SetIntakeSpeed(0.4); }, {m_intakeSub}).Unwrap()}
   };
 
