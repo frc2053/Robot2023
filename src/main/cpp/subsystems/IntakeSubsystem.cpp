@@ -4,6 +4,7 @@
 #include <frc2/command/WaitCommand.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/Commands.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <constants/ArmConstants.h>
 
 IntakeSubsystem::IntakeSubsystem() {
@@ -13,8 +14,26 @@ IntakeSubsystem::IntakeSubsystem() {
 }
 
 void IntakeSubsystem::Periodic() {
-  //fmt::print("Intake Speed: {}\n", intakeMotor.Get());
+  auto color0 = colorSensor.GetRawColor0();
+  if(frc::RobotBase::IsSimulation()) {
+    colorSensorSeesCone = frc::SmartDashboard::GetBoolean("Intake/Sim/DoesColorSensorSeeCone", true);
+  }
+  else {
+    if(color0.green > color0.red) {
+      colorSensorSeesCone = false;
+      //fmt::print("We want to intake a cube!\n");
+    }
+    else {
+      colorSensorSeesCone = true;
+      //fmt::print("We want to intake a cone!\n");
+    }
+  }
 }
+
+bool IntakeSubsystem::DoesColorSensorSeeCone() {
+  return colorSensorSeesCone;
+}
+
 
 void IntakeSubsystem::SimulationPeriodic() {
 

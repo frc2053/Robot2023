@@ -4,6 +4,7 @@
 #include <str/SparkMaxWrapper.h>
 #include <frc2/command/CommandPtr.h>
 #include <constants/ArmConstants.h>
+#include "str/PicoColorSensor.h"
 
 class IntakeSubsystem : public frc2::SubsystemBase {
 public:
@@ -12,6 +13,7 @@ public:
     void Periodic() override;
     void SimulationPeriodic() override;
     void SetIntakeSpeed(double speed);
+    bool DoesColorSensorSeeCone();
 
     frc2::CommandPtr PoopGamePiece(units::second_t howLongToSpin);
     frc2::CommandPtr IntakeGamePiece(units::second_t howLongToSpin);
@@ -19,4 +21,7 @@ public:
     frc2::CommandPtr IntakeManualFactory(std::function<double()> speed);
 private:
     rev::CANSparkMax intakeMotor{str::intake_constants::intakeMotorCanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+    pico::ColorSensor colorSensor;
+    bool colorSensorSeesCone{false};
+    bool colorCache{false};
 };
