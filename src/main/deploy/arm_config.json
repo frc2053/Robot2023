@@ -17,10 +17,10 @@
       }
     },
     "elbow": {
-      "mass": 4.2109,
-      "length": 0.7110864,
-      "moi": 0.115380556,
-      "cgRadius": 0.5443704,
+      "mass": 3.009,
+      "length": 0.781603466,
+      "moi": 0.079649927,
+      "cgRadius": 0.583896,
       "minAngle": -2.5,
       "maxAngle": 2.5,
       "motor": {

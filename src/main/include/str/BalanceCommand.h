@@ -37,7 +37,4 @@ class BalanceCommand
   units::degrees_per_second_t pitchRate{0};
   units::degree_t angleDegrees{std::numeric_limits<double>::max()};
   std::function<bool()> overrideDrive;
-  units::feet_per_second_t driveSpeed = 1.2_fps;
-  units::degree_t pitchThreshhold = 3_deg;
-  units::degrees_per_second_t pitchVelThreshold = 8.0_deg_per_s;
 };

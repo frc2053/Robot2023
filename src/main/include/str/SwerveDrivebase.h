@@ -135,8 +135,8 @@ namespace str {
       imu.GetYaw(),
       {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()},
       frc::Pose2d{},
-      {0.1, 0.1, 0.01},
-      {0.9, 0.9, 10.0}
+      {0.1, 0.1, 0.1},
+      {0.9, 0.9, 0.9}
     };
     
     frc::Rotation2d imuDriverOffset{0_deg};

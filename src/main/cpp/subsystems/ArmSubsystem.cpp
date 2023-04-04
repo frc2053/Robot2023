@@ -16,7 +16,7 @@
 #include <frc2/command/Commands.h>
 
 ArmSubsystem::ArmSubsystem() {
-  frc::SmartDashboard::PutData("Arm/Arm Display", &armDisplay);
+  frc::SmartDashboard::PutData("Arm Sim", &armDisplay);
   ConfigureMotors();
   kairos.SetConfig(config.json_string);
 
@@ -75,14 +75,14 @@ void ArmSubsystem::Periodic() {
   units::radians_per_second_squared_t shoulderAccel = (shoulderVel - prevShoulderVel) / 0.02_s;
   units::radians_per_second_squared_t elbowAccel = (elbowVel - prevElbowVel) / 0.02_s;
 
-  frc::SmartDashboard::PutNumber("Arm/Shoulder Angle", shoulderPos.convert<units::degrees>().value()); 
-  frc::SmartDashboard::PutNumber("Arm/Elbow Angle", elbowPos.convert<units::degrees>().value()); 
+  frc::SmartDashboard::PutNumber("Shoulder Angle", shoulderPos.convert<units::degrees>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Angle", elbowPos.convert<units::degrees>().value()); 
 
-  frc::SmartDashboard::PutNumber("Arm/Shoulder Vel", shoulderVel.convert<units::degrees_per_second>().value()); 
-  frc::SmartDashboard::PutNumber("Arm/Elbow Vel", elbowVel.convert<units::degrees_per_second>().value()); 
+  frc::SmartDashboard::PutNumber("Shoulder Vel", shoulderVel.convert<units::degrees_per_second>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Vel", elbowVel.convert<units::degrees_per_second>().value()); 
 
-  frc::SmartDashboard::PutNumber("Arm/Shoulder Accel", shoulderAccel.convert<units::degrees_per_second_squared>().value()); 
-  frc::SmartDashboard::PutNumber("Arm/Elbow Accel", elbowAccel.convert<units::degrees_per_second_squared>().value()); 
+  frc::SmartDashboard::PutNumber("Shoulder Accel", shoulderAccel.convert<units::degrees_per_second_squared>().value()); 
+  frc::SmartDashboard::PutNumber("Elbow Accel", elbowAccel.convert<units::degrees_per_second_squared>().value()); 
 
   if(frc::RobotBase::IsReal()) {
     armSystem.UpdateReal(
@@ -115,21 +115,21 @@ void ArmSubsystem::Periodic() {
   frc::Vectord<2> feedForwards = armSystem.GetFeedForwardVoltage();
   frc::Vectord<2> lqrOutput = armSystem.GetLQROutput();
 
-  frc::SmartDashboard::PutNumber("Arm/Feed Forward Shoulder", feedForwards(0));
-  frc::SmartDashboard::PutNumber("Arm/Feed Forward Elbow", feedForwards(1));
+  frc::SmartDashboard::PutNumber("Feed Forward Shoulder", feedForwards(0));
+  frc::SmartDashboard::PutNumber("Feed Forward Elbow", feedForwards(1));
 
-  frc::SmartDashboard::PutNumber("Arm/LQR Output Shoulder", lqrOutput(0));
-  frc::SmartDashboard::PutNumber("Arm/LQR Output Elbow", lqrOutput(1));
+  frc::SmartDashboard::PutNumber("LQR Output Shoulder", lqrOutput(0));
+  frc::SmartDashboard::PutNumber("LQR Output Elbow", lqrOutput(1));
 
   frc::Vectord<6> desiredState = armSystem.GetDesiredState();
 
-  frc::SmartDashboard::PutNumber("Arm/Desired End Effector X", currentEndEffectorSetpointX.convert<units::inches>().value());
-  frc::SmartDashboard::PutNumber("Arm/Desired End Effector Y", currentEndEffectorSetpointY.convert<units::inches>().value());
+  frc::SmartDashboard::PutNumber("Desired End Effector X", currentEndEffectorSetpointX.convert<units::inches>().value());
+  frc::SmartDashboard::PutNumber("Desired End Effector Y", currentEndEffectorSetpointY.convert<units::inches>().value());
 
   frc::Vectord<2> currentEndEffectorPos = std::get<2>(armSystem.CalculateForwardKinematics(armSystem.GetCurrentState()));
 
-  frc::SmartDashboard::PutNumber("Arm/Current End Effector X", units::meter_t{currentEndEffectorPos(0)}.convert<units::inches>().value());
-  frc::SmartDashboard::PutNumber("Arm/Current End Effector Y", units::meter_t{currentEndEffectorPos(1)}.convert<units::inches>().value());
+  frc::SmartDashboard::PutNumber("Current End Effector X", units::meter_t{currentEndEffectorPos(0)}.convert<units::inches>().value());
+  frc::SmartDashboard::PutNumber("Current End Effector Y", units::meter_t{currentEndEffectorPos(1)}.convert<units::inches>().value());
 
   shoulderPID.SetGoal(
     {
@@ -147,15 +147,15 @@ void ArmSubsystem::Periodic() {
 
   double shoulderOutput = shoulderPID.Calculate(GetShoulderMotorAngle());
   double elbowOutput = elbowPID.Calculate(GetElbowMotorAngle());
-  frc::SmartDashboard::PutNumber("Arm/PID Output Shoulder", shoulderOutput);
-  frc::SmartDashboard::PutNumber("Arm/PID Output Elbow", elbowOutput);
+  frc::SmartDashboard::PutNumber("PID Output Shoulder", shoulderOutput);
+  frc::SmartDashboard::PutNumber("PID Output Elbow", elbowOutput);
   
-  //shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
-  //elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
+  shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
+  elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
 
-  frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
-  shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
-  elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
+  //frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
+  //shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
+  //elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
@@ -369,19 +369,6 @@ frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> poseToGoTo) {
       return hasManuallyMoved || (lastRanTrajFinalPoseName != poseToGoTo().name);
     }
   ).WithName("Go To Arm Pose Factory");
-}
-
-frc2::CommandPtr ArmSubsystem::GoToMidBasedOnColor(std::function<bool()> seesCone) {
-  return GoToPose(
-    [this, seesCone]() {
-      if(seesCone()) {
-        return ArmPose::ScoreConeMid();
-      }
-      else {
-        return ArmPose::ScoreCubeMid();
-      }
-    }
-  ).WithName("Go To Mid Based On Color");
 }
 
 frc2::CommandPtr ArmSubsystem::GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo) {

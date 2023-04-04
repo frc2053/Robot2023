@@ -18,7 +18,7 @@ public:
 
   static constexpr ArmPose ScoreConeHigh() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-41.3_in, 24.0_in};
+    retVal.endEffectorPosition = {-45_in, 22_in};
     retVal.fromTop = true;
     retVal.name = "ScoreConeHigh";
     return retVal;
@@ -26,23 +26,15 @@ public:
 
   static constexpr ArmPose ScoreConeMid() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-33_in, 15_in};
-    retVal.fromTop = true;
+    retVal.endEffectorPosition = {-28.5_in, 9.25_in};
+    retVal.fromTop = false;
     retVal.name = "ScoreConeMid";
-    return retVal;
-  }
-
-  static constexpr ArmPose ScoreCubeMid() {
-    ArmPose retVal;
-    retVal.endEffectorPosition = {-17_in, 0_in};
-    retVal.fromTop = true;
-    retVal.name = "ScoreCubeMid";
     return retVal;
   }
 
   static constexpr ArmPose ScorePieceLow() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-24.5_in, -19_in};
+    retVal.endEffectorPosition = {-19.296905_in, -23.598059_in};
     retVal.fromTop = true;
     retVal.name = "ScorePieceLow";
     return retVal;
@@ -50,31 +42,31 @@ public:
 
   static constexpr ArmPose GroundIntakeFar() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {38.5799_in, -21.6341_in};
+    retVal.endEffectorPosition = {41.75_in, -22.0_in};
     retVal.fromTop = false;
     retVal.name = "GroundIntakeFar";
     return retVal;
   }
 
-  static constexpr ArmPose IntakeConeFromSubstation() {
+  static constexpr ArmPose PlacePieceFromBack() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-20.7_in, 26.7_in};
+    retVal.endEffectorPosition = {49_in, 10_in};
     retVal.fromTop = true;
-    retVal.name = "IntakeConeFromSubstation";
+    retVal.name = "PlacePieceFromBack";
     return retVal;
   }
 
-  static constexpr ArmPose IntakeCubeFromSubstation() {
+  static constexpr ArmPose IntakeFromSubstation() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {-27.5_in, 13.2_in};
+    retVal.endEffectorPosition = {-22.1_in, 14.76_in};
     retVal.fromTop = true;
-    retVal.name = "IntakeCubeFromSubstation";
+    retVal.name = "IntakeFromSubstation";
     return retVal;
   }
 
   static constexpr ArmPose StraightOut() {
     ArmPose retVal;
-    retVal.endEffectorPosition = {47_in, 0_in};
+    retVal.endEffectorPosition = {51_in, 0_in};
     retVal.fromTop = true;
     retVal.name = "StraightOut";
     return retVal;
@@ -105,9 +97,8 @@ static inline std::vector<ArmPose> AllPoses{
   ArmPose::ScoreConeHigh(),
   ArmPose::StraightOut(),
   ArmPose::ScoreConeMid(),
-  ArmPose::ScoreCubeMid(),
   ArmPose::ScorePieceLow(),
   ArmPose::GroundIntakeFar(),
-  ArmPose::IntakeConeFromSubstation(),
-  ArmPose::IntakeCubeFromSubstation()
+  ArmPose::PlacePieceFromBack(),
+  ArmPose::IntakeFromSubstation()
 };

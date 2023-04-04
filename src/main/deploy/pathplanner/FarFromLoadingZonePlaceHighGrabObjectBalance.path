@@ -18,7 +18,7 @@
       "stopEvent": {
         "names": [
           "MoveArmToHighPosition",
-          "PoopCube",
+          "PoopPiece",
           "MoveArmToGroundIntake"
         ],
         "executionBehavior": "sequential",
@@ -83,7 +83,7 @@
     {
       "position": 1.0000000000000013,
       "names": [
-        "IntakeCube"
+        "IntakeObject"
       ]
     }
   ]

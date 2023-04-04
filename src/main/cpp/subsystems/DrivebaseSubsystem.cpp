@@ -22,7 +22,7 @@ DrivebaseSubsystem::DrivebaseSubsystem() {
 
   autoTrajectoryConfig.SetKinematics(swerveDrivebase.GetKinematics());
   thetaController.EnableContinuousInput(-180_deg, 180_deg);
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch", 0);
+  frc::SmartDashboard::PutNumber("Robot Pitch", 0);
 }
 
 bool DrivebaseSubsystem::CheckIfVisionIsInited() {
@@ -39,8 +39,8 @@ void DrivebaseSubsystem::InitVisionStuff() {
     fieldLayout->SetOrigin(frc::AprilTagFieldLayout::OriginPosition::kRedAllianceWallRightSide);
   }
   
-  frontTagCamera = std::make_shared<photonlib::PhotonCamera>("BetterCamera");
-  system = std::make_shared<photonlib::SimVisionSystem>("BetterCamera", 80_deg, str::vision::ROBOT_TO_CAMERA.Inverse(), 9000_m, 640, 480, 5);
+  frontTagCamera = std::make_shared<photonlib::PhotonCamera>("FrontCamera");
+  system = std::make_shared<photonlib::SimVisionSystem>("FrontCamera", 80_deg, str::vision::ROBOT_TO_CAMERA.Inverse(), 9000_m, 640, 480, 5);
   visionPoseEstimator = std::make_shared<photonlib::PhotonPoseEstimator>(*fieldLayout.get(), photonlib::PoseStrategy::MULTI_TAG_PNP, std::move(*frontTagCamera.get()), str::vision::ROBOT_TO_CAMERA);
   
   frontTagCamera->SetVersionCheckEnabled(false);
@@ -56,25 +56,6 @@ void DrivebaseSubsystem::InitVisionStuff() {
 }
 
 void DrivebaseSubsystem::Periodic() {
-
-  frc::Rotation2d robotYaw = swerveDrivebase.GetRobotYaw();
-  units::degree_t robotPitch = swerveDrivebase.GetRobotPitch();
-  units::degrees_per_second_t robotPitchRate = swerveDrivebase.GetRobotPitchRate();
-  units::degree_t robotRoll = swerveDrivebase.GetRobotRoll();
-  units::degrees_per_second_t robotRollRate = swerveDrivebase.GetRobotRollRate();
-
-
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch", robotPitch.value());
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Pitch Rate", robotPitchRate.value());
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Roll", robotRoll.value());
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Roll Rate", robotRollRate.value());
-
-  units::degree_t angleDegrees = robotYaw.Cos() * robotPitch + robotYaw.Sin() * robotRoll;
-  units::degrees_per_second_t angleVel = robotYaw.Cos() * robotPitchRate + robotYaw.Sin() * robotRollRate;
-
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Total Tilt", angleDegrees.value());
-  frc::SmartDashboard::PutNumber("Drivetrain/Robot Total Tilt Rate", angleVel.value());
-
   swerveDrivebase.Periodic();
   if(isVisionInited) {
     ProcessVisionData();
@@ -120,7 +101,7 @@ void DrivebaseSubsystem::ProcessVisionData() {
 }
 
 void DrivebaseSubsystem::SimulationPeriodic() {
-  units::radian_t newPitch = units::degree_t{frc::SmartDashboard::GetNumber("Drivetrain/Robot Pitch", 0)};
+  units::radian_t newPitch = units::degree_t{frc::SmartDashboard::GetNumber("Robot Pitch", 0)};
   swerveDrivebase.SetRobotPitch(newPitch);
   swerveDrivebase.SimulationPeriodic();
   if(isVisionInited) {
@@ -202,18 +183,23 @@ frc2::CommandPtr DrivebaseSubsystem::ResetOdomFactory(
     .ToPtr();
 }
 
-frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride, std::function<bool()> skipBalance, std::function<units::radian_t()> angleGoal) {
+frc2::CommandPtr DrivebaseSubsystem::BalanceFactory(std::function<bool()> fromBack, std::function<bool()> wantsToOverride, std::function<bool()> skipBalance) {
   return frc2::cmd::Either(
     frc2::cmd::None(),
     frc2::cmd::Sequence(
-      //Set angle controller to desired angle
-      frc2::cmd::RunOnce([this, fromBack, angleGoal] {
-        thetaController.SetGoal(angleGoal() + swerveDrivebase.GetDriverImuOffset());
+      //Set angle controller to 0
+      frc2::cmd::RunOnce([this, fromBack] {
+        if(fromBack()) {
+          thetaController.SetGoal(180_deg + swerveDrivebase.GetDriverImuOffset());
+        }
+        else {
+          thetaController.SetGoal(0_deg + swerveDrivebase.GetDriverImuOffset());
+        }
       }, {this}),
       //Run robot forward until tilted up
       frc2::cmd::Run([this] {
         double rotCmd = thetaController.Calculate(swerveDrivebase.GetRobotYaw().Radians());
-        swerveDrivebase.Drive(2_fps, 0_mps, rotCmd * 1_rad_per_s, true, false, true, true);
+        swerveDrivebase.Drive(2_fps, 0_mps, rotCmd * 1_rad_per_s, false, false, true, true);
       }, {this}).Until([this, wantsToOverride] {
         return swerveDrivebase.GetRobotPitch() > 10_deg || wantsToOverride();
       }).WithName("Forward Until Tilted Up"),
@@ -340,15 +326,12 @@ frc2::CommandPtr DrivebaseSubsystem::CharacterizeDT(std::function<bool()> nextSt
       swerveDrivebase.Characterize(0_V);
     }, {this}).Until(nextStepButton),
     frc2::cmd::RunOnce([this] {
-      fmt::print("Char finished!\n\n\n\n\\n\n");
       charData["sysid"] = "true";
       charData["test"] = "Drivetrain";
       charData["units"] = "Meters";
       charData["unitsPerRotation"] = (str::swerve_physical_dims::DRIVE_WHEEL_DIAMETER * std::numbers::pi).value();
-      std::ofstream outFile;
-      outFile.open("/home/lvuser/deploy/charData.json");
+      std::ofstream outFile("charData.json");
       outFile << charData.dump() << std::endl;
-      outFile.close();
     })
   );
 }

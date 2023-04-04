@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.8457794339560063,
-        "y": 4.990442038129157
+        "x": 1.8853463793884109,
+        "y": 4.979956046868616
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8457794339560065,
-        "y": 4.990442038129157
+        "x": 3.420834667756292,
+        "y": 4.73699903921547
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -18,7 +18,7 @@
       "stopEvent": {
         "names": [
           "MoveArmToHighPosition",
-          "PoopCone"
+          "PoopPiece"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -27,16 +27,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.477712704978184,
-        "y": 4.60325256965362
+        "x": 6.99624442106027,
+        "y": 4.595032475779237
       },
       "prevControl": {
-        "x": 5.416526754341523,
-        "y": 4.6175929203378985
+        "x": 5.791177663100667,
+        "y": 4.51728623333023
       },
       "nextControl": {
-        "x": 5.416526754341523,
-        "y": 4.6175929203378985
+        "x": 5.791177663100667,
+        "y": 4.51728623333023
       },
       "holonomicAngle": 180.0,
       "isReversal": true,
@@ -52,16 +52,16 @@
     },
     {
       "anchorPoint": {
-        "x": 1.8457794339560063,
-        "y": 4.402487660073711
+        "x": 1.9001959432490299,
+        "y": 4.194219674153635
       },
       "prevControl": {
-        "x": 1.798179735677043,
-        "y": 5.021283737700224
+        "x": 1.9001959432490299,
+        "y": 5.2968266274388185
       },
       "nextControl": {
-        "x": 1.8601197846402857,
-        "y": 4.216063101178081
+        "x": 1.9001959432490299,
+        "y": 4.165590188323234
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -70,7 +70,8 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "PoopCube"
+          "MoveArmToHighPosition",
+          "PoopPiece"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -79,12 +80,37 @@
     },
     {
       "anchorPoint": {
-        "x": 2.8065829298027114,
-        "y": 3.0688350464357463
+        "x": 6.99624442106027,
+        "y": 3.4498530425632286
       },
       "prevControl": {
-        "x": 1.7310566284817728,
-        "y": 2.939771890277234
+        "x": 5.052588359835104,
+        "y": 5.646184391747665
+      },
+      "nextControl": {
+        "x": 7.064707537532726,
+        "y": 3.3724897209493534
+      },
+      "holonomicAngle": 137.41950921665634,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.857251714503429,
+        "y": 3.3782793279872276
+      },
+      "prevControl": {
+        "x": 1.3132914837258247,
+        "y": 6.656355455568055
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -94,7 +120,8 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "BalanceFromFrontReverse"
+          "MoveArmToHighPosition",
+          "PoopPiece"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -102,19 +129,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.05454545454545454,
-      "names": [
-        "MoveArmToGroundIntake",
-        "IntakeCube"
-      ]
-    },
-    {
-      "position": 1.5818181818181813,
-      "names": [
-        "MoveArmToHighPosition"
-      ]
-    }
-  ]
+  "markers": []
 }

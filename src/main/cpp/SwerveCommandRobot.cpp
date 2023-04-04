@@ -14,7 +14,6 @@
 void SwerveCommandRobot::ConfigureBindings() {
 
   frc::SmartDashboard::PutBoolean("Skip Balance", false);
-  frc::SmartDashboard::PutBoolean("Intake/Sim/DoesColorSensorSeeCone", true);
 
   autoChooser.SetDefaultOption("DriveToCenter", driveToCenter.get());
   autoChooser.AddOption("StartOnEdgeScoreThenGoToCenter", startOnEdgeScoreThenGoToCenter.get());
@@ -26,42 +25,35 @@ void SwerveCommandRobot::ConfigureBindings() {
   autoChooser.AddOption("CenterCubeOverRampBalance", centerCubeOverRampBalance.get());
   autoChooser.AddOption("TestPath", testPath.get());
   autoChooser.AddOption("TwoPieceOverCable", twoPieceOverCable.get());
-  autoChooser.AddOption("TwoPieceBalanceSmoothSide", twoPieceBalanceSmoothSide.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 
   frc::SmartDashboard::PutData("PDP", str::PDP::GetInstance().GetPDP());
 
-  frc::SmartDashboard::PutNumber("Drivetrain/ResetPose/x_ft", 0);
-  frc::SmartDashboard::PutNumber("Drivetrain/ResetPose/y_ft", 0);
-  frc::SmartDashboard::PutNumber("Drivetrain/ResetPose/rot_deg", 0);
+  frc::SmartDashboard::PutNumber("ResetPose/x_ft", 0);
+  frc::SmartDashboard::PutNumber("ResetPose/y_ft", 0);
+  frc::SmartDashboard::PutNumber("ResetPose/rot_deg", 0);
+  frc::SmartDashboard::PutNumber("Wheel Speed", 0);
 
-  frc::SmartDashboard::PutNumber("Drivetrain/Wheel Speed", 0);
+  frc::SmartDashboard::PutData("Drive Subsystem", &driveSubsystem);
+  frc::SmartDashboard::PutData("Arm Subsystem", &armSubsystem);
+  frc::SmartDashboard::PutData("Intake Subsystem", &intakeSubsystem);
 
-  frc::SmartDashboard::PutData("Superstructure/Drive Subsystem", &driveSubsystem);
-  frc::SmartDashboard::PutData("Superstructure/Arm Subsystem", &armSubsystem);
-  frc::SmartDashboard::PutData("Superstructure/Intake Subsystem", &intakeSubsystem);
-  frc::SmartDashboard::PutData("Superstructure/Intake Subsystem", &ledSubsystem);
-
-  frc::SmartDashboard::PutNumber("Drivetrain/AutoBalance/DriveSpeedFps", 1.2);
-  frc::SmartDashboard::PutNumber("Drivetrain/AutoBalance/PitchThresholdDeg", 3);
-  frc::SmartDashboard::PutNumber("Drivetrain/AutoBalance/PitchVelThresholdDeg", 8.0);
-
-  frc::SmartDashboard::PutData("Drivetrain/Zero Yaw", new ZeroYawCmd(&driveSubsystem));
+  frc::SmartDashboard::PutData("Zero Yaw", new ZeroYawCmd(&driveSubsystem));
 
   frc::SmartDashboard::PutData(
-    "Drivetrain/Reset Drivetrain Pose",
+    "Reset Drivetrain Pose",
     new frc2::InstantCommand(
       [this]() {
           driveSubsystem.ResetOdom(
           [this] {
-            return frc::SmartDashboard::GetNumber("Drivetrain/ResetPose/x_ft", 0);
+            return frc::SmartDashboard::GetNumber("ResetPose/x_ft", 0);
           },
           [this] {
-            return frc::SmartDashboard::GetNumber("Drivetrain/ResetPose/y_ft", 0);
+            return frc::SmartDashboard::GetNumber("ResetPose/y_ft", 0);
           },
           [this] {
-            return frc::SmartDashboard::GetNumber("Drivetrain/ResetPose/rot_deg", 0);
+            return frc::SmartDashboard::GetNumber("ResetPose/rot_deg", 0);
           }
         );
       },
@@ -70,23 +62,23 @@ void SwerveCommandRobot::ConfigureBindings() {
   );
 
   frc::SmartDashboard::PutData(
-    "Drivetrain/Run Characterizer",
+    "Run Characterizer",
     characterizer.get()
   );
 
-  frc::SmartDashboard::PutData("Arm/Test Mode Enable", new frc2::RunCommand([this] {
+  frc::SmartDashboard::PutData("Test Mode Enable", new frc2::RunCommand([this] {
     armSubsystem.EnableTestMode();
-  }, {&armSubsystem}));
+  }));
 
-  frc::SmartDashboard::PutData("Arm/Test Mode Disable", new frc2::InstantCommand([this] {
+  frc::SmartDashboard::PutData("Test Mode Disable", new frc2::InstantCommand([this] {
     armSubsystem.DisableTestMode();
-  }, {&armSubsystem}));
+  }));
 
   frc::SmartDashboard::PutData(
-    "Drivetrain/Set Wheel Speed",
+    "Set Wheel Speed",
     new frc2::InstantCommand(
       [this] {
-        double speed = frc::SmartDashboard::GetNumber("Drivetrain/Wheel Speed", 0);
+        double speed = frc::SmartDashboard::GetNumber("Wheel Speed", 0);
         driveSubsystem.SetWheelSpeeds(units::feet_per_second_t{speed});
       },
       {&driveSubsystem}
@@ -166,53 +158,46 @@ void SwerveCommandRobot::ConfigureBindings() {
   )));
 
   driverController.Back().OnTrue(driveSubsystem.BalanceFactory(
-    [] {
-      return false;
+    [this] {
+      return true;
     },
     [this] { 
       return std::abs(driverController.GetLeftY()) > 0.2; 
     },
-    [] {
+    [this] {
       return false;
-    },
-    [] {
-      return 0_deg;
     }
   ));
 
-  operatorController.R3().WhileTrue(
-    intakeSubsystem.IntakeCurrentLimitCubeFactory()
-    .AlongWith(
-      frc2::cmd::Parallel(
-        ledSubsystem.SetBothToBlinkPurple(),
-        armSubsystem.GoToPose([this]{ return ArmPose::IntakeCubeFromSubstation(); })
-      )
-    )
-  );
+  // driverController.Start().OnTrue(driveSubsystem.SetXFactory(    
+  //   [this] { 
+  //     return std::abs(driverController.GetLeftX()) > 0.2  ||
+  //            std::abs(driverController.GetLeftY()) > 0.2  ||
+  //            std::abs(driverController.GetRightX()) > 0.2 || 
+  //            std::abs(driverController.GetRightY()) > 0.2; 
+  //   }
+  // ));
 
-  operatorController.L3().WhileTrue(
-    intakeSubsystem.IntakeCurrentLimitConeFactory()
-    .AlongWith(
-      frc2::cmd::Parallel(
-        ledSubsystem.SetBothToBlinkYellow(),
-        armSubsystem.GoToPose([this]{ return ArmPose::IntakeConeFromSubstation(); })
-      )
-    )
-  );
+  // driverController.LeftBumper().OnTrue(driveSubsystem.GoToPoseFactory(    
+  //   [this] {
+  //     return  frc::Pose2d{1.74_m, 1.64_m, frc::Rotation2d{180_deg}};
+  //   },
+  //   [this] { 
+  //     return std::abs(driverController.GetLeftX()) > 0.2 || std::abs(driverController.GetLeftY()) > 0.2; 
+  //   }
+  // ));
 
-  operatorController.R1().WhileTrue(
-    intakeSubsystem.IntakeManualBasedOnColorFactory([] { return -1; })
-    .AlongWith(
-      frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
-    )
-  );
+
+  operatorController.LeftBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return 1.0; }));
+  operatorController.RightBumper().WhileTrue(intakeSubsystem.IntakeManualFactory([] { return -0.1; }));
+  operatorController.Back().OnTrue(armSubsystem.PutConeOnFactory());
 
   // frc2::Trigger manualMoveArmTrigger{[this] {
   //   return std::fabs(operatorController.GetLeftX()) > .2 ||
   //          std::fabs(operatorController.GetLeftY()) > .2;
   // }};
 
-  //manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return frc::ApplyDeadband<double>(-operatorController.GetLeftX(), .20); }, [this]{ return frc::ApplyDeadband<double>(-operatorController.GetLeftY(), .20); }));
+  // manualMoveArmTrigger.ToggleOnTrue(armSubsystem.DrivePositionFactory([this] { return operatorController.GetLeftY(); }, [this]{ return -operatorController.GetLeftX(); }));
 
   frc2::Trigger offsetChainSkipDown{[this] {
     return operatorController.POVDown(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()).GetAsBoolean();
@@ -222,22 +207,20 @@ void SwerveCommandRobot::ConfigureBindings() {
     return operatorController.POVUp(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()).GetAsBoolean();
   }};
 
-  offsetChainSkipDown.WhileTrue(armSubsystem.ChainSkipFactory([]{ return -5_deg; }));
-  offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 5_deg; }));
+  offsetChainSkipDown.WhileTrue(armSubsystem.ChainSkipFactory([]{ return -1_deg; }));
+  offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 1_deg; }));
 
-  operatorController.Triangle().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
-  operatorController.Square().WhileTrue(armSubsystem.GoToMidBasedOnColor([this]{ return intakeSubsystem.DoesColorSensorSeeCone(); }).Repeatedly());
-  operatorController.L2().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
-  operatorController.L1().WhileTrue(
-    intakeSubsystem.IntakeCurrentLimitCubeFactory()
-    .AlongWith(
-      ledSubsystem.SetBothToBlinkPurple()
-    )
-  );
+  operatorController.LeftTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
+  operatorController.RightTrigger().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::IntakeFromSubstation(); }).Repeatedly());
+
+  operatorController.Y().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
+  operatorController.X().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).Repeatedly());
+  operatorController.B().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::PlacePieceFromBack(); }).Repeatedly());
+  operatorController.A().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScorePieceLow(); }).Repeatedly());
 
   armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 
-  ledSubsystem.SetDefaultCommand(ledSubsystem.SetBothToSolidGreen());
+  //frc2::CommandScheduler::GetInstance().Schedule(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeMid(); }).IgnoringDisable(true));
 }
 
 void SwerveCommandRobot::SetDriveAsDefault() {
@@ -261,8 +244,7 @@ void SwerveCommandRobot::SetDriveAsDefault() {
 }
 
 void SwerveCommandRobot::SetIntakeAsDefault() {
-  //TODO: Not sure if needed with new intake
-  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 0.4; }));
+  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualFactory([] { return 0.4; }));
 }
 
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {

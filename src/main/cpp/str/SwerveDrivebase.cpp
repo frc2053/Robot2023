@@ -11,8 +11,8 @@
 
 str::SwerveDrivebase::SwerveDrivebase() {
   ResetPose(frc::Pose2d{1.73_m,.39_m,frc::Rotation2d{0_deg}});
-  frc::SmartDashboard::PutData("Drivetrain/IMU", &imu);
-  frc::SmartDashboard::PutData("Drivetrain/Field", str::Field::GetInstance().GetField());
+  frc::SmartDashboard::PutData("IMU", &imu);
+  frc::SmartDashboard::PutData("Field", str::Field::GetInstance().GetField());
 }
 
 frc::Rotation2d str::SwerveDrivebase::GetRobotYaw() {
@@ -57,7 +57,6 @@ void str::SwerveDrivebase::AddVisionMeasurementToPoseEstimator(frc::Pose2d visio
   estimator.AddVisionMeasurement(visionMeasuredRobotPose, timeStampWhenPicWasTaken);
 }
 
-
 void str::SwerveDrivebase::Drive(
   units::meters_per_second_t xSpeed,
   units::meters_per_second_t ySpeed,
@@ -67,15 +66,9 @@ void str::SwerveDrivebase::Drive(
   bool voltageComp,
   bool rateLimit
 ) {
-
-  units::radian_t rot = rotSpeed * 20_ms;
-  frc::Pose2d robotPoseVel{xSpeed * 20_ms, ySpeed * 20_ms, frc::Rotation2d{rot}};
-  frc::Twist2d twistVel = frc::Pose2d{}.Log(robotPoseVel);
-  frc::ChassisSpeeds updatedChassisSpeeds{twistVel.dx / 20_ms, twistVel.dy / 20_ms, twistVel.dtheta / 20_ms};
-
   auto states = kinematics.ToSwerveModuleStates(
-    fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(updatedChassisSpeeds.vx, updatedChassisSpeeds.vy, updatedChassisSpeeds.omega, imu.GetYaw() + imuDriverOffset) :
-                    frc::ChassisSpeeds(updatedChassisSpeeds.vx, updatedChassisSpeeds.vy, updatedChassisSpeeds.omega)
+    fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, imu.GetYaw() + imuDriverOffset) :
+                    frc::ChassisSpeeds(xSpeed, ySpeed, rotSpeed)
   );
 
   units::meters_per_second_t maxModuleSpeed = str::Units::ConvertAngularVelocityToLinearVelocity(

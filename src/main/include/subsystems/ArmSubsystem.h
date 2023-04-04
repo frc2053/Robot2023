@@ -40,7 +40,6 @@ class ArmSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr SetDesiredArmAnglesFactory(std::function<units::radian_t()> shoulderAngle, std::function<units::radian_t()> elbowAngle);
   frc2::CommandPtr GoToPose(std::function<ArmPose()> closesetPoseToPreset, std::function<ArmPose()> poseToGoTo);
   frc2::CommandPtr GoToPose(std::function<ArmPose()> poseToGoTo);
-  frc2::CommandPtr GoToMidBasedOnColor(std::function<bool()> seesCone);
   frc2::CommandPtr DrivePositionFactory(std::function<double()> xJoy, std::function<double()> yJoy);
   frc2::CommandPtr FollowTrajectory(std::function<ArmTrajectoryParams()> trajParams);
   frc2::CommandPtr PutConeOnFactory();
@@ -95,8 +94,8 @@ class ArmSubsystem : public frc2::SubsystemBase {
     10000_deg_per_s_sq
   };
 
-  frc::ProfiledPIDController<units::radians> shoulderPID{1.8, 0, 0, arm_constraints};
-  frc::ProfiledPIDController<units::radians> elbowPID{1.8, 0, 0, arm_constraints};
+  frc::ProfiledPIDController<units::radians> shoulderPID{1.5, 0, 0, arm_constraints};
+  frc::ProfiledPIDController<units::radians> elbowPID{1.5, 0, 0, arm_constraints};
   
   TwoJointArmDynamics armSystem {
     config.shoulder.mass,
@@ -144,26 +143,6 @@ class ArmSubsystem : public frc2::SubsystemBase {
       6, 
       frc::Color8Bit{frc::Color::kBlue}
     );
-
-  frc::MechanismRoot2d* mediumConeBase = armDisplay.GetRoot("MediumConeBase", 150 - 29.27500, 150);
-  frc::MechanismLigament2d* mediumConePole =
-  mediumConeBase->Append<frc::MechanismLigament2d>(
-    "MediumConePole",
-    34.092500, 
-    90_deg, 
-    6, 
-    frc::Color8Bit{frc::Color::kPurple}
-  );
-
-  frc::MechanismRoot2d* tallConeBase = armDisplay.GetRoot("TallConeBase", 150 - 46.161430, 150);
-  frc::MechanismLigament2d* tallConePole =
-  tallConeBase->Append<frc::MechanismLigament2d>(
-    "TallConePole",
-    46.062500, 
-    90_deg, 
-    6, 
-    frc::Color8Bit{frc::Color::kPurple}
-  );
 
   frc::MechanismRoot2d* tester = armDisplay.GetRoot("TESTER", 150, 150);
   frc::MechanismLigament2d* testerDot =

@@ -41,13 +41,13 @@ namespace str {
     static constexpr double STEER_KD = 0;
 
     static constexpr double DRIVE_KF = 0;
-    static constexpr double DRIVE_KP = 0.0070699;
+    static constexpr double DRIVE_KP = 0.00059876;
     static constexpr double DRIVE_KI = 0;
     static constexpr double DRIVE_KD = 0;
 
-    static constexpr auto DRIVE_KS = 0.28394_V;
-    static constexpr auto DRIVE_KV = 10.829 * 1_V / 1_mps;
-    static constexpr auto DRIVE_KA = 2.589 * 1_V / 1_mps_sq;
+    static constexpr auto DRIVE_KS = 0.14463_V;
+    static constexpr auto DRIVE_KV = 2.4681 * 1_V / 1_mps;
+    static constexpr auto DRIVE_KA = 0.32479 * 1_V / 1_mps_sq;
 
     static constexpr auto GLOBAL_POSE_TRANS_KP = .85;
     static constexpr auto GLOBAL_POSE_TRANS_KD = 0.2;
