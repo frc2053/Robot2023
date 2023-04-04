@@ -150,12 +150,12 @@ void ArmSubsystem::Periodic() {
   frc::SmartDashboard::PutNumber("Arm/PID Output Shoulder", shoulderOutput);
   frc::SmartDashboard::PutNumber("Arm/PID Output Elbow", elbowOutput);
   
-  shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
-  elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
+  //shoulderMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, shoulderOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(0), -12, 12, -1, 1));
+  //elbowMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, elbowOutput, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, str::Units::map(feedForwards(1), -12, 12, -1, 1));
 
-  //frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
-  //shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
-  //elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
+  frc::Vectord<2> setVoltages = feedForwards + lqrOutput;
+  shoulderMotor.SetVoltage(units::volt_t{setVoltages(0)});
+  elbowMotor.SetVoltage(units::volt_t{setVoltages(1)});
 }
 
 void ArmSubsystem::SetDesiredArmAngles(units::radian_t shoulderAngle, units::radian_t elbowAngle) {
