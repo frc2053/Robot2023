@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.857251714503429,
-        "y": 0.501016002032004
+        "x": 1.9288254290794298,
+        "y": 3.893610072934432
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8572517145034313,
-        "y": 0.501016002032004
+        "x": 1.3705504553866255,
+        "y": 5.196251678217642
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -18,8 +18,7 @@
       "stopEvent": {
         "names": [
           "MoveArmToHighPosition",
-          "PoopPiece",
-          "MoveArmToGroundIntake"
+          "PoopPiece"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -28,47 +27,49 @@
     },
     {
       "anchorPoint": {
-        "x": 6.99624442106027,
-        "y": 0.9447730324032081
+        "x": 6.781523277332269,
+        "y": 4.580717732864038
       },
       "prevControl": {
-        "x": 5.57908487245546,
-        "y": 0.8875140607424081
+        "x": 5.783411407409404,
+        "y": 4.642140001782368
       },
       "nextControl": {
-        "x": 5.57908487245546,
-        "y": 0.8875140607424081
+        "x": 7.711981566820278,
+        "y": 4.523458761203237
       },
-      "holonomicAngle": 180.0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": true,
-      "stopEvent": {
-        "names": [
-          "MoveArmToStartingPosition",
-          "HoldPiece"
-        ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 1.857251714503429,
-        "y": 1.0306614898944086
-      },
-      "prevControl": {
-        "x": 2.7590805181610363,
-        "y": 0.501016002032004
-      },
-      "nextControl": null,
       "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "MoveArmToStartingPosition"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.9145106861642298,
+        "y": 4.4089408178816365
+      },
+      "prevControl": {
+        "x": 1.9288254290794298,
+        "y": 5.1389927065568415
+      },
+      "nextControl": {
+        "x": 1.8976356731075272,
+        "y": 3.5483151519897995
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [
           "MoveArmToHighPosition",
@@ -79,11 +80,35 @@
         "waitBehavior": "none",
         "waitTime": 0
       }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.088319605210639,
+        "y": 3.134928698428826
+      },
+      "prevControl": {
+        "x": 1.556642113284227,
+        "y": 2.905892811785624
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "BalanceFromFrontReverse"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
     }
   ],
   "markers": [
     {
-      "position": 0.8727272727272727,
+      "position": 0.8818181818181826,
       "names": [
         "IntakeObject"
       ]

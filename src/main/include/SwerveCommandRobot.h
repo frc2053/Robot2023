@@ -34,7 +34,6 @@ private:
   autos::Autos autos{&driveSubsystem, &armSubsystem, &intakeSubsystem};
 
   frc2::CommandPtr oneMeterForward = autos.OneMForward();
-  frc2::CommandPtr testPath = autos.TestPath();
   frc2::CommandPtr driveToCenter = autos.DriveToCenter();
   frc2::CommandPtr startOnEdgeScoreThenGoToCenter = autos.StartOnEdgeScoreThenGoToCenter();
   frc2::CommandPtr startOnInnerEdgeScoreThenGoToCenter = autos.StartOnInnerEdgeScoreThenGoToCenter();
@@ -42,8 +41,9 @@ private:
   frc2::CommandPtr characterizer = driveSubsystem.CharacterizeDT([this] { return driverController.GetStartButtonPressed(); });
   frc2::CommandPtr threePiece = autos.ThreePiece();
   frc2::CommandPtr placeHighGoAroundBalance = autos.PlaceHighGoAroundBalance();
-  frc2::CommandPtr centerCubeOverRampBalance = autos.CenterCubeOverRampBalance();
-  frc2::CommandPtr twoPieceOverCable = autos.TwoPieceOverCable();
+  frc2::CommandPtr centerCubeBalance = autos.CenterCubeBalance();
+  frc2::CommandPtr twoPiece = autos.TwoPiece();
+  frc2::CommandPtr testBalance = autos.TestBalance();
 
   frc::SendableChooser<frc2::Command *> autoChooser;
 };

@@ -18,7 +18,8 @@
       "stopEvent": {
         "names": [
           "MoveArmToHighPosition",
-          "PoopPiece"
+          "PoopPiece",
+          "MoveArmToGroundIntake"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -51,12 +52,6 @@
     }
   ],
   "markers": [
-    {
-      "position": 0.02727272727272727,
-      "names": [
-        "MoveArmToGroundIntake"
-      ]
-    },
     {
       "position": 0.909090909090907,
       "names": [

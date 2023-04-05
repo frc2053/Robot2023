@@ -16,15 +16,15 @@ void SwerveCommandRobot::ConfigureBindings() {
   frc::SmartDashboard::PutBoolean("Skip Balance", false);
 
   autoChooser.SetDefaultOption("DriveToCenter", driveToCenter.get());
+  autoChooser.AddOption("1 Meter Forward", oneMeterForward.get());
+  autoChooser.AddOption("CenterCubeBalance", centerCubeBalance.get());
+  autoChooser.AddOption("FarFromLoadingZonePlaceHighGrabObjectBalance", farFromLoadingZonePlaceHighGrabObjectBalance.get());
+  autoChooser.AddOption("PlaceHighGoAroundBalance", placeHighGoAroundBalance.get());
   autoChooser.AddOption("StartOnEdgeScoreThenGoToCenter", startOnEdgeScoreThenGoToCenter.get());
   autoChooser.AddOption("StartOnInnerEdgeScoreThenGoToCenter", startOnInnerEdgeScoreThenGoToCenter.get());
-  autoChooser.AddOption("1 Meter Forward", oneMeterForward.get());
-  autoChooser.AddOption("FarFromLoadingZonePlaceHighGrabObjectBalance", farFromLoadingZonePlaceHighGrabObjectBalance.get());
   autoChooser.AddOption("ThreePiece", threePiece.get());
-  autoChooser.AddOption("PlaceHighGoAroundBalance", placeHighGoAroundBalance.get());
-  autoChooser.AddOption("CenterCubeOverRampBalance", centerCubeOverRampBalance.get());
-  autoChooser.AddOption("TestPath", testPath.get());
-  autoChooser.AddOption("TwoPieceOverCable", twoPieceOverCable.get());
+  autoChooser.AddOption("TwoPiece", twoPiece.get());
+  autoChooser.AddOption("TestBalance", testBalance.get());
 
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 

@@ -18,16 +18,15 @@ public:
   frc2::CommandPtr FollowPathplannerFactory(std::string pathName, units::meters_per_second_t maxSpeed, units::meters_per_second_squared_t maxAccel);
   frc2::CommandPtr FollowPathGroup(std::string pathName, units::meters_per_second_t maxSpeed, units::meters_per_second_squared_t maxAccel);
   frc2::CommandPtr OneMForward();
-  frc2::CommandPtr TestPath();
+  frc2::CommandPtr CenterCubeBalance();
   frc2::CommandPtr DriveToCenter();
+  frc2::CommandPtr FarFromLoadingZonePlaceHighGrabObjectBalance();
+  frc2::CommandPtr PlaceHighGoAroundBalance();
   frc2::CommandPtr StartOnEdgeScoreThenGoToCenter();
   frc2::CommandPtr StartOnInnerEdgeScoreThenGoToCenter();
-  frc2::CommandPtr FarFromLoadingZonePlaceHighGrabObjectBalance();
   frc2::CommandPtr ThreePiece();
-  frc2::CommandPtr PlaceHighGoAroundBalance();
-  frc2::CommandPtr CenterCubeOverRampBalance();
-  frc2::CommandPtr TwoPieceOverCable();
-  frc2::CommandPtr TwoPieceBalanceSmoothSide();
+  frc2::CommandPtr TwoPiece();
+  frc2::CommandPtr TestBalance();
 private:
   DrivebaseSubsystem* m_driveSub;
   ArmSubsystem* m_armSub;

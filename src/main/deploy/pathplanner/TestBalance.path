@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.8464732581639078,
-        "y": 2.744751576459675
+        "x": 2.057658115316231,
+        "y": 2.8056896113792225
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.846473258163908,
-        "y": 2.744751576459675
+        "x": 3.057658115316233,
+        "y": 2.8056896113792225
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -16,24 +16,20 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "MoveArmToHighPosition",
-          "PoopPiece",
-          "MoveArmToStartingPosition"
-        ],
-        "executionBehavior": "sequential",
+        "names": [],
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 5.461673532042717,
-        "y": 2.773906417378053
+        "x": 3.2600965201930405,
+        "y": 2.7913748684640227
       },
       "prevControl": {
-        "x": 4.461673532042717,
-        "y": 2.773906417378053
+        "x": 2.2600965201930405,
+        "y": 2.7913748684640227
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -43,7 +39,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "BalanceFromBack"
+          "BalanceFromFrontReverse"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

@@ -63,12 +63,20 @@ frc2::CommandPtr autos::Autos::OneMForward() {
   return FollowPathplannerFactory("1MForward", 15_fps, 4.267_mps_sq);
 }
 
-frc2::CommandPtr autos::Autos::TestPath() {
-  return FollowPathplannerFactory("TestPath", 15_fps, 4.267_mps_sq);
+frc2::CommandPtr autos::Autos::CenterCubeBalance() {
+  return FollowPathplannerFactory("CenterCubeBalance", 15_fps, 4.267_mps_sq);
 }
 
 frc2::CommandPtr autos::Autos::DriveToCenter() {
   return FollowPathplannerFactory("DriveToCenter", 15_fps, 4.267_mps_sq);
+}
+
+frc2::CommandPtr autos::Autos::FarFromLoadingZonePlaceHighGrabObjectBalance() {
+  return FollowPathplannerFactory("FarFromLoadingZonePlaceHighGrabObjectBalance", 15_fps, 4.267_mps_sq);
+}
+
+frc2::CommandPtr autos::Autos::PlaceHighGoAroundBalance() {
+  return FollowPathplannerFactory("PlaceHighGoAroundBalance", 15_fps, 4.267_mps_sq);
 }
 
 frc2::CommandPtr autos::Autos::StartOnEdgeScoreThenGoToCenter() {
@@ -79,22 +87,14 @@ frc2::CommandPtr autos::Autos::StartOnInnerEdgeScoreThenGoToCenter() {
   return FollowPathplannerFactory("StartOnInnerEdgeScoreThenGoToCenter", 15_fps, 4.267_mps_sq);
 }
 
-frc2::CommandPtr autos::Autos::FarFromLoadingZonePlaceHighGrabObjectBalance() {
-  return FollowPathplannerFactory("FarFromLoadingZonePlaceHighGrabObjectBalance", 15_fps, 4.267_mps_sq);
-}
-
 frc2::CommandPtr autos::Autos::ThreePiece() {
   return FollowPathGroup("ThreePiece", 15_fps, 4.267_mps_sq);
 }
 
-frc2::CommandPtr autos::Autos::PlaceHighGoAroundBalance() {
-  return FollowPathplannerFactory("PlaceHighGoAroundBalance", 15_fps, 4.267_mps_sq);
-}
-
-frc2::CommandPtr autos::Autos::CenterCubeOverRampBalance() {
-  return FollowPathplannerFactory("CenterCubeOverRampBalance", 10_fps, 4.267_mps_sq);
-}
-
-frc2::CommandPtr autos::Autos::TwoPieceOverCable() {
+frc2::CommandPtr autos::Autos::TwoPiece() {
   return FollowPathGroup("TwoPieceOverCable", 15_fps, 4.267_mps_sq);
+}
+
+frc2::CommandPtr autos::Autos::TestBalance() {
+  return FollowPathplannerFactory("TestBalance", 15_fps, 4.267_mps_sq);
 }
