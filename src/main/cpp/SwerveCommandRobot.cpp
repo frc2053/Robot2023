@@ -235,7 +235,7 @@ void SwerveCommandRobot::ConfigureBindings() {
   //   )
   // );
 
-  operatorController.
+  // operatorController.
 
   armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 
