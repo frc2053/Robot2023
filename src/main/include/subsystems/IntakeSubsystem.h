@@ -15,7 +15,7 @@ public:
     void SimulationPeriodic() override;
     void SpinIntakeForCone(double speed);
     void SpinIntakeForCube(double speed);
-    bool DoesColorSensorSeeCone();
+    //bool DoesColorSensorSeeCone();
 
     frc2::CommandPtr PoopCone(units::second_t howLongToSpin);
     frc2::CommandPtr PoopCube(units::second_t howLongToSpin);
@@ -25,11 +25,11 @@ public:
     frc2::CommandPtr IntakeCurrentLimitConeFactory();
     frc2::CommandPtr IntakeManualCubeFactory(std::function<double()> speed);
     frc2::CommandPtr IntakeManualConeFactory(std::function<double()> speed);
-    frc2::CommandPtr IntakeManualBasedOnColorFactory(std::function<double()> speed);
+    //frc2::CommandPtr IntakeManualBasedOnColorFactory(std::function<double()> speed);
 private:
     rev::CANSparkMax intakeMotor1{str::intake_constants::intakeMotor1CanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     rev::CANSparkMax intakeMotor2{str::intake_constants::intakeMotor2CanId, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-    pico::ColorSensor colorSensor;
-    bool colorSensorSeesCone{false};
-    bool colorCache{false};
+    //pico::ColorSensor colorSensor;
+    //bool colorSensorSeesCone{false};
+    //bool colorCache{false};
 };

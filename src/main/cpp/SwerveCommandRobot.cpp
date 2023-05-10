@@ -200,11 +200,11 @@ void SwerveCommandRobot::ConfigureBindings() {
     )
   );
 
+  operatorController.L1().WhileTrue(
+    intakeSubsystem.IntakeManualConeFactory([] { return -1; }));
+
   operatorController.R1().WhileTrue(
-    intakeSubsystem.IntakeManualBasedOnColorFactory([] { return -1; })
-    .AlongWith(
-      frc2::cmd::Either(ledSubsystem.SetBothToBlinkYellow(), ledSubsystem.SetBothToBlinkPurple(), [this] { return intakeSubsystem.DoesColorSensorSeeCone(); })
-    )
+    intakeSubsystem.IntakeManualCubeFactory([] { return -1; })
   );
 
   // frc2::Trigger manualMoveArmTrigger{[this] {
@@ -226,14 +226,16 @@ void SwerveCommandRobot::ConfigureBindings() {
   offsetChainSkipUp.WhileTrue(armSubsystem.ChainSkipFactory([]{ return 5_deg; }));
 
   operatorController.Triangle().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::ScoreConeHigh(); }).Repeatedly());
-  operatorController.Square().WhileTrue(armSubsystem.GoToMidBasedOnColor([this]{ return intakeSubsystem.DoesColorSensorSeeCone(); }).Repeatedly());
+  //operatorController.Square().WhileTrue(armSubsystem.GoToMidBasedOnColor([this]{ return intakeSubsystem.DoesColorSensorSeeCone(); }).Repeatedly());
   operatorController.L2().WhileTrue(armSubsystem.GoToPose([this]{ return ArmPose::GroundIntakeFar(); }).Repeatedly());
-  operatorController.L1().WhileTrue(
-    intakeSubsystem.IntakeCurrentLimitCubeFactory()
-    .AlongWith(
-      ledSubsystem.SetBothToBlinkPurple()
-    )
-  );
+  // operatorController.L1().WhileTrue(
+  //   intakeSubsystem.IntakeCurrentLimitCubeFactory()
+  //   .AlongWith(
+  //     ledSubsystem.SetBothToBlinkPurple()
+  //   )
+  // );
+
+  operatorController.
 
   armSubsystem.SetDefaultCommand(armSubsystem.GoToPose([this]{ return ArmPose::StartingConfig(); }));
 
@@ -262,7 +264,7 @@ void SwerveCommandRobot::SetDriveAsDefault() {
 
 void SwerveCommandRobot::SetIntakeAsDefault() {
   //TODO: Not sure if needed with new intake
-  intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 0.4; }));
+  //intakeSubsystem.SetDefaultCommand(intakeSubsystem.IntakeManualBasedOnColorFactory([] { return 0.4; }));
 }
 
 frc2::Command* SwerveCommandRobot::GetAutonomousCommand() {

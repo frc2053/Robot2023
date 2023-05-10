@@ -21,25 +21,25 @@ IntakeSubsystem::IntakeSubsystem() {
 }
 
 void IntakeSubsystem::Periodic() {
-  auto color0 = colorSensor.GetRawColor0();
-  frc::SmartDashboard::PutNumber("Intake/ColorSensor/Connected", colorSensor.IsSensor0Connected());
-  frc::SmartDashboard::PutNumber("Intake/ColorSensor/R", color0.red);
-  frc::SmartDashboard::PutNumber("Intake/ColorSensor/G", color0.green);
-  frc::SmartDashboard::PutNumber("Intake/ColorSensor/B", color0.blue);
-  frc::SmartDashboard::PutNumber("Intake/ColorSensor/Prox", colorSensor.GetProximity0());
-  if(frc::RobotBase::IsSimulation()) {
-    colorSensorSeesCone = frc::SmartDashboard::GetBoolean("Intake/Sim/DoesColorSensorSeeCone", true);
-  }
-  else {
-    if(color0.green > color0.red) {
-      colorSensorSeesCone = false;
-      //fmt::print("We want to intake a cube!\n");
-    }
-    else {
-      colorSensorSeesCone = true;
-      //fmt::print("We want to intake a cone!\n");
-    }
-  }
+  //auto color0 = colorSensor.GetRawColor0();
+  // frc::SmartDashboard::PutNumber("Intake/ColorSensor/Connected", colorSensor.IsSensor0Connected());
+  // frc::SmartDashboard::PutNumber("Intake/ColorSensor/R", color0.red);
+  // frc::SmartDashboard::PutNumber("Intake/ColorSensor/G", color0.green);
+  // frc::SmartDashboard::PutNumber("Intake/ColorSensor/B", color0.blue);
+  // frc::SmartDashboard::PutNumber("Intake/ColorSensor/Prox", colorSensor.GetProximity0());
+  // if(frc::RobotBase::IsSimulation()) {
+  //   //colorSensorSeesCone = frc::SmartDashboard::GetBoolean("Intake/Sim/DoesColorSensorSeeCone", true);
+  // }
+  // else {
+  //   if(color0.green > color0.red) {
+  //     colorSensorSeesCone = false;
+  //     //fmt::print("We want to intake a cube!\n");
+  //   }
+  //   else {
+  //     colorSensorSeesCone = true;
+  //     //fmt::print("We want to intake a cone!\n");
+  //   }
+  // }
 
   frc::SmartDashboard::PutNumber("Intake/Motor1Current", intakeMotor1.GetOutputCurrent());
   frc::SmartDashboard::PutNumber("Intake/Motor2Current", intakeMotor2.GetOutputCurrent());
@@ -49,9 +49,9 @@ void IntakeSubsystem::SimulationPeriodic() {
 
 }
 
-bool IntakeSubsystem::DoesColorSensorSeeCone() {
-  return colorSensorSeesCone;
-}
+// bool IntakeSubsystem::DoesColorSensorSeeCone() {
+//   return false;
+// }
 
 void IntakeSubsystem::SpinIntakeForCube(double speed) {
   intakeMotor1.Set(speed);
@@ -167,22 +167,22 @@ frc2::CommandPtr IntakeSubsystem::IntakeManualConeFactory(std::function<double()
   }).WithName("Intake Cone Manual Factory");
 }
 
-frc2::CommandPtr IntakeSubsystem::IntakeManualBasedOnColorFactory(std::function<double()> speed) {
-  return frc2::cmd::Run([this, speed] {
-    if(colorCache) { 
-      SpinIntakeForCone(speed());
-    }
-    else {
-      SpinIntakeForCube(speed());
-    }
-  }, {this}).FinallyDo([this](bool interrupted) {
-    if(colorCache) { 
-      SpinIntakeForCone(0);
-    }
-    else {
-      SpinIntakeForCube(0);
-    }
-  }).BeforeStarting([this] {     
-    colorCache = colorSensorSeesCone;
-  }, {this}).WithName("Intake Based on Sensor Factory");
-}
+// frc2::CommandPtr IntakeSubsystem::IntakeManualBasedOnColorFactory(std::function<double()> speed) {
+//   return frc2::cmd::Run([this, speed] {
+//     if(colorCache) { 
+//       SpinIntakeForCone(speed());
+//     }
+//     else {
+//       SpinIntakeForCube(speed());
+//     }
+//   }, {this}).FinallyDo([this](bool interrupted) {
+//     if(colorCache) { 
+//       SpinIntakeForCone(0);
+//     }
+//     else {
+//       SpinIntakeForCube(0);
+//     }
+//   }).BeforeStarting([this] {     
+//     colorCache = colorSensorSeesCone;
+//   }, {this}).WithName("Intake Based on Sensor Factory");
+// }
