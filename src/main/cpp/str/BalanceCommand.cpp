@@ -41,7 +41,7 @@ void BalanceCommand::Execute() {
   frc::SmartDashboard::PutNumber("Drivetrain/AutoBalance/CurrentAngleDegrees", angleDegrees.value());
   frc::SmartDashboard::PutNumber("Drivetrain/AutoBalance/CurrentAngleRate", angleVel.value());
 
-  bool shouldStop = (angleDegrees < 0.0_deg && angleVel > pitchVelThreshold) || (angleDegrees > 0.0_deg && angleVel < -pitchVelThreshold);
+  bool shouldStop = (angleDegrees < 0.0_deg && angleVel < pitchVelThreshold) || (angleDegrees > 0.0_deg && angleVel < -pitchVelThreshold);
 
   fmt::print("Should Stop: {}\n", shouldStop);
 
